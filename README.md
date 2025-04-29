@@ -1,6 +1,6 @@
 # Frappe/ERPNext Mastery
 
-Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take you from beginner to expert in the Frappe Framework and ERPNext. This repository contains a detailed syllabus spanning 17 chapters, complete with hands-on examples and best practices. Feel free to explore, learn, and contribute!
+Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take you from beginner to expert in the Frappe Framework and ERPNext. This repository contains a detailed syllabus spanning 18 chapters, complete with hands-on examples and best practices. Feel free to explore, learn, and contribute!
 
 ---
 
@@ -16,17 +16,18 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 8. [Reports and Dashboards](#8-reports-and-dashboards)
 9. [Integration](#9-integration)
 10. [Deployment and Hosting](#10-deployment-and-hosting)
-11. [Security](#11-security)
-12. [Advanced Topics](#12-advanced-topics)
-13. [Upgrades and Version Management](#13-upgrades-and-version-management)
-14. [Troubleshooting and Debugging](#14-troubleshooting-and-debugging)
-15. [Preparing for Interviews](#15-preparing-for-interviews)
-16. [Practical Projects](#16-practical-projects)
-17. [Resources and Community](#17-resources-and-community)
+11. [Frappe Cloud](#11-frappe-cloud)
+12. [Security](#12-security)
+13. [Advanced Topics](#13-advanced-topics)
+14. [Upgrades and Version Management](#14-upgrades-and-version-management)
+15. [Troubleshooting and Debugging](#15-troubleshooting-and-debugging)
+16. [Preparing for Interviews](#16-preparing-for-interviews)
+17. [Practical Projects](#17-practical-projects)
+18. [Resources and Community](#18-resources-and-community)
 
 ---
 
-## Syllabus (17 Chapters + Course Content)
+## Syllabus (18 Chapters + Course Content)
 
 ### 1. Introduction to ERP and Frappe/ERPNext
 
@@ -188,16 +189,28 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 11. Security
+### 11. Frappe Cloud
 
-**11.1 Role-Based Access Control**
-**11.2 Encryption**: Data at rest & in transit
-**11.3 Audit Logs**
-**11.4 OAuth & SSO**
+- **11.1 Overview of Frappe Cloud**: Features, benefits of managed hosting
+- **11.2 Getting Started**: Creating an account, adding a new site
+- **11.3 App Deployment**: Git integration, custom app deployment workflows
+- **11.4 Site Management**: Domains, SSL, environment variables
+- **11.5 Monitoring & Backups**: Accessing logs, automatic backups, restores
+- **11.6 Advanced Cloud Features**: Auto-upgrades, multi-region support, staging environments
+- **11.7 Pricing & Plans**: Free tier, paid tiers, enterprise support options
 
 ---
 
-### 12. Advanced Topics
+### 12. Security
+
+**12.1 Role-Based Access Control**
+**12.2 Encryption**: Data at rest & in transit
+**12.3 Audit Logs**
+**12.4 OAuth & SSO**
+
+---
+
+### 13. Advanced Topics
 
 - **Background Jobs**
 - **Cron Jobs**
@@ -210,7 +223,7 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 13. Upgrades and Version Management
+### 14. Upgrades and Version Management
 
 - **Versioning**: Major vs. minor
 - **Pre-Upgrade Checklist**
@@ -220,7 +233,7 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 14. Troubleshooting and Debugging
+### 15. Troubleshooting and Debugging
 
 - **Common Errors**: Dev, deployment, integration
 - **Debugging Tools**: Browser DevTools, logs, Sentry
@@ -228,7 +241,7 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 15. Preparing for Interviews
+### 16. Preparing for Interviews
 
 - **Core Concepts**
 - **Customization & Dev**
@@ -241,7 +254,7 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 16. Practical Projects
+### 17. Practical Projects
 
 - Inventory Management
 - Library Management
@@ -255,7 +268,7 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 ---
 
-### 17. Resources and Community
+### 18. Resources and Community
 
 - **Documentation**: Official Frappe/ERPNext docs
 - **Forums & Groups**: Community channels
@@ -273,10 +286,9 @@ We welcome contributions from everyone! Please follow these steps:
 3. Commit your changes: `git commit -m "Add content to Chapter X"`
 4. Push to your branch: `git push origin feature/my-chapter`
 5. Open a Pull Request and describe your changes.
-<!---
+<!--
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contribution Guidelines](CONTRIBUTING.md) before submitting.
 -->
-
 ---
 
 ## 📄 License
