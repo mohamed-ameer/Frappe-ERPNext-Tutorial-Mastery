@@ -273,8 +273,9 @@ We welcome contributions from everyone! Please follow these steps:
 3. Commit your changes: `git commit -m "Add content to Chapter X"`
 4. Push to your branch: `git push origin feature/my-chapter`
 5. Open a Pull Request and describe your changes.
-
+<!---
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contribution Guidelines](CONTRIBUTING.md) before submitting.
+-->
 
 ---
 
