@@ -4,6 +4,8 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 We may also convert this guide into a free book or video course in the future — stay tuned!
 
+NOTE: each chapter will has it's own pdf file, at the end we will group it into a single book
+
 ---
 
 ## 📚 Table of Contents
@@ -288,6 +290,8 @@ We welcome contributions from everyone! Please follow these steps:
 3. Commit your changes: `git commit -m "Add content to Chapter X"`
 4. Push to your branch: `git push origin feature/my-chapter`
 5. Open a Pull Request and describe your changes.
+
+we suggest that any chapter will has it's own pdf file or md file as you wish.
 <!--
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contribution Guidelines](CONTRIBUTING.md) before submitting.
 -->
