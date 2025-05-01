@@ -25,13 +25,14 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 13. [Advanced Topics](#13-advanced-topics)
 14. [Upgrades and Version Management](#14-upgrades-and-version-management)
 15. [Troubleshooting and Debugging](#15-troubleshooting-and-debugging)
-16. [Preparing for Interviews](#16-preparing-for-interviews)
-17. [Practical Projects](#17-practical-projects)
-18. [Resources and Community](#18-resources-and-community)
+16. [AI Integration in ERPNext: Smart Features for the Future](#16-ai-integration-in-erpnext-smart-features-for-thefuture)
+17. [Preparing for Interviews](#17-preparing-for-interviews)
+18. [Practical Projects](#18-practical-projects)
+19. [Resources and Community](#19-resources-and-community)
 
 ---
 
-## Syllabus (18 Chapters + Course Content)
+## Syllabus (19 Chapters + Course Content)
 
 ### 1. Introduction to ERP and Frappe/ERPNext
 
@@ -127,6 +128,8 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 - **Dynamic Content Injection**: Real-time data in templates
 - **URL Routing**: Custom routes, dynamic parameters
 - **Pagination**: Handling large datasets
+- **Custom Pages**: Creating standalone pages
+- **Language Toggle Button**: Adds a dropdown to switch languages directly from the top bar
 - **Examples**: Custom login page, branded dashboards
 
 ---
@@ -138,6 +141,7 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 - **Adding Translations**: Frappe’s translation tools
 - **Managing Language Files**: `.json` translation files
 - **Switching Languages**: Interface language settings
+- **Language Toggle Button**: Adds a dropdown to switch languages directly from the top bar
 - **Localization Features**: Currency and format configurations
 - **Examples**: Arabic e-commerce store, French HR module
 
@@ -224,6 +228,11 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 - **Jinja Templating & Custom Filters**
 - **URL Routing & Pagination**
 - **Biometric Device Integration**
+- **Custom Authentication with JWT**
+- **Replace dotted API with normal Restful API**
+- **Real-Time Updates in Frappe Framework: Synchronizing Data Across Clients**
+- **comment auto mention**
+- **Integrating Google Maps into Frappe Framework instead of OpenStreetMap**
 
 ---
 
@@ -245,7 +254,18 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ---
 
-### 16. Preparing for Interviews
+### 16. AI Integration in ERPNext: Smart Features for the Future
+
+- **Why is AI important in ERPNext?**
+- **Use Cases of AI in ERPNext**
+- **Future of AI in ERPNext**
+- **How to integrate AI in ERPNext**
+- **Examples**: Chatbots, voice assistants
+- **Resources**
+
+---
+
+### 17. Preparing for Interviews
 
 - **Core Concepts**
 - **Customization & Dev**
@@ -258,7 +278,7 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ---
 
-### 17. Practical Projects
+### 18. Practical Projects
 
 - Inventory Management
 - Library Management
@@ -269,7 +289,7 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ---
 
-### 18. Resources and Community
+### 19. Resources and Community
 
 - **Documentation**: Official Frappe/ERPNext docs
 - **Forums & Groups**: Community channels
