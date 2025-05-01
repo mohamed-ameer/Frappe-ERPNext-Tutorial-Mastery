@@ -25,7 +25,7 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 13. [Advanced Topics](#13-advanced-topics)
 14. [Upgrades and Version Management](#14-upgrades-and-version-management)
 15. [Troubleshooting and Debugging](#15-troubleshooting-and-debugging)
-16. [AI Integration in ERPNext: Smart Features for the Future](#16-ai-integration-in-erpnext:-smart-features-for-the-future)
+16. [AI Integration in ERPNext: Smart Features for the Future](#16-ai-integration-in-erpnext-:-smart-features-for-the-future)
 17. [Preparing for Interviews](#17-preparing-for-interviews)
 18. [Practical Projects](#18-practical-projects)
 19. [Resources and Community](#19-resources-and-community)
