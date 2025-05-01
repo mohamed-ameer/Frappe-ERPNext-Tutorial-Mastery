@@ -265,9 +265,6 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 - Ride Booking
 - Support Ticket System
 - E-Commerce Store
-- IAM (Identity & Access Management)
-- iScore
-- LMC (License Manager Client)
 - Custom ORM
 
 ---
