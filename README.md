@@ -149,12 +149,12 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ### 6. Customization and Development
 
-**6.1 Creating an App**: `bench new-app`, `bench install-app`
-**6.2 Managing Sites and Apps**: Multiple sites, dependencies
-**6.3 Lifecycle Hooks**: `before_insert`, `validate`, `on_submit`, etc.
-**6.4 Custom API Endpoints**: Python scripts, auth
-**6.5 ORM (Object Relational Mapping)**: CRUD with Frappe ORM
-**6.6 Frontend JS**: Events, auto-population
+- **6.1 Creating an App**: `bench new-app`, `bench install-app`
+- **6.2 Managing Sites and Apps**: Multiple sites, dependencies
+- **6.3 Lifecycle Hooks**: `before_insert`, `validate`, `on_submit`, etc.
+- **6.4 Custom API Endpoints**: Python scripts, auth
+- **6.5 ORM (Object Relational Mapping)**: CRUD with Frappe ORM
+- **6.6 Frontend JS**: Events, auto-population
 
 ---
 
@@ -170,31 +170,31 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ### 8. Reports and Dashboards
 
-**8.1 Query Reports**: SQL-based reports
-**8.2 Script Reports**: Python-based reports
-**8.3 Print Formats**: Jinja templates, PDF/HTML
-**8.4 Widgets**: Charts, graphs
+- **8.1 Query Reports**: SQL-based reports
+- **8.2 Script Reports**: Python-based reports
+- **8.3 Print Formats**: Jinja templates, PDF/HTML
+- **8.4 Widgets**: Charts, graphs
 
 ---
 
 ### 9. Integration
 
-**9.1 Payment Gateways**: Stripe, PayPal, Razorpay
-**9.2 Email Services**: Templates, notifications
-**9.3 SMS Gateways**: Twilio, Plivo
-**9.4 External APIs**: Data consumption
-**9.5 Webhooks**: Real-time updates
-**9.6 WhatsApp Integration with ERPNext — Sending Bills Seamlessly**: Integrating WhatsApp with ERPNext
+- **9.1 Payment Gateways**: Stripe, PayPal, Razorpay
+- **9.2 Email Services**: Templates, notifications
+- **9.3 SMS Gateways**: Twilio, Plivo
+- **9.4 External APIs**: Data consumption
+- **9.5 Webhooks**: Real-time updates
+- **9.6 WhatsApp Integration with ERPNext — Sending Bills Seamlessly**: Integrating WhatsApp with ERPNext
 
 ---
 
 ### 10. Deployment and Hosting
 
-**10.1 Bench Setup**: Production with Bench CLI
-**10.2 Nginx Configuration**: Reverse proxy
-**10.3 Backup & Restore**: Automations
-**10.4 Logs**: Monitoring
-**10.5 Performance**: Caching, indexing
+- **10.1 Bench Setup**: Production with Bench CLI
+- **10.2 Nginx Configuration**: Reverse proxy
+- **10.3 Backup & Restore**: Automations
+- **10.4 Logs**: Monitoring
+- **10.5 Performance**: Caching, indexing
 
 ---
 
@@ -212,10 +212,10 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 
 ### 12. Security
 
-**12.1 Role-Based Access Control**
-**12.2 Encryption**: Data at rest & in transit
-**12.3 Audit Logs**
-**12.4 OAuth & SSO**
+- **12.1 Role-Based Access Control**
+- **12.2 Encryption**: Data at rest & in transit
+- **12.3 Audit Logs**
+- **12.4 OAuth & SSO**
 
 ---
 
