@@ -184,6 +184,7 @@ NOTE: each chapter will has it's own pdf file, at the end we will group it into 
 **9.3 SMS Gateways**: Twilio, Plivo
 **9.4 External APIs**: Data consumption
 **9.5 Webhooks**: Real-time updates
+**9.6 WhatsApp Integration with ERPNext — Sending Bills Seamlessly**: Integrating WhatsApp with ERPNext
 
 ---
 
