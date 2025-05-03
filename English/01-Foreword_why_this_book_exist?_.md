@@ -144,3 +144,5 @@ Frappe is a catalyst.
 **So is this book.**
 
 Let’s boil the stones.
+
+## 👉 Join us at Discord : https://discord.gg/qevyJaZE 
