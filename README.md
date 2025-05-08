@@ -4,7 +4,17 @@ Welcome to **Frappe/ERPNext Mastery**, a community-driven guide designed to take
 
 We may also convert this guide into a free book or video course in the future — stay tuned!
 
-NOTE: each chapter will has it's own pdf file, at the end we will group it into a single book
+**NOTE**: Each chapter will have its PDF file, and at the end, we will group them into a single book
+
+---
+
+## 🌟 Join Our Community on Discord!
+
+We’ve created a **Discord channel** as a hub for everything related to Frappe Framework and ERPNext. 
+
+Whether you’re a beginner looking for guidance, a developer troubleshooting an issue, or an expert sharing knowledge, this is the place for you!
+
+👉 [Join the Discord Channel](https://discord.gg/qevyJaZE)
 
 ---
 
