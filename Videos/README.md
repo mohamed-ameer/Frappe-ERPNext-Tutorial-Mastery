@@ -60,6 +60,20 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 ---
 
+### Installation & Setup using Docker
+
+**arabic resources** 
+[Learn the steps to set up a development environment using Frappe Docker](https://www.youtube.com/watch?v=VuhCaSiiLlU)
+[Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
+
+**english resources**
+[Frappe ERPNext HR installation using Docker, Helm](https://www.youtube.com/watch?v=WpJeAZ6l-Z0)
+[Mr. Karani](https://www.youtube.com/watch?v=BsV9ZB4Aqew)
+[Mr. Karani](https://www.youtube.com/watch?v=LmfZZ-VAPYM)
+[Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
+
+---
+
 > ✅ *If you're also starting your Frappe journey, these resources will give you a solid foundation and advanced insights as well.*
 
 > 🌟 *If you're an expert, these resources will help you excel in your Frappe journey.*
