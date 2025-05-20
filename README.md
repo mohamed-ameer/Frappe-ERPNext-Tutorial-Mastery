@@ -14,7 +14,7 @@ We’ve created a **Discord channel** as a hub for everything related to Frappe 
 
 Whether you’re a beginner looking for guidance, a developer troubleshooting an issue, or an expert sharing knowledge, this is the place for you!
 
-👉 [Join the Discord Channel](https://discord.gg/qevyJaZE)
+👉 [Join the Discord Channel](https://discord.gg/jEyvKmErS3)
 
 ---
 
