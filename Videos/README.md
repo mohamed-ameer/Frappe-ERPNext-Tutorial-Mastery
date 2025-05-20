@@ -70,6 +70,7 @@ i recommend you to learn docker first by reading the following AMAZING resources
 [Docker Curriculum (easy to follow)](https://docker-curriculum.com/)
 
 **arabic resources** 
+
 [Learn the steps to set up a development environment using Frappe Docker](https://www.youtube.com/watch?v=VuhCaSiiLlU)
 
 [Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
