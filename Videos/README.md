@@ -64,17 +64,23 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 **New in Docker?!**
 i recommend you to learn docker first by reading the following AMAZING resources:
+
 [Docker Course](https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker)
+
 [Docker Curriculum (easy to follow)](https://docker-curriculum.com/)
 
 **arabic resources** 
 [Learn the steps to set up a development environment using Frappe Docker](https://www.youtube.com/watch?v=VuhCaSiiLlU)
+
 [Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
 
 **english resources**
 [Frappe ERPNext HR installation using Docker, Helm](https://www.youtube.com/watch?v=WpJeAZ6l-Z0)
+
 [Mr. Karani](https://www.youtube.com/watch?v=BsV9ZB4Aqew)
+
 [Mr. Karani](https://www.youtube.com/watch?v=LmfZZ-VAPYM)
+
 [Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
 
 ---
