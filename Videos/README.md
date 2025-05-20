@@ -75,6 +75,7 @@ i recommend you to learn docker first by reading the following AMAZING resources
 [Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
 
 **english resources**
+
 [Frappe ERPNext HR installation using Docker, Helm](https://www.youtube.com/watch?v=WpJeAZ6l-Z0)
 
 [Mr. Karani](https://www.youtube.com/watch?v=BsV9ZB4Aqew)
