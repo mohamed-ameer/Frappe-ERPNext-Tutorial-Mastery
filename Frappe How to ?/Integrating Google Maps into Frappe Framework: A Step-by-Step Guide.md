@@ -1,5 +1,6 @@
 # **Integrating Google Maps into Frappe Framework: A Step-by-Step Guide**
 
+![image](https://github.com/user-attachments/assets/6ed8cde4-971a-457b-b0e2-53d8fc0bbe83)
 
 
 
