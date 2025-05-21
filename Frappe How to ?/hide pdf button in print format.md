@@ -1,5 +1,8 @@
 # hide pdf button in print format
 
+![image](https://github.com/user-attachments/assets/7a452094-6541-4afa-a0d9-587a93d74a5a)
+
+
 i made a dummy solution but work 100% fine
 
 step1: 
