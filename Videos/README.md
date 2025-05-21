@@ -85,6 +85,10 @@ i recommend you to learn docker first by reading the following AMAZING resources
 
 [Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
 
+[ERPNext Version 15 Installation Using Docker on Ubuntu](https://www.youtube.com/watch?v=EVP8Gx24NEM)
+
+[Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
+
 ---
 
 > ✅ *If you're also starting your Frappe journey, these resources will give you a solid foundation and advanced insights as well.*
