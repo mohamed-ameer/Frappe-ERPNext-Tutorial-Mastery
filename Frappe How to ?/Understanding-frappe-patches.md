@@ -18,6 +18,19 @@ Frappe opens it once, reads it, runs the command, and logs it as "done."
 
 ---
 
+## When we should write a patch?
+
+Patches are used for example when you make a change in an existing functionality and want to update instances that are already running ERPNext to make it compatible with that change. Or it can also be used when you need to correct something in a functionality already used in production.
+
+Patches are only meant to be run once on each sites already running ERPNext. They are never run twice and never run in a new site.
+
+For example, one of the latest patch is meant to rename School into Education.
+On a new site, the Doctype Education exists from the beginning so you don’t need to do anything, but on an older site, the doctype was named School, so you need to update the database to have it named Education to be compatible with the new code base in ERPNext. Therefore you run a script that renames School to Education when you update your codebase with Education everywhere instead of School.
+
+[thank's to Mr.Chdecultot](https://discuss.frappe.io/t/when-we-should-write-a-patch/31246/2)
+
+---
+
 ## Real-life examples where you would use a patch
 
 1. Add a unique constraint to two fields in a DocType
