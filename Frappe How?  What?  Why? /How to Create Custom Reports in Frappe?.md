@@ -519,6 +519,7 @@ Script Reports offer the most control and customization but require developer ac
 ## More Usefull Resources
 https://discuss.frappe.io/t/tutorial-script-report-chart/79873
 https://discuss.frappe.io/t/tutorial-script-reports-in-erpnext-a-step-by-step-guide/110969
+https://cloud.erpgulf.com/blog/blogs/script-and-query-report-creation-walkthrough-with-examples
 
 ---
 This comprehensive documentation provides everything needed to create custom reports in Frappe, from basic examples to advanced features used in production applications.
