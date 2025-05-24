@@ -29,3 +29,37 @@ The large number of duplicate records in the "Has Role" doctype likely happened 
 
 In short:
 Every migration re-added roles from fixtures without checks, creating duplicates. Without database rules to block this, the records kept growing. The solution is to clean duplicates, add uniqueness checks, and fix the scripts or fixtures.
+
+---
+**Recommended Solution**
+
+you can use the `before_migrate` hook to handle these scenarios automatically with your desired logic and filters,
+using hooks like `before_migrate` can make handling such cases way more efficient and automated than manually doing it for similar issues in the future.
+
+1- in the `hooks.py` file, add the following code:
+
+```
+# Installation
+# ------------
+
+before_migrate = "your_app.utils.install.before_migrate"
+```
+
+2- in the `install.py` file, add the following code:
+
+```
+def before_migrate():
+    remove_duplicate_roles()
+
+def remove_duplicate_roles():
+    frappe.db.truncate("Has Role")
+    frappe.db.commit()
+```
+
+3- now the migration will be faster and the solution will be automatic and able to be expanded to handle the same kind of issues in the future.
+
+```
+bench --site your-site migrate
+```
+
+[Thanks to Mr.Abdullah Korraim for this suggestion](https://www.linkedin.com/in/abdallahkorraim)
