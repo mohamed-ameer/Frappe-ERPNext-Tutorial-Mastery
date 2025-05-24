@@ -15,6 +15,8 @@ your_app/
 ```
 > The .html file must match the report name.
 
+---
+
 2. Inside your_report_name.html, write a Jinja2 template like this:
 ```html
 <h2>{{ report.report_name }}</h2>
@@ -53,6 +55,8 @@ It does NOT use Jinja in client-side components like:
 Use Jinja for backend-rendered templates, and MicroTemplate (<% %>) for  client-side components in Desk.
 [check this](https://docs.frappe.io/framework/user/en/guides/app-development/using-html-templates-in-javascript)
 
+---
+
 3. How to Use It
 - Go to your Script Report in the UI.
 - From the top-right menu (⋮), choose Print.
@@ -67,6 +71,7 @@ bench --site your-site clear-cache
 bench --site your-site migrate
 bench restart
 ```
+---
 
 5. Note: 
 - The .html file must match the report name.
