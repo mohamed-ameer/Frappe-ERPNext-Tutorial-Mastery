@@ -17,7 +17,7 @@ your_app/
 
 ---
 
-2. Inside your_report_name.html, write a Jinja2 template like this:
+2. Inside your_report_name.html, write a John Resig’s MicroTemplate like this:
 ```html
 <h2>{{ report.report_name }}</h2>
 
@@ -40,8 +40,10 @@ your_app/
   </tbody>
 </table>
 ```
-Note: 
+
+### Note:
 Frappe uses John Resig’s MicroTemplate engine — not Jinja2 — for HTML files rendered in the Desk app (like Script Reports).
+
 Frappe uses Jinja, but only in server-side contexts like:
 - Print Formats (for DocTypes)
 - Email Templates
