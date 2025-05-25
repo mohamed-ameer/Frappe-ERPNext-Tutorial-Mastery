@@ -495,7 +495,7 @@ result = get_dynamic_aggregation(filters, group_by, dynamic_field, project_types
 
 ## 9. Create Custom Print Format for a Script Report
 
-[check this](./How to Create Custom Print Format for a Script Report?.md)
+[check this](How_to_Create_Custom_Print_Format_for_a_Script_Report?.md)
 
 ---
 
