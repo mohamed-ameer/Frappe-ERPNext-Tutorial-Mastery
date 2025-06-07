@@ -543,3 +543,8 @@ Monkey patching in Frappe is a powerful technique that should be used carefuly. 
 - Test your overrides as much as you can specially in production
 
 With these patterns and best practices, you can safely extend and modify Frappe's behavior while maintaining system stability and upgrade compatibility.
+
+### More Resources
+
+- [monkey-patching-overriding-anything-frappe-framework-python-and-javascript](https://www.linkedin.com/pulse/monkey-patching-overriding-anything-frappe-framework-python-badole-sf3gc/)
+- [monkey-patching-in-frappe-override-core-logic-the-clean-way](https://vintrosys.com/blog/erpnext/monkey-patching-in-frappe-override-core-logic-the-clean-way)
