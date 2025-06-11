@@ -12,7 +12,7 @@ apps/your-app/your-app/translations/
 ```
 
 **Why?**  
-Frappe automatically detects this folder during the build process. It follows a convention-over-configuration approach, so placing your translation files here ensures they're recognized without extra setup.
+Frappe automatically detects this folder. It follows a convention-over-configuration approach, so placing your translation files here ensures they're recognized without extra setup.
 
 ---
 
@@ -61,18 +61,14 @@ The `_()` function marks strings as translatable. During runtime, Frappe replace
 
 ## 4. Build the Site
 
+Only needed if you're using `__()` in custom frontend JS and changed the JS files
+
 **Step:**  
 Run the build command:
 
 ```bash
 bench --site your-site build
 ```
-
-**Why?**
-
-- Converts CSV files into optimized `.json` or `.mo` files.
-- Updates static assets and makes translations available in the app.
-- Without rebuilding, changes won’t take effect.
 
 ---
 
@@ -105,6 +101,14 @@ This confirms that Frappe correctly maps the source string to its translated cou
 - If a string isn’t translated, Frappe will use the original (source) string.
 
 ---
+## Do i need to build or migrate the site?
+
+NO, frappe loads translations **dynamically at runtime** from your `translations/lang.csv` file, based on the logged-in user’s language preference.
+you just need to refresh your browser or clear-cashe if necessary.
+
+`bench build` only needed if you’re using `__()` in custom frontend JS and changed the JS files
+
+---
 
 ## Example Workflow
 
@@ -123,13 +127,44 @@ This confirms that Frappe correctly maps the source string to its translated cou
    _("welcome_message")
    ```
 
-4. Build:  
+4. Clear Cashe:  
+- use it if translations don't reflect immediately
+   ```bash
+   bench --site my-site clear-cache
+   ```
+5. Build:
+ - only needed if you're using `__()` in custom frontend JS and changed the JS files
    ```bash
    bench --site my-site build
    ```
-
-5. Test in Arabic interface.
+6. Test in Arabic interface.
 
 ---
+## Explain Context?
 
-By following these steps, you ensure that Frappe can detect, process, and serve translations efficiently.
+context is nothing but a meta-data,
+to explain to the one who will use this translation when and where to use it.
+because sometimes you have the same word with different meaning
+
+as example:
+
+```
+"charge","شحن",""
+"charge","رسوم",""
+```
+
+here we have same word but different meaning (different context to use)
+so, to filter it we have to give it a context
+
+```
+"charge","شحن","mobile phone charge"
+"charge","رسوم","invoice line"
+```
+
+in code:
+
+```
+_("charge") # here we don't know which meaning (context to use)
+_("charge", context="mobile phone charge") # here we mean شحن
+_("charge", context="invoice line") # here we mean رسوم
+```
