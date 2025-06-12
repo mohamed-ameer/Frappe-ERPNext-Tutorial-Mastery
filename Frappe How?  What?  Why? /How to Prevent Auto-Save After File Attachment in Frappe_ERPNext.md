@@ -1,6 +1,7 @@
 ### what is the problem?
 Frappe automatically triggers a **save** when an `Attach` field is updated, which can be problematic if you want to prevent partial saves, or wait for user confirmation.
 
+![image](https://github.com/user-attachments/assets/dcc107e1-43b5-49ea-a079-60fd6dc2e316)
 
 
 **In my case:** 
