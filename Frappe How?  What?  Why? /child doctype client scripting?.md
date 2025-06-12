@@ -63,7 +63,7 @@ frappe.ui.form.on('Loan Board Members', {
 });
 ```
 
-### 🔍 Explanation:
+### Explanation:
 - `button_name` is a Button field inside the child table.
 - `row.idx` passes the row number to the server-side method.
 - `frm.call()` simplifies server communication, binding it to the current document context.
