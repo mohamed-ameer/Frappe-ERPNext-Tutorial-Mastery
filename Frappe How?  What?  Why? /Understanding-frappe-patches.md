@@ -4,6 +4,8 @@ Let's make it super simple. Imagine you just shipped your ERP app, but you reali
 
 How to do that? **Frappe Patch**
 
+patch in software term : is nothing but group of things that we execute/run it sequentially one by one, once and never run again.
+
 ---
 
 ## What exactly is a Frappe Patch?
