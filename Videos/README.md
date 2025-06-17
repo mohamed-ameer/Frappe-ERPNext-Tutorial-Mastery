@@ -115,6 +115,12 @@ i recommend you to learn docker first by reading the following AMAZING resources
 
 > A curated list of awesome things related to the Frappe Framework. Maintained by Gavin D'souza
 
+### Frappe Wiki & Cheatsheet
+
+[Frappe Wiki](https://github.com/frappe/frappe/wiki)
+
+[Developer Cheatsheet](https://github.com/frappe/frappe/wiki/Developer-Cheatsheet)
+
 ---
 
 > ✅ *If you're also starting your Frappe journey, these resources will give you a solid foundation and advanced insights as well.*
