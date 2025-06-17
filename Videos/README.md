@@ -81,11 +81,18 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 ### Installation & Setup using Docker
 
 **New in Docker?!**
-i recommend you to learn docker first by reading the following AMAZING resources:
 
-[Docker Course](https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker)
+LearnDocker.online is the most comprehensive online Docker training program on the planet
 
-[Docker Curriculum (easy to follow)](https://docker-curriculum.com/)
+- [LearnDocker.online](https://learndocker.online/courses/)
+- [Learn Docker by playing](https://kodekloud.com/free-labs/docker)
+- [Learn Docker by practice labs](https://labex.io/skilltrees/docker)
+
+these two documentations are the best to start with,
+i hope you read my summary pdf first to get a better understanding
+
+- [Docker for beginners](https://docker-curriculum.com/)
+- [introduction to Docker](https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker)
 
 **arabic resources** 
 
@@ -120,6 +127,10 @@ i recommend you to learn docker first by reading the following AMAZING resources
 [Frappe Wiki](https://github.com/frappe/frappe/wiki)
 
 [Developer Cheatsheet](https://github.com/frappe/frappe/wiki/Developer-Cheatsheet)
+
+### How to contribute to the official docs
+
+[How to contribute to the official docs](https://docs.frappe.io/framework/user/en/how_to_contribute)
 
 ---
 
