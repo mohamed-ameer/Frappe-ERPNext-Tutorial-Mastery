@@ -4,6 +4,9 @@ In my case, i want to prevent users from creating new records directly from a Do
 
 In Frappe, this can be done by disabling the "Add" or "Create" button using a simple client-side script.
 
+![image](https://github.com/user-attachments/assets/e770bfd9-e609-4d66-adee-7ad0a7a87bea)
+
+
 ---
 
 ### Step 1: Create the List View JS File
