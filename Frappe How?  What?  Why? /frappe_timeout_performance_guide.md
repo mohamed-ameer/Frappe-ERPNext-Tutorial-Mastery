@@ -160,3 +160,12 @@ Look for the following lines:
 ---
 
 > Apply these optimizations to ensure your Frappe app performs well under load and avoids request timeout issues or any slowness in your site.
+
+---
+
+## References
+
+1. [Database Optimization - Hardware and Configuration | Frappe Documentation](https://docs.frappe.io/framework/user/en/database-optimization-hardware-and-configuration)
+2. [Optimizing ERPNext Performance: Tips for Faster and Smoother Operations](https://codewithkarani.com/2024/06/02/optimizing-erpnext-performance-tips-for-faster-and-smoother-operations/)
+3. [ERPNext Performance Tuning](https://github.com/frappe/erpnext/wiki/ERPNext-Performance-Tuning)
+4. [Performance Optimization Tips for ERPNext in Manufacturing Environments](https://www.solufyerp.com/erp-blog/performance-optimization-tips-for-erpnext-in-manufacturing-environments/)
