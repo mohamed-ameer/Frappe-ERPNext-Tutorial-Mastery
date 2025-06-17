@@ -169,3 +169,7 @@ Look for the following lines:
 2. [Optimizing ERPNext Performance: Tips for Faster and Smoother Operations](https://codewithkarani.com/2024/06/02/optimizing-erpnext-performance-tips-for-faster-and-smoother-operations/)
 3. [ERPNext Performance Tuning](https://github.com/frappe/erpnext/wiki/ERPNext-Performance-Tuning)
 4. [Performance Optimization Tips for ERPNext in Manufacturing Environments](https://www.solufyerp.com/erp-blog/performance-optimization-tips-for-erpnext-in-manufacturing-environments/)
+5. [Slow Query Log Overview](https://mariadb.com/docs/server/server-management/server-monitoring-logs/slow-query-log/slow-query-log-overview)
+6. [how to setup the slow query log](https://discuss.frappe.io/t/how-do-i-turn-on-and-then-view-mariadb-slow-query-log-with-v10/70826/2)
+7. [Check MySQL (MariaDB) Configuration](https://discuss.frappe.io/t/erp-running-very-slow-please-in-need-your-help/139780/3)
+8. [ERPNext running slow](https://discuss.frappe.io/t/erpnext-running-slow/14302/16)
