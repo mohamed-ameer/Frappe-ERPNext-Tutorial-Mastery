@@ -109,6 +109,14 @@ i recommend you to learn docker first by reading the following AMAZING resources
 
 ---
 
+### Awesome Frappe
+
+[Awesome Frappe](https://awesome-frappe.gavv.in/) 
+
+> A curated list of awesome things related to the Frappe Framework. Maintained by Gavin D'souza
+
+---
+
 > ✅ *If you're also starting your Frappe journey, these resources will give you a solid foundation and advanced insights as well.*
 
 > 🌟 *If you're an expert, these resources will help you excel in your Frappe journey.*
