@@ -6,8 +6,9 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 ### 🧑‍🏫 Instructor Playlists
 
-**1. Mr. Hussain**  
-[Complete Frappe Framework Playlist](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKsY3QbZ8zUTj8RGJ6NnvAZ)
+**1. Mr. Hussain**
+- [Hussain's Manual, Diff Recordings in many sessions](https://manual.buildwithhussain.com/handouts/recordings/)  
+- [Complete Frappe Framework Playlist](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKsY3QbZ8zUTj8RGJ6NnvAZ)
 
 **2. Eby Mathew**  
 [Frappe / ERPNext Tutorials](https://www.youtube.com/playlist?list=PL81DRyBlXws-b7CdzGHOgoyc8vUvLXv6i)
