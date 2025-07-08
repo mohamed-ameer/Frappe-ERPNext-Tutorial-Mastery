@@ -78,6 +78,8 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
 
+[Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
+
 ---
 
 ### Installation & Setup using Docker
