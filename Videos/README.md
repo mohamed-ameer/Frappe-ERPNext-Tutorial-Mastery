@@ -1,6 +1,3 @@
-## Roadmap:
-![GhMQ-ina8AAAq8W](https://github.com/user-attachments/assets/5a7b8a15-c6b1-486a-9a7f-1998dde81eb3)
-
 ## 📚 Frappe Developer Courses & Learning Resources
 
 During my journey to becoming a Frappe Developer, I explored a wide range of helpful resources. Below is a curated list of all the tutorials, courses, and YouTube playlists I used for both beginner and advanced topics.
@@ -138,6 +135,13 @@ i hope you read my summary pdf first to get a better understanding
 ### How to contribute to the official docs
 
 [How to contribute to the official docs](https://docs.frappe.io/framework/user/en/how_to_contribute)
+
+---
+
+## Roadmap:
+the following roadmap created by
+[Habibur Rahman](https://www.linkedin.com/posts/habibur-rahman-b59038195_frappe-erpnext-learning-activity-7284565486267174913-FRvH?utm_source=share&utm_medium=member_desktop&rcm=ACoAADDD5IQBJAbESK6DNV4DLSAHOhljB-dLbsk)
+![GhMQ-ina8AAAq8W](https://github.com/user-attachments/assets/5a7b8a15-c6b1-486a-9a7f-1998dde81eb3)
 
 ---
 
