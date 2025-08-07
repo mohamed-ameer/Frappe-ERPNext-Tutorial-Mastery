@@ -1,3 +1,6 @@
+## Roadmap:
+![GhMQ-ina8AAAq8W](https://github.com/user-attachments/assets/5a7b8a15-c6b1-486a-9a7f-1998dde81eb3)
+
 ## 📚 Frappe Developer Courses & Learning Resources
 
 During my journey to becoming a Frappe Developer, I explored a wide range of helpful resources. Below is a curated list of all the tutorials, courses, and YouTube playlists I used for both beginner and advanced topics.
