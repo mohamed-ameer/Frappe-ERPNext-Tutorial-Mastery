@@ -1,5 +1,7 @@
 # Adding Custom Icons to Workspace for a Frappe Custom App
 
+<img width="587" height="328" alt="image" src="https://github.com/user-attachments/assets/8bf85459-c2f2-4120-ac42-1e016443f784" />
+
 
 Custom icons are added via an SVG sprite file and registered in your app using hooks.
 
