@@ -68,7 +68,8 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
 
-[البرنامج التدريبي لنظام ERPNext](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
+[البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
+[البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
 
 [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
 
@@ -80,7 +81,6 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 [Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
 
-[ERPNext Training | Abdullah Al-Ansi](https://www.youtube.com/@ansiabdo/videos)
 ---
 
 ### Installation & Setup using Docker
