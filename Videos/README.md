@@ -69,6 +69,7 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
 
 [البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
+
 [البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
 
 [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
@@ -118,6 +119,14 @@ i hope you read my summary pdf first to get a better understanding
 [ERPNext Version 15 Installation Using Docker on Ubuntu](https://www.youtube.com/watch?v=EVP8Gx24NEM)
 
 [Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
+
+---
+
+### Frappe Integration with External Applications (eg. whatsapp)
+
+- [Webhook? ](https://www.youtube.com/watch?v=hbFXflC6n0g)
+- [ERPNext-WhatsApp Integration with Pabbly Connect Webhook// Step by Step using Tutorial](https://www.youtube.com/watch?v=7kSw-NbT-74&list=PLIj_IdEl38ZtZj9BJqwQ9fMPva2YEaRJj&index=2)
+- [WhatsApp integration for frappe. Use directly meta API's without any 3rd party integration.](https://github.com/shridarpatil/frappe_whatsapp)
 
 ---
 
