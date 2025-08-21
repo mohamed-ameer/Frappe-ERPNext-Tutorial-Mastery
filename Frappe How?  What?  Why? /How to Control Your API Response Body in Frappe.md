@@ -6,6 +6,11 @@ Frappe provides two main response handling mechanisms: `frappe.local.response` a
 
 ## Core Concepts
 
+### What is Werkzeug?
+*Werkzeug* is a collection of libraries that can be used to create a WSGI (Web Server Gateway Interface) compatible web application in Python.
+
+Werkzeug is the **gateway between HTTP and your Python code**. When a browser sends an HTTP request, Werkzeug receives it, understands it, and passes it to Frappe in a way Python can work with. Frappe then processes the request (for example, fetching data or rendering a page) and sends the result back through Werkzeug, which turns it into a proper HTTP response for the browser. In short, Werkzeug is what allows your Frappe app to “speak” HTTP.
+
 ### Thread-Local Storage
 Frappe uses Werkzeug's `Local` class for thread-local storage, which means each request gets its own isolated storage space. This prevents data leakage between concurrent requests.
 
@@ -448,6 +453,24 @@ frappe.local.response["message"] = "Hello"
 
 **In Frappe**: `frappe.response` is a `LocalProxy` to `frappe.local.response` 
 
+## What local("response") Does:
+
+The local("response") call creates a LocalProxy object that:
+
+1. Automatically accesses local.response when you use frappe.response
+
+1. Is thread-safe - each thread gets its own local.response
+
+1. Provides transparent access - you can use frappe.response exactly like a dictionary
+
+You can verify this by looking at the type:
+```python
+import frappe
+print(type(frappe.response))  # <class 'werkzeug.local.LocalProxy'>
+print(type(frappe.local.response))  # <class 'frappe.types.frappedict._dict'>
+```
+
+
 So `frappe.response` is indeed a LocalProxy that automatically accesses `frappe.local.response`, which is the actual `_dict` object containing your response data.
 
 This is why both of these work identically:
@@ -461,4 +484,4 @@ The proxy pattern allows Frappe to provide convenient access to thread-local dat
 
 ### In Short
 
-Use `frappe.local.response` when you need full control over the response structure, and use `frappe.response` (or return values) for standard Frappe responses. Always set appropriate HTTP status codes and handle errors properly for a professional API experience. 
+Use `frappe.local.response` when you need full control over the response structure, and use `frappe.response` (or return values) for standard Frappe responses. Always set appropriate HTTP status codes and handle errors properly for a professional API experience.
