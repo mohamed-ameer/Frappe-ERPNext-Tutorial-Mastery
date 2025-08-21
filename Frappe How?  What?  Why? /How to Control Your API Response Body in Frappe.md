@@ -377,6 +377,22 @@ response_type_map = {
 - **Request Context**  
   The environment or scope of a single HTTP request, including data like the current user, session, and database connection.
 
+### What is the LocalProxy Pattern?
+
+The **LocalProxy** pattern is a way to give you an object that *looks and feels* like a normal variable, but behind the scenes it actually fetches the real value **only when you use it**. This is especially useful in web frameworks, where each HTTP request needs its own isolated context (request, response, user, etc.).
+
+In Werkzeug, `LocalProxy` is often used with a `Local` object (thread-local or greenlet-local storage). This makes sure that when multiple users are making requests at the same time, each one sees **their own request/response data** instead of accidentally sharing it.
+
+### How Frappe Uses LocalProxy with Werkzeug
+
+Frappe uses `frappe.local` as a request-local object, built on Werkzeug’s `Local`/`LocalProxy` system.
+
+* Every incoming HTTP request gets its own `frappe.local`.
+* Inside it, Frappe stores things like `frappe.local.request`, `frappe.local.response`, `frappe.local.session`, etc.
+* Because of the LocalProxy pattern, you can safely access `frappe.local.response` in your code, and you’ll always get **the right response object for the current request** — even if hundreds of requests are being served at the same time.
+
+In short: The **LocalProxy pattern in Werkzeug** lets Frappe manage request-specific data (`frappe.local`) safely across multiple users and requests, without you needing to manually pass around request/response objects.
+
 ## Simple Definition
 
 ```python
@@ -485,3 +501,13 @@ The proxy pattern allows Frappe to provide convenient access to thread-local dat
 ### In Short
 
 Use `frappe.local.response` when you need full control over the response structure, and use `frappe.response` (or return values) for standard Frappe responses. Always set appropriate HTTP status codes and handle errors properly for a professional API experience.
+
+### `frappe.local.response` vs `frappe.response`
+
+* **`frappe.local.response`**
+  * This is the *real* response object.
+  * It lives inside `frappe.local`, which is request-specific storage (thanks to Werkzeug’s `LocalProxy`).
+  * Each request gets its own separate `frappe.local.response`, so multiple users don’t interfere with each other.
+* **`frappe.response`**
+  * This is just a **shortcut (alias)** that points to `frappe.local.response` using the LocalProxy pattern.
+  * It’s there to make your code cleaner so you don’t always have to type `frappe.local.response`.
