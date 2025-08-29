@@ -8,13 +8,9 @@ We may also convert this guide into a free book or video course in the future �
 
 ---
 
-## 🌟 Join Our Community on Discord!
+## Cloud Marketplace:
 
-We’ve created a **Discord channel** as a hub for everything related to Frappe Framework and ERPNext. 
-
-Whether you’re a beginner looking for guidance, a developer troubleshooting an issue, or an expert sharing knowledge, this is the place for you!
-
-👉 [Join the Discord Channel](https://discord.gg/jEyvKmErS3)
+[70 open-source Frappe apps](https://cloud.frappe.io/marketplace/search)
 
 ---
 
