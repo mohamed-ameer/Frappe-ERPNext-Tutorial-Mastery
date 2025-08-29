@@ -1,10 +1,13 @@
 # Deep Dive into bench start and Process Management in Frappe
 
 Credit goes to Mr. Hussain for the original explanation.
-This post is based entirely on his insightful video: https://www.youtube.com/watch?v=Ne6TtmLsjow
+This post is based entirely on his insightful video:[Click here to see the Video](https://www.youtube.com/watch?v=Ne6TtmLsjow)
 I’ve simply restructured his valuable content into Markdown for easier reading and sharing.
 
 Thank you, Mr. Hussain, for the knowledge!
+
+<img width="1920" height="1080" alt="Screenshot from 2025-08-29 17-10-16" src="https://github.com/user-attachments/assets/23b4305b-ddc5-4729-9a08-66f4f5c96e08" />
+
 
 ## Overview
 
