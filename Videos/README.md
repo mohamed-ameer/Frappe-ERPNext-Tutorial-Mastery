@@ -63,7 +63,10 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 **9. ERPNext Customization for Developers (in arabic)**  
 [ERPNext باللغة العربية](https://www.youtube.com/playlist?list=PLmomknAqwkrZxw-v1AoJW8TfGWMABQKbG)
 
-**10. ERPNext Implementation**  
+**10. ERPNext Solutions with Nihantra**
+[ERPNextWithNihantra](https://www.youtube.com/@ERPNextWithNihantra/videos)
+
+**11. ERPNext Implementation**  
 ## the following resources are in arabic for implementation and not development
 
 [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
