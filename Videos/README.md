@@ -66,7 +66,10 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 **10. ERPNext Solutions with Nihantra**
 [ERPNextWithNihantra](https://www.youtube.com/@ERPNextWithNihantra/videos)
 
-**11. ERPNext Implementation**  
+**11. ERPNext Solutions with Kanak**
+[ERPNextWithKanak](https://www.youtube.com/playlist?list=PLy7DXThvWXb9VX1DNH3hU-Y5VEPg3s17E)
+
+**12. ERPNext Implementation**  
 ## the following resources are in arabic for implementation and not development
 
 [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
