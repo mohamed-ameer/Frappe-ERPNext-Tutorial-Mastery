@@ -226,6 +226,13 @@ graph TD
     E --> F[assets.json Generation]
     F --> G[HTML Template Injection]
 ```
+**what is `assets.json`? what is manifest file concept?**
+
+> In Frappe, the `assets.json` file works as a **manifest file**. A manifest file is simply a map or index that tells the system where to find the right assets. Instead of holding code itself, it lists which compiled CSS and JS bundles exist, along with their version hashes embedded in the filenames, so the browser always loads the correct files. For example, when Frappe builds your app, assets.json records entries like `"frappe.bundle.js": "/assets/frappe/dist/js/frappe.bundle.ABC123.js"`, making sure that the system serves the updated bundle whenever you deploy changes.
+>
+> A **manifest file** in software is like a map or index that points to other files and resources an application needs. It doesn’t hold the actual code but instead lists references -> like filenames, versions, or paths, so the system knows exactly where to find and load the right files.
+>
+> A **manifest file** is a group of references (or links) to other files that an application needs. Instead of containing the actual code or data, it acts like an index that tells the system where to find and load those files.
 
 #### Step 1: Bundle Discovery
 ```javascript
@@ -687,4 +694,44 @@ const html = template.replace('{message}', 'Hello World');
 - **Development**: Unminified code with source maps for debugging
 - **Production**: Minified, optimized code for faster loading
 
+### Q: **What is a manifest file in software?**
+**A**:  
+- A configuration file that lists references to other files or resources  
+- Acts like an index or map so the system knows where to load files from  
+
+---
+
+### Q: **Is a manifest file the same as a bundle file?**
+**A**:  NO
+- **Manifest file**: An index pointing to files  (ex: `assets.json`)
+- **Bundle file**: The actual compiled code or assets used by the application  
+
+---
+
+### Q: **Where is a manifest file used in Frappe?**
+**A**:  
+- Frappe generates an `assets.json` file as a manifest  
+- It maps logical asset names to the actual compiled bundle files  
+
+---
+
+### Q: **Can a manifest file contain actual code?**
+**A**:  
+- Typically no, it contains only references or metadata  
+- Its job is to point to the real code files, not hold them  
+
+---
+
+### Q: **Why are manifest files important?**
+**A**:  
+- They ensure the system can load correct file versions (with hashes)  
+- Provide consistency when filenames change during builds  
+- Simplify resource management in complex applications  
+
+---
+
+### Q: **Is a manifest just a group of links to files?**
+**A**:  
+- Yes, you can think of it as a group of links or references  
+- But they may also include metadata (like version, type, or permissions) 
 ---
