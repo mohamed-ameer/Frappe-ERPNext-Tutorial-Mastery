@@ -334,7 +334,85 @@ api/
 - Professional API design
 - Facilitates API development
 
-### Step 12: Update README.md
+### Step 12: Add Postman API Collection for Testing
+
+Create a `postman/` directory in the app’s root (same level as CHANGELOG.md’s parent folder) and include a sanitized Postman collection for API testing:
+```
+your_app/
+├── your_app/
+├── postman/
+	├── my_app-api.postman_collection.json  # Main API collection
+	├── env.example.json                    # Environment template (safe to commit)
+	└── README.md   
+```
+Also add a `README.md` inside the postman/ folder explaining setup:
+````markdown
+# API Testing with Postman
+
+This folder contains Postman collections to help you test and explore the API endpoints of **`my_app`**.
+
+> **Note**: These collections are for **development and testing purposes only**. Never use them in production without sanitizing or reviewing security implications.
+
+---
+
+## Quick Start
+
+### 1. Import the Collection
+
+1. Open [Postman](https://www.postman.com/downloads/)
+2. Click **Import** → **Upload Files**
+3. Select: `my_app-api.postman_collection.json`
+4. Collection will appear in your workspace
+
+---
+
+## Setup Environment (Required)
+
+This collection uses **environment variables** (e.g., `{{base_url}}`, `{{api_key}}`) for flexibility.
+
+### Step 1: Import Environment Template
+
+Import the example environment file:
+
+`env.example.json`
+
+> This file contains **placeholders only** — no real secrets.
+
+### Step 2: Create Your Local Environment
+
+1. In Postman: at **Environments** section
+2. Click **Import** → Upload `env.example.json`
+3. Duplicate it → Rename to: `Local - my_app`
+4. Fill in your actual values:
+
+| Variable       | Example Value           | Description                  |
+|----------------|-------------------------|------------------------------|
+| `base_url`     | `http://localhost:8000` | Your Frappe site URL         |
+| `api_key`      | `****************`      | User or token-based API key  |
+| `api_secret`   | `****************`      | API secret (if applicable)   |
+
+> **Never commit real secrets** — keep your `Local - my_app` environment local.
+
+---
+
+## Running Requests
+
+1. Select the environment: **“Local - my_app”** from the dropdown (top-right in Postman)
+2. Expand the collection → Click any request → Hit **Send**
+3. View responses, status codes, and test results
+
+---
+
+## Folder Structure
+
+```bash
+postman/
+├── my_app-api.postman_collection.json  # Main API collection
+├── env.example.json                    # Environment template (safe to commit)
+└── README.md                           # You are here
+````
+
+### Step 13: Update README.md
 
 Create comprehensive README:
 
@@ -344,6 +422,11 @@ Create comprehensive README:
 ## Overview
 
 Brief description of your application, its purpose, and key features.
+
+## API Testing
+
+A ready-to-use [Postman collection](./postman/) is included for testing API endpoints during development.
+> *Does not include secrets — see `postman/README.md` for setup.*
 
 ## Features
 
@@ -473,7 +556,7 @@ your_app/
 
 ---
 
-### Step 13: Push to Github
+### Step 14: Push to Github
 
 First, commit your initial code and push it to a `dev` branch:
 
