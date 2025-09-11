@@ -164,3 +164,60 @@ bench start
 - Cache can cause strange issues, clear it regularly while developing.
 - the port `11000` or `13000` may change based on your server or the configurations, they are not constant.
 </details>
+
+<details>
+  <summary><h3>❌ NameError: name 'null' is not defined</h3></summary>
+
+**Cause:**  
+This usually happens due to cached assets or browser issues after switching branches.  
+
+**Solutions:**  
+- Run: `bench clear-cache`  
+- Or try accessing with a different browser  
+
+🔗 [Reference](https://discuss.frappe.io/t/server-error-at-the-front-of-any-page/120135)  
+</details>
+
+<details>
+  <summary><h3>❌ bench stop / bench start fails: Missing module (e.g., "Cannot find module 'superagent'")</h3></summary>
+
+**Cause:**  
+Node.js dependencies are missing after switching branches.  
+
+**Solution:**  
+Re-install required packages:  
+```bash
+bench setup requirements
+```
+
+🔗 [Reference](https://discuss.frappe.io/t/bench-start-with-serveral-errors/40904/13?u=mohamed-ameer)
+
+</details>
+
+<details>
+  <summary><h3>❌ ValueError: id must not contain ":"</h3></summary>
+
+**Cause:**
+Older Frappe version had a bug in job ID generation (create_job_id in frappe/utils/backgroundjobs.py).
+
+**Solution:**
+
+Best fix: Update to the latest Frappe version.
+
+Manual fix: Update the function to replace : with |:
+
+```python
+def create_job_id(job_id: str | None = None) -> str:
+	"""
+	Generate unique job id for deduplication
+	"""
+	if not job_id:
+		job_id = str(uuid4())
+	else:
+		job_id = job_id.replace(":", "|")
+	return f"{frappe.local.site}||{job_id}"
+```
+
+🔗 [Reference](https://discuss.frappe.io/t/migrate-command-error-in/145017/2?u=mohamed-ameer)
+
+</details>
