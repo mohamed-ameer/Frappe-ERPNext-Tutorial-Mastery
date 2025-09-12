@@ -4,6 +4,16 @@
 
 Frappe provides two main response handling mechanisms: `frappe.local.response` and `frappe.response`. Understanding the difference between these is crucial for building proper API endpoints and controlling response structures in Frappe applications.
 
+## Summary Short Answer `frappe.local.response.update(dict)`
+```python
+custom_response_body = {
+    "success": False,
+    "http_status": 200,
+    "message": ""
+}
+frappe.local.response.update(custom_response_body)
+```
+
 ## Core Concepts
 
 ### What is Werkzeug?
