@@ -167,3 +167,9 @@ myapp/
 ├── public/dashboard/         # Built assets (auto-created)
 └── www/dashboard.html       # HTML entry point (auto-created)
 ```
+
+---
+
+### Build Custom Frappe App + Custom Frontend (React):
+
+[Frappe React SDK - The Explainer](https://www.youtube.com/playlist?list=PLHoO_SHGRUVCLT_PrOnFd9NZaqSLfoxLA)
