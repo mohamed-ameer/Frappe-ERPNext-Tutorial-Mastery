@@ -20,6 +20,18 @@
 - Frappe only serves API endpoints
 - Frontend can be deployed anywhere
 
+## NOTE:
+
+Doppio creates SPAs (Vue or React) that live INSIDE your Frappe apps, but here's something many developers miss => React and Vue allow CDN connections. This means you can use them for specific parts of your app without needing a full SPA setup.
+
+When you need a full SPA: Building complete custom dashboards, entire application sections, or when you need full routing and state management.
+
+When CDN is perfect: Adding interactive components to existing Frappe forms, enhancing specific form fields with modern UI, or quick prototyping without full setup.
+
+Example: You can add Vue.js to a Frappe form with just a CDN script tag and create interactive components instantly, no build process, no complex setup, just modern UI where you need it.
+
+This gives you the flexibility to choose the right approach for your specific needs. Sometimes a full SPA is overkill when a simple CDN component does the job perfectly.
+
 ---
 
 ## Doppio Way (Automated) - Step by Step
