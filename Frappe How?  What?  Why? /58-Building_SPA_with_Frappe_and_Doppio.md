@@ -51,23 +51,66 @@ cd apps/myapp/dashboard  # or whatever name you chose
 ### Step 4: Configure proxyOptions
 **`dashboard/proxyOptions.js`**
 ```javascript
+// Frappe development server is running on http://127.0.0.1:8000
 const frappeTargetPort = 8000;
+
+// This router function attempts to preserve the hostname from the original request
+// and forwards it to the Frappe backend on the specified frappeTargetPort.
+// This is important if your Frappe bench serves multiple sites or relies on the Host header.
+// For example, if you access your Vite app via http://my-frappe-site.localhost:8080,
+// this will proxy API requests to http://my-frappe-site.localhost:8000.
+// If you access Vite via http://localhost:8080, it proxies to http://localhost:8000.
 const router = (req) => {
-	const hostHeader = req.headers.host || '';
-	const siteName = hostHeader.split(':')[0];
+	const hostHeader = req.headers.host || ''; // e.g., 'my-frappe-site.localhost:8080' or 'localhost:8080'
+	const siteName = hostHeader.split(':')[0]; // e.g., 'my-frappe-site.localhost' or 'localhost'
+
 	const targetUrl = `http://${siteName}:${frappeTargetPort}`;
 	console.log(`[Proxy] Routing API request for host ${req.headers.host} to ${targetUrl}${req.url}`);
 	return targetUrl;
 };
+
 export default {
+	// Proxy requests for paths starting with /app, /api, /assets, /files, /private
+	// This matches common Frappe URL structures.
 	'^/(app|api|assets|files|private)': {
-		target: `http://127.0.0.1:${frappeTargetPort}`,
-		ws: true,
-		changeOrigin: true,
+		// The 'target' here is a base. The 'router' will determine the actual host and port.
+		// For Vite's proxy, providing a base target like 127.0.0.1 and then having the router
+		// return the full path including protocol, hostname and port is a common pattern.
+		target: `http://127.0.0.1:${frappeTargetPort}`, // Base target, router provides specifics
+		ws: true, // Enable WebSocket proxying
+		changeOrigin: true, // Important: changes the origin of the host header to the target URL specified by router
 		router: router,
 	}
 };
 ```
+
+#### What This Configuration Does:
+
+**Purpose:** This proxy configuration acts as a "traffic director" between your Vue.js frontend (running on port 8080) and your Frappe backend (running on port 8000).
+
+**How It Works:**
+1. **Request Interception:** When your frontend makes API calls to `/api/method/something`, the proxy catches these requests
+2. **Host Preservation:** It keeps the original hostname (like `my-site.localhost`) so Frappe knows which site to serve
+3. **Port Forwarding:** It forwards the request to your Frappe server on port 8000
+4. **Response Routing:** It sends the Frappe response back to your frontend
+
+**Multi-Site Support:** 
+- If you access `http://site1.localhost:8080` → proxies to `http://site1.localhost:8000`
+- If you access `http://site2.localhost:8080` → proxies to `http://site2.localhost:8000`
+- This is crucial for Frappe benches with multiple sites
+
+**What Gets Proxied:**
+- `/api/*` - All API calls to Frappe methods
+- `/app/*` - Frappe desk application routes  
+- `/assets/*` - Static assets (CSS, JS, images)
+- `/files/*` - File uploads and downloads
+- `/private/*` - Private file access
+
+**Key Settings:**
+- `ws: true` - Enables WebSocket support for real-time features
+- `changeOrigin: true` - Ensures proper host header forwarding
+- `router: router` - Uses custom logic to determine target URL
+
 ### Step 5: Configure Vite
 **`dashboard/vite.config.js`**
 ```javascript
