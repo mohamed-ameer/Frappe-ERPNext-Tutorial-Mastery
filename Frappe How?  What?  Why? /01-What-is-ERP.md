@@ -12,6 +12,12 @@ By bringing information into one unified platform, it helps the company:
 - Evaluate profitability and business outcomes with greater accuracy.
 
 ---
+
+## The importance of The Data:
+
+Data is like the raw material for information. In an ERP system, we organize and manage all the company's data from different departments (or resources) like HR, Accounting, and Sales. This helps us turn the data into useful information that we can use to make better business decisions.
+
+---
 ## What is the difference between Configuration, Implementation, Customization:
 
 ## Configuration in ERPNext (or any other ERP)
