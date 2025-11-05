@@ -76,3 +76,16 @@ if (frm.doc.my_field !== "New Value") {
 > **Note:** Technically, `frm.set_value()` already checks for equality internally  
 > (it only updates if `value != old_value`).  
 > However, in practice, adding an explicit check (e.g., `if (!frm.doc.fieldname)` or comparing old/new values) often works better. idk why!!!! but here we go
+
+---
+
+### 4. Use `frm.doc.field = value; frm.refresh_field(field);`
+
+```js
+frm.doc.field = value;
+frm.refresh_field(field);
+```
+
+When you use `frm.doc.field = value; frm.refresh_field(field);`, you’re changing the field value directly inside the document, like editing it behind the scenes. It will show the new value only after you refresh the field manually, but it won’t trigger any Frappe events such as onchange or depends_on. So if other fields or scripts depend on this value, they won’t react. This method is fine if you just want to silently update data without affecting anything else in the form.
+
+On the other hand, `frm.set_value(field, value)` is the recommended and safer way to change a field. It automatically updates the field, refreshes the UI, and triggers all related events. That means any logic, calculations, or field dependencies connected to that field will run as expected. You can think of it as if the user themselves changed the field, making it ideal for most normal cases in Frappe scripting.
