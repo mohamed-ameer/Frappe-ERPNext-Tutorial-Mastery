@@ -12,6 +12,8 @@ Without a tool like ngrok, your Frappe site running on your local machine is onl
 
 imagine you have a local server running on your machine at http://localhost:8000. With ngrok, you can expose this server to the internet and get a public URL like https://abc123.ngrok.io. Any requests made to this public URL will be securely tunneled to your local server.
 
+**In Short:** ngrok converts your local development server into a public URL, allowing you to share it with others over the internet without deploying it.
+
 ---
 
 ## Why Use ngrok with Frappe?
