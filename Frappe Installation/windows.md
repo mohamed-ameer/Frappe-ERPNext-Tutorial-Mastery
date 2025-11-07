@@ -61,6 +61,10 @@ wsl -d <name>              # Switch to a specific distribution
 wsl -d Ubuntu-24.04
 ```
 
+or
+
+<img width="506" height="637" alt="image" src="https://github.com/user-attachments/assets/e78fab80-9340-4230-9b60-d06d2429481a" />
+
 ### 5. Enable Internet Access for WSL2:
 
 If your WSL2 Linux can’t access the internet, create a .wslconfig file in 
@@ -95,6 +99,7 @@ wsl -d Ubuntu-24.04
 > Check Ubuntu Version, run: lsb_release -a
 
 🎉 Congratulations! You now have Ubuntu running with full network access on Windows — ready to install Frappe Bench and set up your development environment.
+<img width="955" height="445" alt="image" src="https://github.com/user-attachments/assets/6e3c49ef-0915-4e29-b706-f1961d007655" />
 
 ---
 
@@ -403,3 +408,4 @@ Then from now on you can directly connect with VSCode:
 
 1. Open *This PC*.
 2. Look for the **Linux** directory in the sidebar — that’s your WSL filesystem.
+<img width="1365" height="606" alt="image" src="https://github.com/user-attachments/assets/ddbd01ad-5885-4565-b195-c0ec50f96361" />
