@@ -91,3 +91,21 @@ This bypasses Frappe’s wrapper and uses ngrok directly. You’ll still need to
 ngrok authtoken your_ngrok_authtoken
 ```
 > (Only required the first time on a new machine.) 
+
+---
+
+### How ngrok Works?
+watch the following video to understand how ngrok works:
+[The What and Why of ngrok](https://www.youtube.com/watch?v=KvyMtP8NTgU&list=LL&index=14)
+
+---
+
+## Additional Notes
+
+- **Security**: ngrok is secure but not designed for production use. It’s best for testing and development.
+- **Paid Plans**: For custom subdomains and longer session durations, consider upgrading to a paid plan.
+- **limitations**: ngrok has a limit bandwidth and request per month for free plan.
+- **Alternative**: you can use [localtunnel](https://localtunnel.github.io/www/) or [pagekite](https://pagekite.net/) or [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) as an alternative to ngrok.
+
+**video how to use cloudflare tunnel**  
+[How to Expose Your Local Server to the Internet Using Cloudflare Tunnel](https://www.youtube.com/watch?v=ey4u7OUAF3c&t=8s)
