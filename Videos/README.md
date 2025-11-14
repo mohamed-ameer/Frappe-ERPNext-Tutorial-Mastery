@@ -72,21 +72,15 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 **12. ERPNext Implementation**  
 ## the following resources are in arabic for implementation and not development
 
-[Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
-
-[البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
-
-[البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
-
-[ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
-
-[ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
-
-[ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
-
-[Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
-
-[Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
+- [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
+- [البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
+- [البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
+- [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
+- [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
+- [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
+- [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
+- [Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
+- [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
 
 ---
 
