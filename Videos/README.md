@@ -45,42 +45,27 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 
 ### 🎓 Other Valuable Resources
 
-**4. Learn Frappe Framework for ERPNext by Ghorc**  
-[Complete Playlist](https://www.youtube.com/playlist?list=PLZyne-gbfLr-ulWdWvzQWTvPY-dGGjd6G)
-
-**5. Learn ERPNext**  
-[Beginner to Intermediate](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKjsII3xNjZ6DD_UZu0d-rb)
-
-**6. Use VueJS with Frappe**  
-[VueJS Integration Playlist](https://www.youtube.com/playlist?list=PLQGFK8RiEPSII8N7iwhjqrPTQXq1T42Jl)
-
-**7. ERPGulf Channel**  
-[ERP-Focused Playlist](https://www.youtube.com/@ERPGulf/playlists)
-
-**8. Trinity Drones - ERPNext Content**  
-[ERPNext Tutorials](https://www.youtube.com/@trinitydrones9030/videos)
-
-**9. ERPNext Customization for Developers (in arabic)**  
-[ERPNext باللغة العربية](https://www.youtube.com/playlist?list=PLmomknAqwkrZxw-v1AoJW8TfGWMABQKbG)
-
-**10. ERPNext Solutions with Nihantra**
-[ERPNextWithNihantra](https://www.youtube.com/@ERPNextWithNihantra/videos)
-
-**11. ERPNext Solutions with Kanak**
-[ERPNextWithKanak](https://www.youtube.com/playlist?list=PLy7DXThvWXb9VX1DNH3hU-Y5VEPg3s17E)
-
-**12. ERPNext Implementation**  
-## the following resources are in arabic for implementation and not development
-
-- [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
-- [البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
-- [البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
-- [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
-- [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
-- [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
-- [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
-- [Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
-- [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
+- **4. Learn Frappe Framework for ERPNext by Ghorc**  [Complete Playlist](https://www.youtube.com/playlist?list=PLZyne-gbfLr-ulWdWvzQWTvPY-dGGjd6G)
+- **5. Learn ERPNext**  [Beginner to Intermediate](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKjsII3xNjZ6DD_UZu0d-rb)
+- **6. Use VueJS with Frappe**  [VueJS Integration Playlist](https://www.youtube.com/playlist?list=PLQGFK8RiEPSII8N7iwhjqrPTQXq1T42Jl)
+- **7. ERPGulf Channel**  [ERP-Focused Playlist](https://www.youtube.com/@ERPGulf/playlists)
+- **8. Trinity Drones - ERPNext Content**  [ERPNext Tutorials](https://www.youtube.com/@trinitydrones9030/videos)
+- **9. ERPNext Customization for Developers (in arabic)**  [ERPNext باللغة العربية](https://www.youtube.com/playlist?list=PLmomknAqwkrZxw-v1AoJW8TfGWMABQKbG)
+- **10. ERPNext Solutions with Nihantra** [ERPNextWithNihantra](https://www.youtube.com/@ERPNextWithNihantra/videos)
+- **11. ERPNext Solutions with Kanak** [ERPNextWithKanak](https://www.youtube.com/playlist?list=PLy7DXThvWXb9VX1DNH3hU-Y5VEPg3s17E)
+- **12. ERPNext Implementation**  
+the following resources are in arabic for implementation and not development
+    - [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
+    - [البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
+    - [البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
+    - [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
+    - [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
+    - [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
+    - [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
+    - [Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
+    - [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
+    - [ERPGulf Training](https://cloud.erpgulf.com/training)
+    - [Learning ERPNext Implementation (BWH)](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKjsII3xNjZ6DD_UZu0d-rb)
 
 ---
 
@@ -101,24 +86,19 @@ i hope you read my summary pdf first to get a better understanding
 - [introduction to Docker](https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker)
 
 **arabic resources** 
-
-[Learn the steps to set up a development environment using Frappe Docker](https://www.youtube.com/watch?v=VuhCaSiiLlU)
-
-[Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
+- [Learn the steps to set up a development environment using Frappe Docker](https://www.youtube.com/watch?v=VuhCaSiiLlU)
+- [Install frappe/erpnext on a docker container inside a VM](https://www.youtube.com/watch?v=yJIS2MDmEmA)
 
 **english resources**
+- [Frappe ERPNext HR installation using Docker, Helm](https://www.youtube.com/watch?v=WpJeAZ6l-Z0)
+- [Mr. Karani](https://www.youtube.com/watch?v=BsV9ZB4Aqew)
+- [Mr. Karani](https://www.youtube.com/watch?v=LmfZZ-VAPYM)
+- [Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
+- [ERPNext Version 15 Installation Using Docker on Ubuntu](https://www.youtube.com/watch?v=EVP8Gx24NEM)
+- [Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
 
-[Frappe ERPNext HR installation using Docker, Helm](https://www.youtube.com/watch?v=WpJeAZ6l-Z0)
-
-[Mr. Karani](https://www.youtube.com/watch?v=BsV9ZB4Aqew)
-
-[Mr. Karani](https://www.youtube.com/watch?v=LmfZZ-VAPYM)
-
-[Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
-
-[ERPNext Version 15 Installation Using Docker on Ubuntu](https://www.youtube.com/watch?v=EVP8Gx24NEM)
-
-[Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
+**Steps to install Frappe using Docker**
+- [Frappe Docker Installation](./Frappe%20Installation/docker.md)
 
 ---
 
