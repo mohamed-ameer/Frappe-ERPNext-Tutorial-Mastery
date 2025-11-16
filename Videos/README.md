@@ -98,7 +98,7 @@ i hope you read my summary pdf first to get a better understanding
 - [Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
 
 **Steps to install Frappe using Docker**
-- [Frappe Docker Installation](./Frappe%20Installation/docker.md)
+- [Frappe Docker Installation](../Frappe%20Installation/docker.md)
 
 ---
 
