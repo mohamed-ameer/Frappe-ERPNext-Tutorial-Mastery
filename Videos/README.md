@@ -12,7 +12,8 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - [#BuildWithHussain site](https://buildwithhussain.com/)
 
 **2. Eby Mathew**  
-[Frappe / ERPNext Tutorials](https://www.youtube.com/playlist?list=PL81DRyBlXws-b7CdzGHOgoyc8vUvLXv6i)
+- [Frappe / ERPNext Tutorials](https://www.youtube.com/playlist?list=PL81DRyBlXws-b7CdzGHOgoyc8vUvLXv6i)
+- [Intro to ERPNext by Nirand](https://www.youtube.com/watch?v=N9N0zd4D3Uw)
 
 **3. Karani Series**
 
@@ -56,8 +57,17 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - **12. ERPNext Implementation**  
 the following resources are in arabic for implementation and not development
     - [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
+    - [Financial Accounting as a Theory with Mr. Mostafa samir](https://www.youtube.com/@Ruqqi.consulting/playlists)
+    - [Financial Accounting as a Theory with Mr. Adel Mojahed](https://www.youtube.com/@adel-mojahed/playlists)
+    - [Financial Accounting as a Theory with Mr. Emad](https://www.youtube.com/playlist?list=PL6E1E19EB259776DC)
     - [البرنامج التدريبي لنظام ERPNext (playlist)](https://www.youtube.com/playlist?list=PL8ZSf9uk6YuecFcKKAfWD2iInK9GnVoQV)
     - [البرنامج التدريبي لنظام ERPNext (videos)](https://www.youtube.com/@ansiabdo/videos)
+    - [ERPNext with AppyERP](https://www.youtube.com/playlist?list=PLIvUUeCN9-72Lu2cnTp9ffG5JidENFPXR)
+    - [ERPNext With Codiwe](https://www.youtube.com/@codiwe/videos)
+    - [ERPNext by ehsub part 1](https://www.youtube.com/watch?v=6kL2mIJzQ0E)
+    - [ERPNext by ehsub part 2](https://www.youtube.com/watch?v=0mOLr10SwdU)
+    - [ERPNext by ehsub part 3](https://www.youtube.com/watch?v=GTFLWKybPQA)
+    - [ERPNext by ehsub part 4](https://www.youtube.com/watch?v=n01RO-OtCY0)
     - [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
     - [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
     - [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
