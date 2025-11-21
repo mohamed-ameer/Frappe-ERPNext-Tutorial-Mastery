@@ -1,16 +1,17 @@
-# Frappe Database Operations - examples
+# Frappe Database Operations - Complete Reference Guide
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Read Operations](#read-operations)
-3. [Write Operations](#write-operations)
-4. [Transaction Management](#transaction-management)
-5. [Query Builder](#query-builder)
-6. [Raw SQL Operations](#raw-sql-operations)
-7. [Schema Operations](#schema-operations)
-8. [Single DocType Operations](#single-doctype-operations)
-9. [Bulk Operations](#bulk-operations)
-10. [Utility Operations](#utility-operations)
+2. [Create Operations](#create-operations)
+3. [Read Operations](#read-operations)
+4. [Write Operations](#write-operations)
+5. [Transaction Management](#transaction-management)
+6. [Query Builder](#query-builder)
+7. [Raw SQL Operations](#raw-sql-operations)
+8. [Schema Operations](#schema-operations)
+9. [Single DocType Operations](#single-doctype-operations)
+10. [Bulk Operations](#bulk-operations)
+11. [Utility Operations](#utility-operations)
 
 ---
 
@@ -23,6 +24,579 @@ Frappe provides multiple layers for database access:
 - **Raw SQL**: Direct SQL execution for advanced cases
 
 This guide covers every method with practical examples and parameter explanations.
+
+---
+
+## Create Operations
+
+Creating documents in Frappe can be done through multiple methods, each with different use cases. The Document ORM methods (`frappe.new_doc()` and `doc.insert()`) are recommended for most cases as they trigger hooks, validations, and permissions.
+
+### 1. `frappe.new_doc()`
+
+**Purpose**: Create a new Document object with defaults set.
+
+**Signature**:
+```python
+frappe.new_doc(
+    doctype,              # DocType name (str)
+    parent_doc=None,      # Parent Document object (for child tables)
+    parentfield=None,     # Parent field name (for child tables)
+    as_dict=False,       # Return as dict instead of Document
+    **kwargs             # Field values as keyword arguments
+)
+```
+
+**Use Case 1: Create simple document**
+```python
+# Create a new customer
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+customer.customer_type = "Company"
+customer.insert()
+# Document is created with all hooks and validations
+
+# Parameters explained:
+# - doctype="Customer": The DocType to create
+# - Returns Document object ready to be populated
+```
+
+**Use Case 2: Create with initial values**
+```python
+# Create customer with values in one call
+customer = frappe.new_doc(
+    "Customer",
+    customer_name="Acme Corporation",
+    customer_type="Company",
+    territory="North America"
+)
+customer.insert()
+# All fields set before insert
+
+# Parameters explained:
+# - **kwargs: Field values passed as keyword arguments
+```
+
+**Use Case 3: Create child table row**
+```python
+# Create parent document
+sales_order = frappe.new_doc("Sales Order")
+sales_order.customer = "CUST-001"
+sales_order.transaction_date = "2024-01-15"
+
+# Add child table row
+item = frappe.new_doc(
+    "Sales Order Item",
+    parent_doc=sales_order,
+    parentfield="items"
+)
+item.item_code = "ITEM-001"
+item.qty = 10
+item.rate = 100
+
+# Add another child row
+item2 = frappe.new_doc(
+    "Sales Order Item",
+    parent_doc=sales_order,
+    parentfield="items"
+)
+item2.item_code = "ITEM-002"
+item2.qty = 5
+item2.rate = 200
+
+sales_order.insert()
+# Parent and all children inserted together
+
+# Parameters explained:
+# - parent_doc=sales_order: Parent Document object
+# - parentfield="items": Field name in parent that contains child table
+```
+
+**Use Case 4: Create as dictionary**
+```python
+# Get document as dict (useful for APIs)
+customer_dict = frappe.new_doc(
+    "Customer",
+    customer_name="Acme Corporation",
+    as_dict=True
+)
+# Returns: {"doctype": "Customer", "customer_name": "Acme Corporation", ...}
+
+# Parameters explained:
+# - as_dict=True: Return dict instead of Document object
+```
+
+**Use Case 5: Create with defaults from DocType**
+```python
+# Create document - defaults are automatically set
+task = frappe.new_doc("Task")
+# Defaults like status, priority, etc. are set from DocType defaults
+task.subject = "New Task"
+task.insert()
+
+# Parameters explained:
+# - Defaults are automatically applied from DocType meta
+```
+
+---
+
+### 2. `Document.insert()`
+
+**Purpose**: Insert a Document into the database with full validation and hooks.
+
+**Signature**:
+```python
+doc.insert(
+    ignore_permissions=None,    # Skip permission checks
+    ignore_links=None,          # Skip link validation
+    ignore_if_duplicate=False,  # Don't raise on duplicate
+    ignore_mandatory=None,     # Skip mandatory field checks
+    set_name=None,             # Custom name to set
+    set_child_names=True       # Auto-generate child row names
+)
+```
+
+**Use Case 1: Basic insert**
+```python
+# Create and insert document
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+customer.insert()
+# Returns: Document object with name set
+
+# Parameters explained:
+# - Automatically sets name, creation, modified, owner, etc.
+# - Triggers before_insert, validate, on_update, after_insert hooks
+```
+
+**Use Case 2: Insert with custom name**
+```python
+# Insert with specific name
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+customer.insert(set_name="CUST-CUSTOM-001")
+# Document name is set to "CUST-CUSTOM-001"
+
+# Parameters explained:
+# - set_name="...": Override auto-generated name
+# - Name must be valid and unique
+```
+
+**Use Case 3: Insert ignoring permissions**
+```python
+# Insert without permission checks (use carefully)
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+customer.insert(ignore_permissions=True)
+# Skips permission checks (useful in background jobs, migrations)
+
+# Parameters explained:
+# - ignore_permissions=True: Bypass permission checks
+# - Use only when necessary (system operations, migrations)
+```
+
+**Use Case 4: Insert ignoring link validation**
+```python
+# Insert without validating linked documents
+task = frappe.new_doc("Task")
+task.subject = "New Task"
+task.assigned_to = "non-existent-user@example.com"
+task.insert(ignore_links=True)
+# Doesn't check if assigned_to user exists
+
+# Parameters explained:
+# - ignore_links=True: Skip validation of Link fields
+# - Useful when creating documents before linked documents exist
+```
+
+**Use Case 5: Insert ignoring mandatory fields**
+```python
+# Insert without mandatory field checks
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+# Missing other mandatory fields
+customer.insert(ignore_mandatory=True)
+# Skips mandatory field validation
+
+# Parameters explained:
+# - ignore_mandatory=True: Skip mandatory field checks
+# - Use only in special cases (data migration, system operations)
+```
+
+**Use Case 6: Insert ignoring duplicates**
+```python
+# Insert, don't raise error if duplicate exists
+customer = frappe.new_doc("Customer")
+customer.customer_name = "Acme Corporation"
+customer.insert(ignore_if_duplicate=True)
+# If duplicate exists, returns existing document instead of raising error
+
+# Parameters explained:
+# - ignore_if_duplicate=True: Return existing doc if duplicate found
+# - Useful for idempotent operations
+```
+
+**Use Case 7: Insert without auto-naming child rows**
+```python
+# Insert parent with child rows, don't auto-generate child names
+sales_order = frappe.new_doc("Sales Order")
+sales_order.customer = "CUST-001"
+
+item = frappe.new_doc("Sales Order Item", parent_doc=sales_order, parentfield="items")
+item.item_code = "ITEM-001"
+item.name = "CUSTOM-ITEM-NAME"  # Custom name
+item.qty = 10
+
+sales_order.insert(set_child_names=False)
+# Child row keeps custom name
+
+# Parameters explained:
+# - set_child_names=False: Don't auto-generate child row names
+# - Useful when you need specific child row names
+```
+
+**Use Case 8: Insert with child tables**
+```python
+# Create parent with multiple child rows
+sales_order = frappe.new_doc("Sales Order")
+sales_order.customer = "CUST-001"
+sales_order.transaction_date = "2024-01-15"
+
+# Add child rows
+for item_data in [{"item_code": "ITEM-001", "qty": 10, "rate": 100},
+                  {"item_code": "ITEM-002", "qty": 5, "rate": 200}]:
+    item = frappe.new_doc("Sales Order Item", parent_doc=sales_order, parentfield="items")
+    item.update(item_data)
+
+sales_order.insert()
+# Parent and all children inserted in single transaction
+
+# Parameters explained:
+# - Child rows are automatically linked via parent, parenttype, parentfield
+# - All inserted in same transaction
+```
+
+---
+
+### 3. `frappe.get_doc()` with dict
+
+**Purpose**: Create Document from dictionary and insert.
+
+**Use Case 1: Create from dict**
+```python
+# Create document from dictionary
+customer_dict = {
+    "doctype": "Customer",
+    "customer_name": "Acme Corporation",
+    "customer_type": "Company",
+    "territory": "North America"
+}
+customer = frappe.get_doc(customer_dict)
+customer.insert()
+# Document created from dict, then inserted
+
+# Parameters explained:
+# - dict must include "doctype" key
+# - All fields can be set in dict
+```
+
+**Use Case 2: Create with child tables from dict**
+```python
+# Create parent with children from nested dict
+sales_order_dict = {
+    "doctype": "Sales Order",
+    "customer": "CUST-001",
+    "transaction_date": "2024-01-15",
+    "items": [
+        {
+            "item_code": "ITEM-001",
+            "qty": 10,
+            "rate": 100
+        },
+        {
+            "item_code": "ITEM-002",
+            "qty": 5,
+            "rate": 200
+        }
+    ]
+}
+sales_order = frappe.get_doc(sales_order_dict)
+sales_order.insert()
+# Parent and children created from nested structure
+
+# Parameters explained:
+# - Child tables as list of dicts
+# - Automatically sets parent, parenttype, parentfield
+```
+
+**Use Case 3: Create and insert in one line**
+```python
+# Create and insert in single call
+customer = frappe.get_doc({
+    "doctype": "Customer",
+    "customer_name": "Acme Corporation"
+}).insert()
+# Returns inserted Document
+
+# Parameters explained:
+# - Chain .insert() for one-liner
+```
+
+---
+
+### 4. Query Builder Insert
+
+**Purpose**: Insert using Query Builder (bypasses hooks, use with caution).
+
+**Use Case 1: Simple insert**
+```python
+# Insert using Query Builder
+Task = frappe.qb.DocType("Task")
+
+query = (
+    frappe.qb.into(Task)
+    .columns("name", "subject", "status", "owner", "creation")
+    .insert("TASK-999", "New Task", "Open", "admin@example.com", "2024-01-15 10:00:00")
+)
+
+query.run()
+# Executes: INSERT INTO tabTask (name, subject, status, owner, creation) VALUES (...)
+
+# Parameters explained:
+# - frappe.qb.into(Task): Insert query builder
+# - .columns(...): Field names
+# - .insert(...): Values (must match columns order and count)
+# - Warning: Bypasses hooks and validations
+```
+
+**Use Case 2: Insert multiple rows**
+```python
+# Insert multiple rows
+Task = frappe.qb.DocType("Task")
+
+query = (
+    frappe.qb.into(Task)
+    .columns("name", "subject", "status", "owner")
+    .insert("TASK-001", "Task 1", "Open", "admin@example.com")
+    .insert("TASK-002", "Task 2", "Open", "admin@example.com")
+    .insert("TASK-003", "Task 3", "Closed", "admin@example.com")
+)
+
+query.run()
+# Inserts all rows in single query
+
+# Parameters explained:
+# - Chain multiple .insert() calls
+# - All rows inserted in one transaction
+```
+
+**Use Case 3: Insert with ignore duplicates**
+```python
+# Insert, ignore duplicates (MariaDB)
+Task = frappe.qb.DocType("Task")
+
+query = (
+    frappe.qb.into(Task)
+    .columns("name", "subject", "status")
+    .insert("TASK-001", "Task 1", "Open")
+    .ignore()  # MariaDB: INSERT IGNORE
+)
+
+query.run()
+# If duplicate exists, silently skips
+
+# Parameters explained:
+# - .ignore(): MariaDB INSERT IGNORE
+# - For Postgres, use .on_conflict().do_nothing()
+```
+
+**Use Case 4: Insert with conflict handling (Postgres)**
+```python
+# Insert with conflict resolution (Postgres)
+Task = frappe.qb.DocType("Task")
+
+query = (
+    frappe.qb.into(Task)
+    .columns("name", "subject", "status")
+    .insert("TASK-001", "Task 1", "Open")
+    .on_conflict(Task.name)
+    .do_nothing()  # Postgres: ON CONFLICT DO NOTHING
+)
+
+query.run()
+# If duplicate exists, skips insert
+
+# Parameters explained:
+# - .on_conflict(Task.name): Conflict on name field
+# - .do_nothing(): Skip on conflict
+```
+
+---
+
+### 5. Raw SQL Insert
+
+**Purpose**: Direct SQL insert (bypasses hooks, use only when necessary).
+
+**Use Case 1: Simple SQL insert**
+```python
+# Insert using raw SQL
+frappe.db.sql("""
+    INSERT INTO `tabTask` 
+    (name, subject, status, owner, creation, modified, modified_by)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+""", (
+    "TASK-999",
+    "New Task",
+    "Open",
+    "admin@example.com",
+    "2024-01-15 10:00:00",
+    "2024-01-15 10:00:00",
+    "admin@example.com"
+))
+# Executes direct INSERT
+
+# Parameters explained:
+# - Use parameterized queries (%s) for safety
+# - Must include all required fields (name, creation, modified, etc.)
+# - Warning: Bypasses all hooks and validations
+```
+
+**Use Case 2: Insert with named parameters**
+```python
+# Insert with named parameters
+frappe.db.sql("""
+    INSERT INTO `tabTask` 
+    (name, subject, status, owner, creation, modified, modified_by)
+    VALUES (%(name)s, %(subject)s, %(status)s, %(owner)s, %(creation)s, %(modified)s, %(modified_by)s)
+""", {
+    "name": "TASK-999",
+    "subject": "New Task",
+    "status": "Open",
+    "owner": "admin@example.com",
+    "creation": "2024-01-15 10:00:00",
+    "modified": "2024-01-15 10:00:00",
+    "modified_by": "admin@example.com"
+})
+# More readable with named parameters
+
+# Parameters explained:
+# - %(name)s: Named parameter syntax
+# - Pass dict of values
+```
+
+**Use Case 3: Insert multiple rows**
+```python
+# Insert multiple rows efficiently
+values = [
+    ("TASK-001", "Task 1", "Open", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+    ("TASK-002", "Task 2", "Open", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+    ("TASK-003", "Task 3", "Closed", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+]
+
+frappe.db.sql("""
+    INSERT INTO `tabTask` 
+    (name, subject, status, owner, creation, modified, modified_by)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+""", values, as_list=True)
+# Inserts all rows (but not as efficient as bulk_insert)
+
+# Parameters explained:
+# - Pass list of tuples
+# - Each tuple is one row
+```
+
+**Use Case 4: Insert with auto-commit**
+```python
+# Insert and commit immediately
+frappe.db.sql("""
+    INSERT INTO `tabTask` (name, subject, status, owner, creation, modified, modified_by)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+""", ("TASK-999", "New Task", "Open", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+    auto_commit=True
+)
+# Commits immediately after insert
+
+# Parameters explained:
+# - auto_commit=True: Commit after query
+# - Useful in migrations
+```
+
+---
+
+### 6. `frappe.db.bulk_insert()`
+
+**Purpose**: Efficiently insert many rows (covered in Bulk Operations section).
+
+**Quick Example**:
+```python
+# Insert thousands of rows efficiently
+fields = ["name", "subject", "status", "owner", "creation", "modified", "modified_by"]
+values = [
+    ("TASK-001", "Task 1", "Open", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+    ("TASK-002", "Task 2", "Open", "admin@example.com", "2024-01-15 10:00:00", "2024-01-15 10:00:00", "admin@example.com"),
+    # ... thousands more
+]
+
+frappe.db.bulk_insert("Task", fields, values, chunk_size=10_000)
+# Processes in batches of 10,000
+
+# See [Bulk Operations](#bulk-operations) section for details
+```
+
+---
+
+## Comparison: When to Use Which Method
+
+| Method | Use When | Hooks/Validations | Performance |
+|--------|----------|-------------------|-------------|
+| `frappe.new_doc().insert()` | **Recommended for most cases** | ✅ Full hooks & validations | Good |
+| `frappe.get_doc(dict).insert()` | Creating from API data | ✅ Full hooks & validations | Good |
+| Query Builder Insert | Need programmatic query building | ❌ No hooks | Excellent |
+| Raw SQL Insert | Migrations, system operations | ❌ No hooks | Excellent |
+| `bulk_insert()` | Inserting thousands of rows | ❌ No hooks | Best |
+
+---
+
+## Create Operations Best Practices
+
+1. **Use Document ORM** (`frappe.new_doc().insert()`) for business logic
+   - Triggers hooks (`before_insert`, `validate`, `after_insert`)
+   - Validates links, mandatory fields, permissions
+   - Sets defaults automatically
+   - Handles child tables correctly
+
+2. **Use Query Builder/Raw SQL** only when:
+   - Performance is critical (bulk operations)
+   - Migrating data
+   - System operations that don't need hooks
+   - You understand the implications
+
+3. **Always set required fields**:
+   - `name`: Auto-generated if not set
+   - `creation`, `modified`: Auto-set by ORM
+   - `owner`, `modified_by`: Auto-set from session
+   - DocType-specific required fields
+
+4. **Handle child tables properly**:
+   - Use `parent_doc` and `parentfield` parameters
+   - Insert parent first, then children (or together)
+   - Child rows need `parent`, `parenttype`, `parentfield` (auto-set by ORM)
+
+5. **Transaction safety**:
+   - All inserts in same request are in one transaction
+   - Use `frappe.db.commit()` explicitly in background jobs
+   - Use savepoints for nested operations
+
+---
+
+## Common Create Operation Pitfalls
+
+1. **Missing required fields**: Always check DocType meta for required fields
+2. **Bypassing hooks**: Raw SQL/Query Builder don't trigger hooks - use Document ORM when needed
+3. **Child table linking**: Must set `parent`, `parenttype`, `parentfield` correctly (auto-handled by ORM)
+4. **Name conflicts**: Check if name exists before inserting (or use `ignore_if_duplicate=True`)
+5. **Permission errors**: Use `ignore_permissions=True` only when necessary (system operations)
+6. **Link validation**: Use `ignore_links=True` only when creating documents before linked docs exist
+7. **Missing defaults**: Document ORM sets defaults automatically, raw SQL doesn't
 
 ---
 
@@ -1811,12 +2385,3 @@ with frappe.db.unbuffered_cursor():
 6. **Large result sets** - Use iterators to avoid memory issues
 7. **Missing commits** - Background jobs need explicit commits
 8. **Transaction limits** - MAX_WRITES_PER_TRANSACTION (200,000) enforced
-
----
-
-## Further Reading
-
-- Frappe Documentation: https://frappeframework.com/docs
-- Query Builder Examples: `frappe/query_builder/`
-- Database Backend: `frappe/database/mariadb/` or `frappe/database/postgres/`
-- Document Lifecycle: `frappe/model/document.py`
