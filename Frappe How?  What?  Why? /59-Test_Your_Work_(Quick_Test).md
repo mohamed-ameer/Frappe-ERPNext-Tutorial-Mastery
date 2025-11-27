@@ -9,6 +9,7 @@ This document provides comprehensive instructions for testing various features a
 3. Displaying Background Server
 4. Displaying Email Messages
 5. Testing Schedule Events
+6. Doctype Unit Testing
 
 ---
 
@@ -176,7 +177,24 @@ scheduler_events = {
 }
 ```
 
+---
 
+## Doctype Unit Testing
+
+**To run tests for a specific Doctype, use the following command:**
+
+```bash
+bench --site <site> run-tests --doctype <doctype> --skip-test-records
+```
+
+**To test specific methods within a Doctype's test file, you can use the `--test` flag:**
+
+```bash
+bench --site <site> run-tests --doctype <doctype> --test <method_name> --skip-test-records
+```
+
+- Replace `<site>` with your site name, `<doctype>` with the Doctype you want to test, and `<method_name>` with the specific method you want to test.
+- `--skip-test-records` is used to skip the automatic creation of test records because we are not creating.
 
 ---
 
