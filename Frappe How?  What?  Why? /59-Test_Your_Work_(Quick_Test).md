@@ -206,5 +206,7 @@ bench --site <site> run-tests --doctype <doctype> --test <method_name> --skip-te
 | `bench execute <path>` | Run a patch or function |
 | `bench worker --queue <queue>` | Start background worker for specific queue |
 | `bench trigger-scheduler-event <path>` | Manually trigger a scheduled event |
+| `bench --site <site> run-tests --doctype <doctype> --skip-test-records` | Run tests for a specific Doctype |
+| `bench --site <site> run-tests --doctype <doctype> --test <method_name> --skip-test-records` | Test specific methods within a Doctype's test file |
 
 ---
