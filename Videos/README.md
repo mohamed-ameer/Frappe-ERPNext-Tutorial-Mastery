@@ -106,6 +106,7 @@ i hope you read my summary pdf first to get a better understanding
 - [Mr. Hussain and Mr.Revant](https://www.youtube.com/watch?v=xOgdMcGW56U&list=PLZCgUQw6wdOETG3uOypLj845A87N8XBQA&index=7)
 - [ERPNext Version 15 Installation Using Docker on Ubuntu](https://www.youtube.com/watch?v=EVP8Gx24NEM)
 - [Install Frappe using Docker](https://www.youtube.com/watch?v=_08L9pubPCY)
+- [ERPNext is a free, self hosted, open source ERP System that is Enterprise and Production ready.](https://www.youtube.com/watch?v=_08L9pubPCY&t=1246s)
 
 **Steps to install Frappe using Docker**
 - [Frappe Docker Installation](../Frappe%20Installation/docker.md)
