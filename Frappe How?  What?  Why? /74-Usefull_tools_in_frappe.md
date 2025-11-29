@@ -1,23 +1,113 @@
 # Usefull tools in frappe
 
-## 1. Permission Inspector Tool
+### 1. Permission Inspector
 
-a virtual doctype that can run has_permission for
-doctype-docname-user-ptype combinations and spit out detailed log for
-why/where some permissions are denied or granted.
+A powerful debugging tool that helps you understand why a user has or doesn't have a specific permission.
 
-- location: `http:your-site.com/app/permission-inspector`
-- what it does: it shows you the permissions of a specified doctype for a specified user for a specified document with a specific permission type.
-- how to use it: just go to the url and choose the user and the doctype
-- why to use it: to debug permission issues, and it's useful if i have a user with alot of roles and permissions and i want to know why he can't access a specific document or doctype or why he can access it.
-- the output: it will show you the roles that the user has and permissions of the user for the doctype and the document and answer the question of does the user has this permission or not.
-- [link to the PR of this feature](https://github.com/frappe/frappe/pull/24239)
+**Location**: `/app/permission-inspector`
 
-**in short:** it's a tool to debug permission issues, it alow you to monitor the permissions of a user for a specific doctype or document and give you the reason why he has this permission or not.
+**What it does**:
+- Tests permission for a specific combination of: DocType, Document, User, and Permission Type
+- Provides detailed logs explaining why permissions are granted or denied
+- Shows all roles the user has
+- Shows all permission rules that apply
+- Identifies which rules are matching and which are not
+
+**When to use**:
+- Debugging permission issues
+- Understanding complex permission scenarios
+- Verifying permission configurations
+- Troubleshooting access problems
+
+**Reference**: [GitHub PR #24239](https://github.com/frappe/frappe/pull/24239)
+
+### 2. Role Permission Manager
+
+A tool for reviewing and managing permissions for a specific role on a specific DocType.
+
+**Location**: `/app/permission-manager`
+
+**What it does**:
+- Shows all permission rules for a role on a DocType
+- Allows adding new permission rules
+- Allows modifying existing permission rules
+- Allows removing permission rules
+- Shows permission levels and all permission types
+
+**When to use**:
+- Managing permissions for core/system DocTypes
+- Reviewing all permissions for a role at once
+- Bulk permission management
+
+**Note**: For custom DocTypes, it's generally better to manage permissions directly in the DocType's Permission Manager.
+
+**Key Features**:
+- **If user is the owner**: When checked, the permission rule only applies if the user is the document owner
+- **Level**: The permission level (0-9) for this rule
+- **Permission Types**: Checkboxes for Read, Write, Create, Delete, Submit, Cancel, Amend, etc.
+
+### 3. Role Permission for Page and Report
+
+A tool for managing which roles can access specific pages and reports.
+
+**Location**: `/app/role-permission-for-page-and-report`
+
+**What it does**:
+- Controls access to custom pages
+- Controls access to reports
+- Allows setting permissions per role
+
+**When to use**:
+- Restricting report access
+- Restricting page access
+- Managing visibility of custom pages
+
+### 4. User Permissions
+
+A mechanism for restricting users to specific document records based on linked document values.
+
+**Location**: `/app/user-permission`
+
+**What it does**:
+- Limits users to specific records/document of a DocType
+- Applies document-level filtering
+
+**When to use**:
+- Any scenario requiring document-level filtering
+
+**How it works**:
+1. Create a User Permission record
+2. Select the User
+3. Select the "Allow" DocType (what to restrict)
+4. Select the "For Value" (specific record to allow)
+5. Optionally select "Apply To" DocTypes (where to apply this restriction)
+
+### 5. Permitted Documents For User
+
+A search tool that shows only the documents a specific user can access.
+
+**Location**: **Report > Permitted Documents For User**
+
+**What it does**:
+- Acts as a search tool filtered by user permissions
+- Shows only documents the selected user can see
+- Useful for testing and verification
+
+**When to use**:
+- Testing user access
+- Verifying permission configurations
+- Debugging document visibility issues
+- Understanding what a user can see
+
+**How to use**:
+1. Select a User
+2. Select a DocType
+3. View the list of documents the user can access
+4. Compare with expected results
 
 ---
 
-## 2. Impersonating User Tool
+## 6. Impersonating User Tool
 
 it is a tool that allow the admin (only admin) to impersonate another user, it's like you to login as another user without knowing his password.
 but it doesn't save his session, it's just for testing purposes only which means that may be some changes that you make will be rolled back after you logout (not sure about that but i think it will be rolled back).
@@ -28,5 +118,3 @@ and the admin must fill a reason for impersonating the user and this reason will
 - how to use it: just go to the url and choose the user that you want to impersonate.
 - why to use it: to test the system from the perspective of another user.
 - the output: it will login you as the specified user.
-
-
