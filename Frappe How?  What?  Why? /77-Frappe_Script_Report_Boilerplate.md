@@ -661,6 +661,16 @@ apps/my_app/
 
 ---
 
+## NOTE: 
+
+You should add explicit width for each column in the `get_columns` function or it may cause uncontrolled scrolling in the report, whenever you click on a cell in the last column of the report it will trigger the scrolling.
+
+**Why?** Without explicit column widths, the last column can sit right next to the scrollbar. Clicking it focuses the cell, and Chrome scrolls to make sure it’s fully visible. With explicit widths, DataTable leaves space between the last column and the scrollbar, so Chrome doesn’t need to scroll.
+
+This weird behavior doesn't happen in all browsers, but it's better to be safe than sorry.
+
+---
+
 ## Next Steps
 
 1. Copy the boilerplate code
