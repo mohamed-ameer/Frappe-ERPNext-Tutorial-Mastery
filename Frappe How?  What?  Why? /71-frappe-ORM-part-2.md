@@ -969,7 +969,8 @@ names = frappe.get_all("Customer", pluck="name")
 # Returns: ["CUST-001", "CUST-002", ...]
 
 # Parameters explained:
-# - pluck="name": Extract single field, returns flat list
+# - pluck="name": Extract single field, returns flat list instead of list of dicts ===> ["CUST-001", "CUST-002", ...]
+# - fields=["name"]: it will return list of dicts with single key "name" ===> [{"name": "CUST-001"}, {"name": "CUST-002"}, ...]
 ```
 
 **Use Case 5: Group by**
