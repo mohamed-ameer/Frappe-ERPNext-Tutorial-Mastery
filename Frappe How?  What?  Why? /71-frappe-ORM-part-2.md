@@ -1012,6 +1012,30 @@ tasks = frappe.get_list(
 # - Automatically checks frappe.has_permission() before returning results
 ```
 
+#### get_list vs get_all
+
+In Frappe, `frappe.db.get_all()` and `frappe.db.get_list()` are both methods used to retrieve lists of records from the database, but they differ primarily in how they handle user permissions.
+
+**`frappe.db.get_all()`:**
+
+- Fetches all records of a specified DocType without applying any user permissions.
+- This means it will return all documents matching the specified filters, regardless of whether the current user has read permissions for those documents.
+- It is generally used when you need to access data at a system level, for example, in background scripts or internal processes where permission checks are not required or are handled separately.
+
+**`frappe.db.get_list()`:**
+
+- Fetches a list of records while applying user permissions for the current session user.
+- It will only return documents for which the current user has read permissions.
+- This method is suitable for most user-facing scenarios where data display needs to respect the user's role-based access.
+
+**Key Differences Summarized:**
+
+| Feature | `frappe.db.get_all()` | `frappe.db.get_list()` |
+| --- | --- | --- |
+| Permissions | Does not apply user permissions. | Applies user permissions for the current user. |
+| Use Case | System-level access, background tasks, internal processes. | User-facing data display, reports, forms. |
+| Security | Less secure if directly exposed to users without explicit permission checks. | More secure by default, as it respects user permissions. |
+
 ---
 
 ### 5. `frappe.db.exists()`
