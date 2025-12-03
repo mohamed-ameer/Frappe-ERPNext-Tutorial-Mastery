@@ -315,3 +315,5 @@ def create_job_id(job_id: str | None = None) -> str:
 ---
 
 #### For More Details => [Read the Official Documentaion](https://github.com/frappe/frappe_docker/blob/main/docs/development.md#bootstrap-containers-for-development)
+
+#### There is a beutiful cli tool called `frappe-manager` that can help you with the above steps automatically and it will be good to try it and have a look at it, you can find it [here](https://github.com/rtCamp/Frappe-Manager) Give it a try.
