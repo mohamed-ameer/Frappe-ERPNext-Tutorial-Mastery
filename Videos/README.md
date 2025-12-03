@@ -76,6 +76,8 @@ the following resources are in arabic for implementation and not development
     - [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
     - [ERPGulf Training](https://cloud.erpgulf.com/training)
     - [Learning ERPNext Implementation (BWH)](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKjsII3xNjZ6DD_UZu0d-rb)
+    - [ERPNext Implementation by Sayed Ibrahim Radwan](https://www.youtube.com/@sayedibrahimradwan)
+        - [Telegram Channel](https://t.me/+kZrA_H8orHVjNjA0)
 
 ---
 
