@@ -2,6 +2,8 @@
 
 This document lists all keyboard shortcuts available in Frappe framework, organized by category with detailed explanations.
 
+Search with the `frappe.ui.keys.add_shortcut` to find all shortcuts in the codebase.
+
 ## Table of Contents
 - [Global Shortcuts](#global-shortcuts)
 - [Form Shortcuts](#form-shortcuts)
@@ -218,3 +220,5 @@ Press `Shift+/` (or `⇧+/`) to open a dialog showing all available shortcuts fo
 - Toolbar shortcuts: `apps/frappe/frappe/public/js/frappe/form/toolbar.js`
 - List view shortcuts: `apps/frappe/frappe/public/js/frappe/list/list_view.js`
 - Alt shortcuts: `apps/frappe/frappe/public/js/frappe/ui/alt_keyboard_shortcuts.js`
+
+Search with the `frappe.ui.keys.add_shortcut` to find all shortcuts in the codebase.
