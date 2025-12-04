@@ -1938,6 +1938,66 @@ class TestReportBuilder(FrappeTestCase):
 
 ---
 
+## Generic Report Testing Template For Any Report
+
+```python
+import frappe
+from frappe.tests.utils import FrappeTestCase
+from frappe.desk.query_report import run
+
+class TestMyReport(FrappeTestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.enable_safe_exec()
+        return super().setUpClass()
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.report_name = "my_report_name"
+        self.filters = frappe._dict(
+            company="_Test Company",
+            from_date="2020-01-01",
+            to_date="2025-12-31",
+        )
+    
+    def tearDown(self):
+        """Clean up after tests"""
+        frappe.db.rollback()
+
+    def test_report_runs(self):
+        """Ensure the report executes without errors"""
+        result = run(self.report_name, self.filters)
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("result", result)
+        self.assertIn("columns", result)
+
+    def test_columns_valid(self):
+        """Ensure columns exist and follow valid structure"""
+        result = run(self.report_name, self.filters)
+
+        self.assertIsInstance(result["columns"], list)
+        self.assertGreater(len(result["columns"]), 0)
+
+    def test_result_structure(self):
+        """Ensure returned rows are list/dict (valid Frappe format)"""
+        result = run(self.report_name, self.filters)
+
+        for row in result["result"]:
+            self.assertTrue(
+                isinstance(row, (list, dict)),
+                "Each result row must be a list or dict"
+            )
+```
+
+### Run Test command for specific report
+
+```bash
+bench run-tests --module <app>.<app>.report.<report_name>.test_<report_name> --skip-test-records
+```
+
+---
+
 ## Summary
 
 This guide covers comprehensive unit testing for Frappe reports:
