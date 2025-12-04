@@ -411,3 +411,4 @@ Continue to:
 - [Part 5: Test Data Management](./67-Frappe_Unit_Testing_Guide_Part_5_Test_Data.md)
 - [Part 6: Test Utilities and Techniques](./68-Frappe_Unit_Testing_Guide_Part_6_Utilities.md)
 - [Part 7: Assertions](./69-Frappe_Unit_Testing_Guide_Part_7_Assertions.md)
+- [Part 8: Reports](./80-Frappe_Unit_Testing_Guide_Part_8_Reports.md)
