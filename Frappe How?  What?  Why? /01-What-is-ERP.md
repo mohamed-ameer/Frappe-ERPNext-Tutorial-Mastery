@@ -111,3 +111,9 @@ Customization in ERPNext can be done at two levels:
 | **Configuration** | Using built-in settings | Anyone | Basic ERPNext knowledge |
 | **Implementation** | Full deployment project | Implementor/Consultant | Business analysis + ERPNext |
 | **Customization** | Code-based modifications | Developer | Frappe Framework + Programming |
+
+---
+
+## Why the name ERPNext?
+
+because it was the cheapest domain name which include the word "ERP" that they could find at the time. (that's the story)
