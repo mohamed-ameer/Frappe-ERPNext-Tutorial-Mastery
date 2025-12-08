@@ -118,3 +118,24 @@ and the admin must fill a reason for impersonating the user and this reason will
 - how to use it: just go to the url and choose the user that you want to impersonate.
 - why to use it: to test the system from the perspective of another user.
 - the output: it will login you as the specified user.
+
+---
+
+## 7. System Console
+
+it is a tool that allow you to run python code or sql queries directly from the browser, it's like you have a python console or sql console in the browser.
+
+- location: `http:your-site.com/app/system-console`
+- what it does: it allow you to run python code or sql queries directly from the browser.
+- how to use it: just go to the url and write your python code or sql query and press execute button or ctrl+s.
+- why to use it: to test your python code or sql queries directly from the browser without the need to create a python file and run it from the terminal.
+- the output: it will print the output of your code or query in the browser.
+
+there is a checkbox called "Commit" that you can check it if you want to commit your changes to the database (frappe.db.commit()), if you didn't check it, it will rollback your changes.
+
+---
+
+## 8. Important Doctypes
+
+- Deleted Documents: `http:your-site.com/app/deleted-document`
+
