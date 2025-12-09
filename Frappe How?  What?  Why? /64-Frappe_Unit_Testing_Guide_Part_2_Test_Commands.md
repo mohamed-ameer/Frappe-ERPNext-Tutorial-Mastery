@@ -542,6 +542,25 @@ coverage html
 # Open htmlcov/index.html
 ```
 
+**Example**:
+
+```bash
+# Run tests with coverage
+bench --site <site-name> run-tests --app <app-name> --coverage --skip-test-records
+
+# Install coverage tools
+pip install coverage
+
+# cd to sites directory because coverage files are generated there
+cd /home/frappe/frappe-bench/sites/
+
+# Generate HTML report
+coverage html
+
+# View in browser
+# Open htmlcov/index.html
+```
+
 ---
 
 ## Troubleshooting

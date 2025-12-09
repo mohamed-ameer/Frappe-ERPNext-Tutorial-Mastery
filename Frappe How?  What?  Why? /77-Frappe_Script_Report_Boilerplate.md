@@ -70,6 +70,26 @@ def get_conditions(filters):
     return conditions
 ```
 
+You can separate filter validation from `execute` function to make it more readable and maintainable.
+
+```python
+def execute(filters=None):
+	validate_filters(filters)
+    columns, data = get_columns(filters), get_data(filters)
+    return columns, data
+def validate_filters(filters):
+	if not filters:
+		return [], []
+	if not filters.get("from_date") or not filters.get("to_date"):
+		frappe.throw(_("Please insert From Date and To Date"))
+	if filters.to_date < filters.from_date:
+		frappe.throw(_("From Date must be before To Date"))
+
+	for field in ["company", "from_date", "to_date"]:
+		if not filters.get(field):
+			frappe.throw(_("Please set {0}").format(field))
+```
+
 ---
 
 ## More Detailed Explanation 

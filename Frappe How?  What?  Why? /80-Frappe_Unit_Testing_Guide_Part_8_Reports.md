@@ -1990,6 +1990,45 @@ class TestMyReport(FrappeTestCase):
             )
 ```
 
+If you have filter validation in your report, you can test it like this:
+
+```python
+    def test_no_filters(self):
+        """If no filters are passed, report must return empty columns and result."""
+        result = run(self.report_name, None, ignore_prepared_report=True)
+
+        self.assertEqual(result["columns"], [])
+        self.assertEqual(result["result"], [])
+
+
+    def test_missing_required_dates(self):
+        """If from_date or to_date is missing, a validation exception must be thrown."""
+        # Missing from_date
+        filters1 = frappe._dict(to_date="2024-01-01")
+
+        with self.assertRaises(frappe.ValidationError):
+            run(self.report_name, filters1, ignore_prepared_report=True)
+
+        # Missing to_date
+        filters2 = frappe._dict(from_date="2024-01-01")
+
+        with self.assertRaises(frappe.ValidationError):
+            run(self.report_name, filters2, ignore_prepared_report=True)
+
+    def test_invalid_date_range(self):
+        """Ensure the report throws validation error when to_date < from_date"""
+
+        invalid_filters = frappe._dict(
+            from_date="2024-02-01",
+            to_date="2024-01-01"
+        )
+
+        with self.assertRaises(frappe.ValidationError):
+            run(self.report_name, invalid_filters, ignore_prepared_report=True)
+```
+
+---
+
 ### Run Test command for specific report
 
 ```bash
