@@ -2327,3 +2327,4 @@ Continue to:
 - [Part 6: Test Utilities and Techniques](./68-Frappe_Unit_Testing_Guide_Part_6_Utilities.md)
 - [Part 7: Assertions](./69-Frappe_Unit_Testing_Guide_Part_7_Assertions.md)
 - [Part 8: Reports](./80-Frappe_Unit_Testing_Guide_Part_8_Reports.md)
+- [Part 9: Test Records](./82-Frappe_Unit_Testing_Guide_Part_9_Test_Records.md)

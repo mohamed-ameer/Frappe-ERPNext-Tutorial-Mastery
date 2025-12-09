@@ -1840,3 +1840,4 @@ Continue to:
 - [Part 5: Test Data Management](./67-Frappe_Unit_Testing_Guide_Part_5_Test_Data.md)
 - [Part 7: Assertions](./69-Frappe_Unit_Testing_Guide_Part_7_Assertions.md)
 - [Part 8: Reports](./80-Frappe_Unit_Testing_Guide_Part_8_Reports.md)
+- [Part 9: Test Records](./82-Frappe_Unit_Testing_Guide_Part_9_Test_Records.md)
