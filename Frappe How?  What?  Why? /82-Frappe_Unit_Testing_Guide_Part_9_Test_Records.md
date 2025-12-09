@@ -2098,6 +2098,927 @@ bench --site test_site run-tests --doctype YourDocType
 
 ---
 
+## Complete Guide: Using test_records.json for Unit Testing
+
+This section provides everything you need to know to use `test_records.json` for all your future unit testing. This is a complete, self-contained guide focused specifically on the JSON method.
+
+### Quick Start Checklist
+
+When creating test_records.json for a new DocType, follow these steps:
+
+1. ✅ Create `test_records.json` file in the correct location
+2. ✅ Write valid JSON with proper structure
+3. ✅ Include all required fields
+4. ✅ Handle child tables correctly
+5. ✅ Declare dependencies in test file
+6. ✅ Use proper naming conventions
+7. ✅ Validate JSON syntax
+8. ✅ Test that records are created
+
+---
+
+### 1. File Location and Structure
+
+#### Where to Create test_records.json
+
+**Location:** Must be in the DocType directory, alongside the DocType files.
+
+```
+your_app/
+└── your_app/
+    └── module/
+        └── doctype/
+            └── doctype_name/
+                ├── doctype_name.json          # DocType definition
+                ├── doctype_name.py            # DocType Python code
+                ├── test_doctype_name.py        # Your test file
+                └── test_records.json          ← CREATE THIS FILE HERE
+```
+
+**Example:**
+```
+apps/my_app/my_app/custom/doctype/my_custom_doctype/
+├── my_custom_doctype.json
+├── my_custom_doctype.py
+├── test_my_custom_doctype.py
+└── test_records.json  ← Create here
+```
+
+#### File Naming
+
+- **Must be named exactly:** `test_records.json`
+- **Case-sensitive:** Use lowercase
+- **No spaces:** Use underscore if needed in directory name, but file is always `test_records.json`
+
+---
+
+### 2. JSON File Structure
+
+#### Basic Structure
+
+`test_records.json` must be a JSON array `[]` containing one or more objects `{}`. Each object represents one test record.
+
+```json
+[
+  {
+    "doctype": "YourDocType",
+    "field1": "value1",
+    "field2": "value2"
+  },
+  {
+    "doctype": "YourDocType",
+    "field1": "value3",
+    "field2": "value4"
+  }
+]
+```
+
+**Key Rules:**
+- Must start with `[` and end with `]`
+- Each record is an object `{}`
+- Records are separated by commas `,`
+- Last record should NOT have a trailing comma
+- All strings must be in double quotes `"`
+
+#### Required Fields
+
+**Always include:**
+1. **`"doctype"`** - The DocType name (required)
+2. **All mandatory fields** - Fields marked as `reqd = 1` in DocType definition
+3. **Link field values** - If Link fields are required, provide valid document names
+
+**How to find required fields:**
+```python
+# In Frappe console or test file
+meta = frappe.get_meta("YourDocType")
+required_fields = [f.fieldname for f in meta.fields if f.reqd]
+print(required_fields)
+```
+
+#### Example: Complete test_records.json
+
+```json
+[
+  {
+    "doctype": "Customer",
+    "customer_name": "_Test Customer",
+    "customer_type": "Company",
+    "territory": "_Test Territory"
+  },
+  {
+    "doctype": "Customer",
+    "customer_name": "_Test Customer 2",
+    "customer_type": "Individual",
+    "territory": "_Test Territory"
+  }
+]
+```
+
+---
+
+### 3. Handling Different Field Types
+
+#### Text Fields
+```json
+{
+  "doctype": "Customer",
+  "customer_name": "_Test Customer",
+  "email": "test@example.com"
+}
+```
+
+#### Number Fields
+```json
+{
+  "doctype": "Item",
+  "item_code": "_Test Item",
+  "standard_rate": 100.50,
+  "stock_qty": 10
+}
+```
+**Note:** Numbers don't need quotes in JSON.
+
+#### Date Fields
+```json
+{
+  "doctype": "Sales Invoice",
+  "posting_date": "2024-01-15",
+  "due_date": "2024-02-15"
+}
+```
+**Format:** `YYYY-MM-DD` (ISO date format)
+
+#### Link Fields (Dependencies)
+```json
+{
+  "doctype": "Sales Invoice",
+  "customer": "_Test Customer",  // Link to Customer DocType
+  "company": "_Test Company"      // Link to Company DocType
+}
+```
+**Important:** The linked documents must exist. Use `test_dependencies` to ensure they're created first.
+
+#### Select Fields (Dropdown)
+```json
+{
+  "doctype": "Customer",
+  "customer_type": "Company",  // Must be one of the options defined in DocType
+  "gender": "Male"              // If gender is a Select field
+}
+```
+
+#### Checkbox Fields
+```json
+{
+  "doctype": "Item",
+  "is_stock_item": 1,  // 1 = checked, 0 = unchecked
+  "has_batch_no": 0
+}
+```
+
+#### Child Tables
+
+Child tables are arrays of objects. Each object represents one row in the child table.
+
+```json
+{
+  "doctype": "Sales Invoice",
+  "customer": "_Test Customer",
+  "items": [  // This is a child table
+    {
+      "item_code": "_Test Item",
+      "qty": 10,
+      "rate": 100
+    },
+    {
+      "item_code": "_Test Item 2",
+      "qty": 5,
+      "rate": 50
+    }
+  ]
+}
+```
+
+**Key Points:**
+- Child table field name matches the field name in DocType
+- Value is always an array `[]`
+- Each child row is an object `{}`
+- Child tables can have their own Link fields (creating nested dependencies)
+
+#### Nested Child Tables
+
+Some DocTypes have child tables within child tables:
+
+```json
+{
+  "doctype": "Sales Invoice",
+  "customer": "_Test Customer",
+  "items": [
+    {
+      "item_code": "_Test Item",
+      "qty": 10,
+      "rate": 100,
+      "taxes": [  // Nested child table
+        {
+          "account_head": "_Test Tax Account",
+          "rate": 10
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### 4. Naming Conventions
+
+#### Document Names
+
+**Option 1: Let Frappe generate (Recommended)**
+```json
+{
+  "doctype": "Customer",
+  "customer_name": "_Test Customer"
+  // No "name" field → Frappe generates: _T-Customer-00001
+}
+```
+
+**Option 2: Use fixed name**
+```json
+{
+  "doctype": "Customer",
+  "name": "_Test Customer",  // Fixed name
+  "customer_name": "_Test Customer"
+}
+```
+
+**Option 3: Custom naming series**
+```json
+{
+  "doctype": "Sales Invoice",
+  "naming_series": "TEST-SINV-",  // Custom series
+  "customer": "_Test Customer"
+  // Generates: TEST-SINV-00001, TEST-SINV-00002, etc.
+}
+```
+
+#### Naming Best Practices
+
+✅ **Good:**
+- Use `_Test` prefix: `_Test Customer`, `_Test Item`
+- Be descriptive: `_Test Customer - Retail`, `_Test Item - Standard`
+- Use consistent patterns: `_Test Company 1`, `_Test Company 2`
+
+❌ **Bad:**
+- Generic: `Test1`, `Test2`
+- Production-like: `Acme Corporation`, `John Doe`
+- Inconsistent: `Test Customer`, `_test_item`, `TEST_COMPANY`
+
+---
+
+### 5. Document Status (docstatus)
+
+#### Draft Documents (Default)
+```json
+{
+  "doctype": "Sales Invoice",
+  "customer": "_Test Customer"
+  // No docstatus → Created as draft (docstatus = 0)
+}
+```
+
+#### Submitted Documents
+```json
+{
+  "doctype": "Sales Invoice",
+  "customer": "_Test Customer",
+  "docstatus": 1  // Document will be submitted automatically
+}
+```
+
+**When to use docstatus: 1:**
+- Testing submitted document workflows
+- Testing cancellation flows
+- Testing reports that only show submitted documents
+- Testing document state validations
+
+**Important:** Submitted documents cannot be edited. If you need to modify them in tests, create them as draft (`docstatus: 0` or omit the field).
+
+---
+
+### 6. Handling Dependencies
+
+#### What are Dependencies?
+
+Dependencies are other DocTypes that your DocType references through Link fields. For example:
+- Sales Invoice depends on: Company, Customer, Item, Price List, Cost Center
+- Item depends on: Company, Item Group, Warehouse, UOM
+
+#### Declaring Dependencies in Test File
+
+In your `test_doctype_name.py` file, declare dependencies:
+
+```python
+import frappe
+from frappe.tests.utils import FrappeTestCase
+
+# Declare dependencies - these will be created BEFORE your test records
+test_dependencies = [
+    "Company",
+    "Customer",
+    "Item",
+    "Price List"
+]
+
+class TestYourDocType(FrappeTestCase):
+    def test_something(self):
+        # All dependencies are already created
+        # Your test_records are also already created
+        doc = frappe.get_doc("YourDocType", "_Test Record")
+        # Test logic...
+```
+
+#### How Dependency Resolution Works
+
+1. Frappe reads `test_dependencies` list
+2. For each dependency, checks if test_records exist
+3. Creates dependency test_records first (recursively)
+4. Then creates your DocType test_records
+5. All records are ready when your tests run
+
+**Example Flow:**
+```
+test_dependencies = ["Company", "Customer", "Item"]
+
+1. Create Company test_records (no dependencies)
+2. Create Customer test_records (depends on Company - already exists)
+3. Create Item test_records (depends on Company, Item Group - all exist)
+4. Create YourDocType test_records (all dependencies ready)
+5. Run your tests
+```
+
+#### Breaking Circular Dependencies
+
+Sometimes dependencies create loops:
+- Company needs Account (for default accounts)
+- Account needs Company (accounts belong to companies)
+
+**Solution:** Use `test_ignore` to break the cycle:
+
+```python
+test_dependencies = ["Company"]
+test_ignore = ["Account"]  # Don't auto-create Account
+
+class TestYourDocType(FrappeTestCase):
+    def setUp(self):
+        super().setUp()
+        # Create Account manually if needed
+        if not frappe.db.exists("Account", "_Test Account"):
+            # Create account manually
+            pass
+```
+
+---
+
+### 7. Complete Example: End-to-End
+
+#### Step 1: Create test_records.json
+
+**File:** `apps/my_app/my_app/custom/doctype/sales_order/test_records.json`
+
+```json
+[
+  {
+    "doctype": "Sales Order",
+    "customer": "_Test Customer",
+    "company": "_Test Company",
+    "transaction_date": "2024-01-15",
+    "delivery_date": "2024-01-30",
+    "items": [
+      {
+        "item_code": "_Test Item",
+        "qty": 10,
+        "rate": 100
+      },
+      {
+        "item_code": "_Test Item 2",
+        "qty": 5,
+        "rate": 50
+      }
+    ],
+    "docstatus": 0
+  },
+  {
+    "doctype": "Sales Order",
+    "customer": "_Test Customer",
+    "company": "_Test Company",
+    "transaction_date": "2024-01-16",
+    "delivery_date": "2024-01-31",
+    "items": [
+      {
+        "item_code": "_Test Item",
+        "qty": 20,
+        "rate": 100
+      }
+    ],
+    "docstatus": 1
+  }
+]
+```
+
+#### Step 2: Create Test File
+
+**File:** `apps/my_app/my_app/custom/doctype/sales_order/test_sales_order.py`
+
+```python
+import frappe
+from frappe.tests.utils import FrappeTestCase
+
+# Declare dependencies
+test_dependencies = [
+    "Company",
+    "Customer",
+    "Item",
+    "Price List"
+]
+
+# Optional: Load test_records for direct access
+test_records = frappe.get_test_records("Sales Order")
+
+class TestSalesOrder(FrappeTestCase):
+    def setUp(self):
+        super().setUp()
+        # Test records are automatically created before setUp runs
+        # All dependencies are also created
+    
+    def test_sales_order_creation(self):
+        # Access test record by name (if you know it)
+        # Or use test_records variable
+        so = frappe.get_doc(test_records[0])
+        self.assertEqual(so.customer, "_Test Customer")
+        self.assertEqual(len(so.items), 2)
+    
+    def test_submitted_sales_order(self):
+        # Access the second record (submitted)
+        so = frappe.get_doc(test_records[1])
+        self.assertEqual(so.docstatus, 1)
+        self.assertTrue(so.is_submitted())
+    
+    def test_multiple_records(self):
+        # Verify all test records were created
+        self.assertEqual(len(test_records), 2)
+        
+        for record in test_records:
+            so = frappe.get_doc("Sales Order", record.get("name") or frappe.db.get_value("Sales Order", {"customer": record["customer"], "transaction_date": record["transaction_date"]}))
+            self.assertTrue(so.name)
+```
+
+#### Step 3: Validate JSON
+
+```bash
+# Check JSON syntax
+python -m json.tool apps/my_app/my_app/custom/doctype/sales_order/test_records.json
+
+# Should output formatted JSON (no errors)
+```
+
+#### Step 4: Run Tests
+
+```bash
+# Run tests
+bench --site test_site run-tests --doctype "Sales Order"
+
+# With verbose output (to see test record creation)
+bench --site test_site run-tests --doctype "Sales Order" --verbose
+
+# Force recreation (if you modified test_records.json)
+bench --site test_site run-tests --doctype "Sales Order" --force
+```
+
+---
+
+### 8. Common Patterns and Examples
+
+#### Pattern 1: Simple DocType (No Dependencies)
+
+```json
+[
+  {
+    "doctype": "Department",
+    "department_name": "_Test Department",
+    "company": "_Test Company"
+  }
+]
+```
+
+**Test file:**
+```python
+test_dependencies = ["Company"]
+```
+
+#### Pattern 2: DocType with Child Table
+
+```json
+[
+  {
+    "doctype": "Item",
+    "item_code": "_Test Item",
+    "item_name": "_Test Item",
+    "item_group": "_Test Item Group",
+    "is_stock_item": 1,
+    "item_defaults": [
+      {
+        "company": "_Test Company",
+        "default_warehouse": "_Test Warehouse - _TC"
+      }
+    ]
+  }
+]
+```
+
+**Test file:**
+```python
+test_dependencies = ["Company", "Item Group", "Warehouse"]
+```
+
+#### Pattern 3: Multiple Test Records
+
+```json
+[
+  {
+    "doctype": "Customer",
+    "customer_name": "_Test Customer - Retail",
+    "customer_type": "Company"
+  },
+  {
+    "doctype": "Customer",
+    "customer_name": "_Test Customer - Wholesale",
+    "customer_type": "Company"
+  },
+  {
+    "doctype": "Customer",
+    "customer_name": "_Test Customer - Individual",
+    "customer_type": "Individual"
+  }
+]
+```
+
+#### Pattern 4: Submitted Documents
+
+```json
+[
+  {
+    "doctype": "Sales Invoice",
+    "customer": "_Test Customer",
+    "company": "_Test Company",
+    "posting_date": "2024-01-15",
+    "items": [
+      {
+        "item_code": "_Test Item",
+        "qty": 10,
+        "rate": 100
+      }
+    ],
+    "docstatus": 1
+  }
+]
+```
+
+#### Pattern 5: Fixed Names
+
+```json
+[
+  {
+    "doctype": "Sales Invoice",
+    "name": "_Test Sales Invoice-00001",
+    "customer": "_Test Customer",
+    "company": "_Test Company",
+    "items": [
+      {
+        "item_code": "_Test Item",
+        "qty": 10,
+        "rate": 100
+      }
+    ]
+  }
+]
+```
+
+**Use when:** Tests reference documents by exact name.
+
+---
+
+### 9. Best Practices for test_records.json
+
+#### ✅ DO:
+
+1. **Include only necessary fields**
+   - Only fields used in tests
+   - All required fields
+   - Link fields that are dependencies
+
+2. **Use descriptive names**
+   - `_Test Customer - Retail` instead of `_Test Customer 1`
+   - `_Test Item - Standard` instead of `_Test Item`
+
+3. **Group related records**
+   - Put all records for one DocType in one file
+   - Use consistent naming patterns
+
+4. **Validate JSON before committing**
+   ```bash
+   python -m json.tool test_records.json
+   ```
+
+5. **Document complex structures**
+   ```json
+   [
+     {
+       "doctype": "ComplexDocType",
+       // This record tests scenario X
+       "field1": "value1",
+       "field2": "value2"
+     }
+   ]
+   ```
+
+6. **Use realistic test data**
+   - Dates that make sense
+   - Numbers in reasonable ranges
+   - Valid email formats, etc.
+
+7. **Version control test_records.json**
+   - Commit to git
+   - Keep stable
+   - Document changes
+
+#### ❌ DON'T:
+
+1. **Don't include unused fields**
+   ```json
+   // Bad: Including 50+ fields when only 5 are needed
+   {
+     "doctype": "Item",
+     "item_code": "_Test Item",
+     // ... 50 more fields not used in tests
+   }
+   ```
+
+2. **Don't use production-like data**
+   ```json
+   // Bad
+   {
+     "customer_name": "Acme Corporation",
+     "email": "john.doe@acme.com"
+   }
+   
+   // Good
+   {
+     "customer_name": "_Test Customer",
+     "email": "test@example.com"
+   }
+   ```
+
+3. **Don't hard-code IDs**
+   ```json
+   // Bad: Assuming document exists
+   {
+     "customer": "CUST-00001"
+   }
+   
+   // Good: Use test record names
+   {
+     "customer": "_Test Customer"
+   }
+   ```
+
+4. **Don't forget trailing commas**
+   ```json
+   // Bad: Trailing comma (not allowed in JSON)
+   {
+     "field1": "value1",
+     "field2": "value2",  // ← Error!
+   }
+   
+   // Good: No trailing comma
+   {
+     "field1": "value1",
+     "field2": "value2"
+   }
+   ```
+
+5. **Don't mix quotes**
+   ```json
+   // Bad: Single quotes (not valid JSON)
+   {
+     'doctype': 'Customer',
+     'customer_name': '_Test Customer'
+   }
+   
+   // Good: Double quotes
+   {
+     "doctype": "Customer",
+     "customer_name": "_Test Customer"
+   }
+   ```
+
+---
+
+### 10. Troubleshooting Common Issues
+
+#### Issue 1: JSON Syntax Error
+
+**Symptoms:**
+- Tests fail to load
+- Error: "Expecting property name" or similar
+
+**Solution:**
+```bash
+# Validate JSON
+python -m json.tool test_records.json
+
+# Common errors:
+# - Missing comma between objects
+# - Trailing comma after last object
+# - Unclosed brackets or braces
+# - Single quotes instead of double quotes
+```
+
+#### Issue 2: Missing Required Fields
+
+**Symptoms:**
+- Validation error: "Field is mandatory"
+- Test records not created
+
+**Solution:**
+```python
+# Find required fields
+meta = frappe.get_meta("YourDocType")
+required = [f.fieldname for f in meta.fields if f.reqd]
+print(required)
+
+# Add missing fields to test_records.json
+```
+
+#### Issue 3: Dependencies Not Created
+
+**Symptoms:**
+- Error: "Link validation failed"
+- "Customer not found" errors
+
+**Solution:**
+```python
+# Add to test file
+test_dependencies = ["Company", "Customer", "Item"]
+
+# Verify dependencies have test_records.json files
+# Or create them manually in setUp()
+```
+
+#### Issue 4: Child Table Not Created
+
+**Symptoms:**
+- Main document created but child table empty
+- Child table validation fails
+
+**Solution:**
+```json
+// Verify child table field name matches DocType
+{
+  "doctype": "Sales Invoice",
+  "items": [  // Field name must match DocType definition
+    {
+      "item_code": "_Test Item",
+      "qty": 10
+    }
+  ]
+}
+```
+
+#### Issue 5: Test Records Not Created
+
+**Symptoms:**
+- `frappe.get_doc()` returns None
+- "Record not found" errors
+
+**Solution:**
+```bash
+# Check file location
+ls apps/your_app/your_app/module/doctype/your_doctype/test_records.json
+
+# Check JSON validity
+python -m json.tool test_records.json
+
+# Run with verbose
+bench --site test_site run-tests --doctype YourDocType --verbose
+
+# Force recreation
+bench --site test_site run-tests --doctype YourDocType --force
+```
+
+---
+
+### 11. Quick Reference Card
+
+#### File Structure
+```
+doctype_name/
+├── doctype_name.json
+├── doctype_name.py
+├── test_doctype_name.py
+└── test_records.json  ← Create here
+```
+
+#### Basic JSON Template
+```json
+[
+  {
+    "doctype": "YourDocType",
+    "field1": "value1",
+    "field2": "value2"
+  }
+]
+```
+
+#### Test File Template
+```python
+import frappe
+from frappe.tests.utils import FrappeTestCase
+
+test_dependencies = ["Company", "Customer"]
+
+class TestYourDocType(FrappeTestCase):
+    def test_something(self):
+        doc = frappe.get_doc("YourDocType", "_Test Record")
+        # Test logic...
+```
+
+#### Common Commands
+```bash
+# Validate JSON
+python -m json.tool test_records.json
+
+# Run tests
+bench --site test_site run-tests --doctype YourDocType
+
+# Run with verbose
+bench --site test_site run-tests --doctype YourDocType --verbose
+
+# Force recreation
+bench --site test_site run-tests --doctype YourDocType --force
+```
+
+#### Field Type Examples
+```json
+{
+  "text_field": "value",
+  "number_field": 100,
+  "date_field": "2024-01-15",
+  "link_field": "_Test Customer",
+  "select_field": "Option",
+  "checkbox_field": 1,
+  "child_table": [
+    {"field": "value"}
+  ]
+}
+```
+
+---
+
+### 12. Final Checklist
+
+Before using test_records.json in production:
+
+- [ ] Created `test_records.json` in correct location
+- [ ] JSON syntax is valid (no errors)
+- [ ] All required fields included
+- [ ] Child tables properly formatted
+- [ ] Dependencies declared in test file
+- [ ] Naming conventions followed
+- [ ] Test records can be created successfully
+- [ ] Tests can access test records
+- [ ] File committed to version control
+- [ ] Documentation updated if needed
+
+---
+
+### Summary
+
+**To use test_records.json for unit testing:**
+
+1. **Create** `test_records.json` in DocType directory
+2. **Write** valid JSON array with test record objects
+3. **Include** all required fields and dependencies
+4. **Declare** dependencies in test file with `test_dependencies`
+5. **Validate** JSON syntax before committing
+6. **Run** tests - records are created automatically
+7. **Access** records in tests using `frappe.get_doc()` or `test_records` variable
+
+**That's it!** Frappe handles the rest automatically. Test records are created before your tests run, dependencies are resolved, and everything is ready when your test methods execute.
+
+---
+
 This guide covers everything you need to know about test_records in Frappe unit testing. Use it as a reference when creating and maintaining your test data.
 
 ---
