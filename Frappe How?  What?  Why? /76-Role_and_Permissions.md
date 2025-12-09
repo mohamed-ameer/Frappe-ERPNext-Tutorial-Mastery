@@ -362,6 +362,14 @@ A search tool that shows only the documents a specific user can access.
 3. View the list of documents the user can access
 4. Compare with expected results
 
+## 6. Share Permission (the Temporary Permission Access)
+
+- A mechanism for sharing documents with specific users, bypassing role-based permissions.
+- We use it to give temporary access to a specific document to a specific user who doesn't have permission to access it, without giving him a role or editing his role (it is temporary).
+- Once the user is done, we can revoke the share.
+
+---
+
 ## Permission Manager in DocType
 
 Each DocType has a built-in Permission Manager where you can define permission rules directly.
