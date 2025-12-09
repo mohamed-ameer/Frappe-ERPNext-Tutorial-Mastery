@@ -1,26 +1,363 @@
 # Frappe Fields - Complete Documentation
 
 ## Table of Contents
-1. [What are Fields?](#what-are-fields)
-2. [Where are Fields Stored?](#where-are-fields-stored)
-3. [Are Fields DocTypes?](#are-fields-doctypes)
-4. [Complete List of Field Types](#complete-list-of-field-types)
-5. [Common Field Properties](#common-field-properties)
-6. [Field Type Details](#field-type-details)
+1. [Glossary: Key Terms Explained](#glossary-key-terms-explained)
+2. [What are Fields?](#what-are-fields)
+3. [Where are Fields Stored?](#where-are-fields-stored)
+4. [Are Fields DocTypes?](#are-fields-doctypes)
+5. [Complete List of Field Types](#complete-list-of-field-types)
+6. [Common Field Properties](#common-field-properties)
+7. [Field Type Details](#field-type-details)
+8. [How Fields Work Behind the Scenes](#how-fields-work-behind-the-scenes)
+
+---
+
+## Glossary: Key Terms Explained
+
+Before diving deep into fields, let's understand the fundamental technical terms used throughout this guide:
+
+### **Field**
+**What it is:** A field is a single piece of data definition within a DocType. Think of it as a column definition in a database table, but with much more functionality. Each field defines:
+- What type of data it stores (text, number, date, etc.)
+- How it appears in forms
+- What validations apply
+- How it relates to other data
+
+**Why it matters:** Fields are the building blocks of all data structures in Frappe. Without fields, DocTypes would have no structure or data storage capability.
+
+**Example:** In a Customer DocType, `customer_name` is a field that stores the customer's name as text.
+
+### **DocType**
+**What it is:** A DocType is Frappe's fundamental data structure - essentially a database table definition with enhanced features. Every document (like a Customer record, Sales Invoice, etc.) is based on a DocType.
+
+**Why it matters:** Fields belong to DocTypes. You can't have a field without a DocType. DocTypes define the overall structure, and fields define the individual pieces of data within that structure.
+
+**Example:** "Customer" is a DocType that contains fields like `customer_name`, `email`, `phone`, etc.
+
+### **DocField**
+**What it is:** DocField is a special DocType in Frappe that stores field definitions. Each field you create in a DocType becomes a document in the DocField DocType. This is meta-programming - a DocType (DocField) that stores definitions of fields for other DocTypes.
+
+**Why it matters:** This is how Frappe stores field metadata. When you create a field in a DocType, Frappe creates a DocField document that contains all the field's properties (fieldtype, label, options, etc.).
+
+**Storage:** DocField documents are stored in the `tabDocField` database table.
+
+**Example:** When you add a `customer_name` field to Customer DocType, Frappe creates a DocField document with:
+- `parent`: "Customer"
+- `fieldname`: "customer_name"
+- `fieldtype`: "Data"
+- `label`: "Customer Name"
+- etc.
+
+### **Fieldtype**
+**What it is:** Fieldtype is the data type of a field - it determines what kind of data the field can store and how it behaves. Frappe supports 47 different fieldtypes.
+
+**Why it matters:** Fieldtype determines:
+- Database column type (varchar, int, datetime, etc.)
+- Form input widget (text box, date picker, dropdown, etc.)
+- Validation rules
+- How data is stored and retrieved
+
+**Example:** A field with `fieldtype: "Date"` stores dates, shows a date picker in forms, and validates that the value is a valid date.
+
+### **Metadata (Meta)**
+**What it is:** Metadata is "data about data" - information that describes other data. In Frappe, Meta refers to the complete definition of a DocType, including all its fields, permissions, workflows, etc.
+
+**Why it matters:** Frappe uses Meta objects to understand DocType structure at runtime. When you call `frappe.get_meta("Customer")`, you get a Meta object containing all field definitions, validations, and other metadata.
+
+**How it works:** Meta objects are cached for performance and loaded from DocField records in the database.
+
+**Example:**
+```python
+meta = frappe.get_meta("Customer")
+# meta now contains all Customer DocType information:
+# - All fields and their properties
+# - Permissions
+# - Validations
+# - Workflows
+# etc.
+```
+
+### **Child Table**
+**What it is:** A child table is a special field type (`fieldtype: "Table"`) that allows a document to have multiple related rows. It's like a one-to-many relationship in databases.
+
+**Why it matters:** Child tables enable complex data structures. For example, a Sales Invoice can have multiple line items (each item is a row in the child table).
+
+**How it works:** Child tables are stored as separate documents in their own DocType, linked to the parent through `parent`, `parenttype`, and `parentfield` fields.
+
+**Example:** Sales Invoice has a child table `items` (fieldtype: "Table", options: "Sales Invoice Item"). Each row in `items` is a separate Sales Invoice Item document.
+
+### **Link Field**
+**What it is:** A Link field (`fieldtype: "Link"`) creates a relationship between two DocTypes. It stores a reference (the name/ID) to another document.
+
+**Why it matters:** Link fields enable relationships between documents. They're essential for building complex data models and maintaining referential integrity.
+
+**How it works:** Link fields store the document name (ID) of the linked document. Frappe validates that the linked document exists and can filter options based on `link_filters`.
+
+**Example:** Sales Invoice has `customer` field (Link to Customer DocType). It stores the Customer document's name (like "_Test Customer"), not the full customer data.
+
+### **Database Schema**
+**What it is:** Database schema refers to the structure of database tables - what columns exist, their types, constraints, indexes, etc.
+
+**Why it matters:** Frappe automatically creates database tables based on DocType field definitions. Each field (except virtual fields) becomes a database column.
+
+**How it works:** When you create or modify a DocType, Frappe:
+1. Reads field definitions from DocField records
+2. Determines appropriate database column types
+3. Creates or alters database tables accordingly
+
+**Example:** A Customer DocType with `customer_name` (Data field) creates a `tabCustomer` table with a `customer_name` VARCHAR column.
+
+### **Virtual Field**
+**What it is:** A virtual field (`is_virtual: 1`) is a field that doesn't exist in the database. Its value is computed on-the-fly when accessed.
+
+**Why it matters:** Virtual fields allow computed values without storing them. They're useful for calculated fields, formatted displays, or values derived from other fields.
+
+**How it works:** Virtual fields are defined in DocType but don't create database columns. Their values are computed in Python code when the document is loaded.
+
+**Example:** A `full_name` virtual field that concatenates `first_name` and `last_name` fields.
+
+### **Field Validation**
+**What it is:** Field validation ensures data integrity by checking that field values meet certain criteria before saving.
+
+**Why it matters:** Validation prevents invalid data from being stored, ensuring data quality and application reliability.
+
+**Types of validation:**
+- **Type validation**: Ensures data matches fieldtype (e.g., date fields only accept dates)
+- **Required validation**: Ensures mandatory fields have values
+- **Unique validation**: Ensures no duplicate values
+- **Custom validation**: Python/JavaScript code that checks business rules
+
+**Example:** A `email` field validates that the value matches email format before saving.
+
+### **Fetch From**
+**What it is:** `fetch_from` is a field property that automatically copies a value from a linked document when the link field changes.
+
+**Why it matters:** Reduces data entry and ensures consistency. Instead of manually entering customer details, you can fetch them from the linked Customer document.
+
+**How it works:** When a Link field value changes, Frappe reads the specified field from the linked document and populates the current field.
+
+**Example:** `fetch_from: "customer.customer_name"` automatically fills the customer name when a customer is selected.
+
+### **Depends On**
+**What it is:** `depends_on` is a JavaScript expression that controls field visibility. Fields are shown or hidden based on other field values.
+
+**Why it matters:** Creates dynamic, context-aware forms. Fields appear only when relevant, improving user experience.
+
+**How it works:** Frappe evaluates the JavaScript expression. If it returns `true`, the field is shown; if `false`, it's hidden.
+
+**Example:** `depends_on: "eval:doc.status=='Active'"` shows the field only when status is "Active".
+
+### **Permission Level (permlevel)**
+**What it is:** Permission level is a number (0-9) that controls field-level access permissions. Higher numbers mean more restricted access.
+
+**Why it matters:** Enables fine-grained access control. Different user roles can see/edit different sets of fields.
+
+**How it works:** Permissions are defined in DocPerm records. Fields with higher permlevel require higher permission levels to access.
+
+**Example:** `permlevel: 1` means only users with permission level 1 or higher can see/edit this field.
+
+### **Custom Field**
+**What it is:** A custom field is a field added to an existing DocType by users (not defined in the DocType's original JSON file).
+
+**Why it matters:** Allows extending DocTypes without modifying core code. Custom fields are stored separately from standard fields.
+
+**How it works:** Custom fields are stored in the `Custom Field` DocType and merged with standard fields when Meta is loaded.
+
+**Example:** Adding a `custom_notes` field to the Customer DocType creates a Custom Field document.
+
+### **Property Setter**
+**What it is:** A Property Setter allows modifying field properties (like making a field mandatory, changing its label, etc.) without editing the DocType JSON file.
+
+**Why it matters:** Enables customization without code changes. Useful for modifying core DocTypes.
+
+**How it works:** Property Setters override field properties when Meta is loaded. They're stored in the `Property Setter` DocType.
+
+**Example:** A Property Setter can make the `customer_name` field bold or change its default value.
+
+### **Naming Series**
+**What it is:** Naming series is a pattern used to automatically generate document names/IDs (like "SINV-00001", "SINV-00002").
+
+**Why it matters:** Provides consistent, readable document IDs instead of random hashes.
+
+**How it works:** Frappe maintains counters for each naming series pattern and increments them when creating new documents.
+
+**Example:** `naming_series: "SINV-"` generates names like "SINV-00001", "SINV-00002".
+
+### **Database Column**
+**What it is:** A database column is a single data storage location in a database table. Each field (except virtual fields) creates a database column.
+
+**Why it matters:** Fields map directly to database columns. Understanding this helps you understand how data is stored.
+
+**How it works:** Frappe's schema system creates appropriate column types based on fieldtype:
+- Data → VARCHAR
+- Int → INT or BIGINT
+- Date → DATE
+- Datetime → DATETIME
+- etc.
+
+**Example:** `customer_name` field (Data type, length 140) creates `customer_name VARCHAR(140)` column.
+
+### **Form**
+**What it is:** A form is the user interface for creating and editing documents. Forms are automatically generated from DocType field definitions.
+
+**Why it matters:** Fields determine how forms look and behave. Field properties control form layout, validation, and interactivity.
+
+**How it works:** Frappe's form builder reads field definitions and generates HTML forms with appropriate input widgets.
+
+**Example:** A Date field shows a date picker, a Link field shows a searchable dropdown, a Table field shows an editable grid.
+
+### **List View**
+**What it is:** List view is the table/grid view showing multiple documents. Fields with `in_list_view: 1` appear as columns.
+
+**Why it matters:** Controls what information users see when browsing documents. Too many columns can slow down list views.
+
+**How it works:** Frappe queries documents and displays selected fields as columns. Only fields marked `in_list_view: 1` appear.
+
+**Example:** Customer list view might show: Name, Email, Phone, City columns.
+
+### **Global Search**
+**What it is:** Global search allows searching across all documents. Fields with `in_global_search: 1` are included in search results.
+
+**Why it matters:** Makes documents discoverable. Users can find documents by searching for values in searchable fields.
+
+**How it works:** Frappe indexes fields marked for global search and searches them when users perform global searches.
+
+**Example:** Searching for "John" finds customers, contacts, or any document with "John" in a globally searchable field.
+
+### **Cache**
+**What it is:** Cache is temporary storage for frequently accessed data. Frappe caches Meta objects (DocType definitions) for performance.
+
+**Why it matters:** Loading Meta from database every time would be slow. Caching makes DocType access fast.
+
+**How it works:** When you call `frappe.get_meta()`, Frappe checks cache first. If not found, loads from database and caches the result.
+
+**Example:** First call to `frappe.get_meta("Customer")` loads from database, subsequent calls use cache.
+
+### **JSON (JavaScript Object Notation)**
+**What it is:** JSON is a lightweight data format used to store and exchange data. Frappe uses JSON files to define DocTypes and fields.
+
+**Why it matters:** DocType definitions are stored as JSON files. Understanding JSON helps you understand how DocTypes are structured.
+
+**Format:** JSON uses `{}` for objects, `[]` for arrays, and key-value pairs.
+
+**Example:**
+```json
+{
+  "fieldname": "customer_name",
+  "fieldtype": "Data",
+  "label": "Customer Name"
+}
+```
 
 ---
 
 ## What are Fields?
 
-Fields are the fundamental building blocks of DocTypes in Frappe. Every DocType consists of fields, and each field represents a piece of data with its own properties and behavior. Fields define:
+Fields are the fundamental building blocks of DocTypes in Frappe. Every DocType consists of fields, and each field represents a piece of data with its own properties and behavior.
 
-- **Data Structure**: What type of data can be stored (text, number, date, link, etc.)
-- **Validation Rules**: Constraints and validations applied to the data
-- **User Interface**: How the field appears and behaves in forms
-- **Database Schema**: How data is stored in the database
-- **Business Logic**: Relationships, dependencies, and computed values
+**In Simple Terms:** Think of a DocType as a form or table structure, and fields as the individual questions/columns in that form. Each field defines one piece of information you want to collect or store.
 
-Fields are defined in the DocType's metadata and control everything from form layout to data validation to database column creation.
+**Analogy:** If a DocType is like a paper form, fields are the individual questions on that form. Each question (field) has:
+- A label (what it asks)
+- A type (how to answer - text, number, date, etc.)
+- Rules (is it required? can it be empty? etc.)
+
+Fields define five critical aspects:
+
+### 1. **Data Structure**: What type of data can be stored
+
+Fields determine what kind of data you can store:
+- **Text fields** store strings (names, descriptions, etc.)
+- **Number fields** store numeric values (quantities, prices, etc.)
+- **Date fields** store dates and times
+- **Link fields** store references to other documents
+- **Table fields** store multiple related rows
+
+**Why this matters:** The fieldtype determines:
+- What values are valid (a Date field won't accept "hello")
+- How data is stored in the database (VARCHAR, INT, DATE, etc.)
+- What input widget appears in forms (text box, date picker, dropdown, etc.)
+
+**Example:** A `customer_name` field with `fieldtype: "Data"` stores text strings like "Acme Corporation", while a `quantity` field with `fieldtype: "Int"` stores whole numbers like 10, 25, 100.
+
+### 2. **Validation Rules**: Constraints and validations applied to the data
+
+Fields enforce data quality through validation:
+- **Required fields** (`reqd: 1`) must have values before saving
+- **Unique fields** (`unique: 1`) prevent duplicate values
+- **Type validation** ensures data matches fieldtype
+- **Custom validation** can enforce business rules
+
+**Why this matters:** Validation prevents invalid or incomplete data from being saved, ensuring data integrity and application reliability.
+
+**Example:** An `email` field validates that the value matches email format (contains @, valid domain, etc.). A `quantity` field with `non_negative: 1` prevents negative numbers.
+
+### 3. **User Interface**: How the field appears and behaves in forms
+
+Fields control form appearance and behavior:
+- **Input widgets**: Text boxes, date pickers, dropdowns, checkboxes, etc.
+- **Layout**: Field width, position, grouping in sections/tabs
+- **Interactivity**: Show/hide based on other fields, auto-fill values, etc.
+- **Styling**: Bold labels, colors, icons, etc.
+
+**Why this matters:** Good UI/UX makes applications user-friendly. Fields determine how users interact with data.
+
+**Example:** A Date field shows a calendar picker, a Link field shows a searchable dropdown, a Table field shows an editable grid.
+
+### 4. **Database Schema**: How data is stored in the database
+
+Fields map directly to database columns:
+- Each field (except virtual fields) creates a database column
+- Fieldtype determines column type (VARCHAR, INT, DATE, etc.)
+- Field properties determine column constraints (NOT NULL, UNIQUE, etc.)
+
+**Why this matters:** Understanding database mapping helps with:
+- Performance optimization (indexes, column types)
+- Data migration
+- Query optimization
+- Understanding data storage
+
+**Example:** A `customer_name` field (Data type, length 140) creates `customer_name VARCHAR(140)` column. An `amount` field (Currency type, precision 2) creates `amount DECIMAL(18,2)` column.
+
+### 5. **Business Logic**: Relationships, dependencies, and computed values
+
+Fields enable business logic:
+- **Link fields** create relationships between documents
+- **Fetch from** automatically copies values from linked documents
+- **Depends on** shows/hides fields based on conditions
+- **Virtual fields** compute values dynamically
+- **Default values** pre-fill fields
+
+**Why this matters:** Business logic automates workflows, reduces data entry, and ensures consistency.
+
+**Example:** When you select a Customer in Sales Invoice, `fetch_from: "customer.email"` automatically fills the customer's email. `depends_on: "eval:doc.status=='Active'"` shows fields only for active documents.
+
+### How Fields Control Everything
+
+Fields are central to Frappe's architecture:
+
+1. **Form Generation**: Frappe reads field definitions and generates forms automatically
+2. **Database Creation**: Frappe creates database tables based on field definitions
+3. **Validation**: Field properties determine what validations run
+4. **Permissions**: Fields can have permission levels controlling access
+5. **Reports**: Fields determine what data appears in reports
+6. **API**: Fields define API response structure
+
+**The Complete Flow:**
+
+```
+Field Definition (DocField)
+    ↓
+Meta Object (cached)
+    ↓
+    ├─→ Form Generation (UI)
+    ├─→ Database Schema (Storage)
+    ├─→ Validation Rules (Data Quality)
+    ├─→ Permissions (Access Control)
+    └─→ Business Logic (Automation)
+```
+
+Fields are defined in the DocType's metadata (stored as DocField documents) and control everything from form layout to data validation to database column creation. Understanding fields is essential for effective Frappe development.
 
 ---
 
@@ -28,23 +365,208 @@ Fields are defined in the DocType's metadata and control everything from form la
 
 Fields are stored in the **`DocField`** DocType, which is a core Frappe DocType. Each field definition is a document in the `DocField` table.
 
+**What is DocField?** DocField is a meta-DocType - a DocType that stores definitions of fields for other DocTypes. This is Frappe's way of storing field metadata in the database.
+
+**Why store fields as documents?** This approach enables:
+- Dynamic field creation/modification without code changes
+- Custom fields that extend existing DocTypes
+- Field property modifications through Property Setters
+- Version control and audit trails of field changes
+
 ### Storage Structure
 
+#### Database Level
+
 - **Database Table**: `tabDocField`
+  - This is the actual database table where field definitions are stored
+  - Located in your Frappe database (MariaDB/PostgreSQL)
+  - Contains all fields from all DocTypes
+
 - **DocType Name**: `DocField`
-- **Location**: `apps/frappe/frappe/core/doctype/docfield/`
-- **Parent Relationship**: Fields belong to a DocType through the `parent` field (which stores the DocType name)
+  - This is the Frappe DocType name
+  - Used when accessing fields programmatically: `frappe.get_doc("DocField", field_name)`
+
+- **File Location**: `apps/frappe/frappe/core/doctype/docfield/`
+  - Contains the DocField DocType definition files:
+    - `docfield.json` - DocType definition
+    - `docfield.py` - Python controller (if any)
+    - `docfield.js` - JavaScript client-side code (if any)
+
+#### Parent-Child Relationship
+
+Fields belong to DocTypes through a parent-child relationship:
+
+- **`parent`**: Stores the DocType name this field belongs to
+  - Example: `parent: "Customer"` means this field belongs to Customer DocType
+  - This links the field to its DocType
+
+- **`parenttype`**: Always `"DocType"`
+  - Indicates that the parent is a DocType (not another document type)
+  - This is consistent for all DocField records
+
+- **`parentfield`**: Always `"fields"`
+  - Indicates this field is part of the "fields" child table in the DocType
+  - DocType has a child table field called "fields" that contains all DocField records
+
+**Understanding the Relationship:**
+
+```
+DocType (Customer)
+    │
+    ├─→ Child Table: "fields"
+            │
+            ├─→ DocField 1: customer_name
+            ├─→ DocField 2: email
+            ├─→ DocField 3: phone
+            └─→ DocField 4: address
+```
 
 ### Field Storage Details
 
-When you create a DocType, Frappe:
-1. Creates a record in the `DocType` table
-2. Creates multiple records in the `DocField` table (one for each field)
-3. Each `DocField` record has:
-   - `parent`: The DocType name this field belongs to
-   - `parenttype`: Always "DocType"
-   - `parentfield`: Always "fields" (the child table fieldname)
-   - All field properties (fieldtype, label, options, etc.)
+When you create a DocType, Frappe performs these steps:
+
+#### Step 1: Create DocType Record
+
+Frappe creates a record in the `tabDocType` table:
+```sql
+INSERT INTO tabDocType (name, module, custom, ...)
+VALUES ('Customer', 'Selling', 0, ...);
+```
+
+This record stores DocType-level information:
+- DocType name
+- Module it belongs to
+- Whether it's custom or standard
+- Permissions, workflows, etc.
+
+#### Step 2: Create DocField Records
+
+For each field in the DocType, Frappe creates a record in `tabDocField`:
+
+```sql
+-- Example: customer_name field
+INSERT INTO tabDocField (
+    name,                    -- Unique ID (hash)
+    parent,                  -- "Customer"
+    parenttype,              -- "DocType"
+    parentfield,             -- "fields"
+    fieldname,               -- "customer_name"
+    fieldtype,               -- "Data"
+    label,                   -- "Customer Name"
+    reqd,                    -- 0 or 1
+    length,                  -- 140
+    -- ... all other field properties
+)
+VALUES (
+    'abc123...',             -- Generated hash
+    'Customer',
+    'DocType',
+    'fields',
+    'customer_name',
+    'Data',
+    'Customer Name',
+    1,                       -- Required
+    140,
+    -- ... other values
+);
+```
+
+#### Step 3: Field Properties Storage
+
+Each `DocField` record stores all field properties:
+
+**Basic Properties:**
+- `fieldname`: Internal name (e.g., "customer_name")
+- `label`: Display label (e.g., "Customer Name")
+- `fieldtype`: Data type (e.g., "Data", "Link", "Date")
+- `options`: Fieldtype-specific options (DocType name for Link, options list for Select, etc.)
+
+**Validation Properties:**
+- `reqd`: Required (0 or 1)
+- `unique`: Unique constraint (0 or 1)
+- `non_negative`: Prevent negative numbers (0 or 1)
+- `length`: Maximum length for text fields
+- `precision`: Decimal places for numeric fields
+
+**Display Properties:**
+- `hidden`: Hide in forms (0 or 1)
+- `read_only`: Read-only field (0 or 1)
+- `bold`: Bold label (0 or 1)
+- `width`: Field width
+- `depends_on`: Conditional display expression
+
+**And many more...** (See Common Field Properties section for complete list)
+
+### How Fields are Loaded
+
+When Frappe needs field information, it:
+
+1. **Loads DocField Records**: Queries `tabDocField` table filtering by `parent = "DocTypeName"`
+2. **Creates Meta Object**: Builds a Meta object containing all field definitions
+3. **Caches Meta**: Stores Meta in cache for performance
+4. **Merges Custom Fields**: Adds any Custom Field records
+5. **Applies Property Setters**: Applies any property overrides
+
+**Code Flow:**
+```python
+# When you call:
+meta = frappe.get_meta("Customer")
+
+# Frappe internally:
+# 1. Checks cache first
+# 2. If not cached, queries:
+frappe.db.get_all("DocField", 
+    filters={"parent": "Customer", "parenttype": "DocType", "parentfield": "fields"},
+    order_by="idx"
+)
+# 3. Builds Meta object from results
+# 4. Caches Meta object
+# 5. Returns Meta object
+```
+
+### Standard vs Custom Fields
+
+**Standard Fields:**
+- Defined in DocType JSON files (`doctype_name.json`)
+- Stored in `tabDocField` table
+- Part of the application code
+- Version controlled in git
+
+**Custom Fields:**
+- Created by users through UI or code
+- Stored in `tabCustom Field` table (separate DocType)
+- Merged with standard fields when Meta is loaded
+- Can be added to any DocType without code changes
+
+**How They're Merged:**
+```python
+# In Meta class (frappe/model/meta.py)
+def add_custom_fields(self):
+    # Loads Custom Field records
+    custom_fields = frappe.get_all("Custom Field", 
+        filters={"dt": self.name}
+    )
+    # Merges them with standard fields
+    self.fields.extend(custom_fields)
+```
+
+### Field Index (idx)
+
+Each DocField has an `idx` property that determines field order:
+
+- **Purpose**: Controls the order fields appear in forms
+- **Format**: Integer starting from 1
+- **Usage**: Lower idx values appear first
+- **Auto-increment**: Frappe automatically assigns idx when creating fields
+
+**Example:**
+```
+idx: 1  → customer_name (appears first)
+idx: 2  → email (appears second)
+idx: 3  → phone (appears third)
+```
+
+This ensures consistent field ordering across forms and list views.
 
 ### Accessing Fields Programmatically
 
@@ -67,6 +589,8 @@ print(field.reqd)       # 1 (mandatory)
 ## Are Fields DocTypes?
 
 **Yes, fields are stored as DocType records**, but they are **child table records**, not standalone DocTypes.
+
+(remember that in frappe everything is a document of certain type, everything is a `Doctype` even the Fields)
 
 ### Understanding the Relationship
 
@@ -240,12 +764,78 @@ All fields share a common set of properties. Below is a comprehensive list with 
 - **Type**: String (field reference)
 - **Required**: No
 - **Description**: Automatically fetch value from a linked document
-- **Format**: `"link_fieldname.source_fieldname"`
-- **Example**: `"customer.company_name"` - Fetches `company_name` from the linked `customer` document
-- **Behavior**:
-  - Only works with Link fields
-  - Fetches when the link field value changes
-  - Can be combined with `fetch_if_empty`
+
+**What it does:** When a Link field value changes, `fetch_from` automatically copies a value from the linked document to the current field. This eliminates manual data entry and ensures consistency.
+
+**Format:** `"link_fieldname.source_fieldname"`
+- `link_fieldname`: The name of the Link field in the current DocType
+- `source_fieldname`: The field name in the linked DocType to fetch from
+- Separated by a dot (`.`)
+
+**Example:** 
+```json
+{
+  "fieldname": "customer_email",
+  "fieldtype": "Data",
+  "fetch_from": "customer.email"
+}
+```
+- When `customer` Link field changes, fetches `email` field from the Customer document
+- Automatically fills `customer_email` field with the customer's email
+
+**How it works:**
+1. User selects a customer in the `customer` Link field
+2. Frappe detects the Link field value changed
+3. Loads the Customer document
+4. Reads the `email` field from Customer
+5. Automatically sets `customer_email` field in current document
+
+**Behavior:**
+- **Only works with Link fields**: The source must be a Link fieldtype
+- **Fetches when link changes**: Triggered when Link field value is set or changed
+- **Can fetch nested fields**: For child tables, use `"items.item_code"` format
+- **Can be combined with `fetch_if_empty`**: Only fetches if field is empty (when `fetch_if_empty: 1`)
+
+**Advanced Examples:**
+
+**Fetch from child table:**
+```json
+{
+  "fieldname": "item_name",
+  "fieldtype": "Data",
+  "fetch_from": "items.item_name"  // Fetches from items child table
+}
+```
+
+**Multiple fetch_from fields:**
+```json
+// When customer changes, fetch multiple fields
+{
+  "fieldname": "customer_email",
+  "fetch_from": "customer.email"
+},
+{
+  "fieldname": "customer_phone",
+  "fetch_from": "customer.mobile_no"
+},
+{
+  "fieldname": "billing_address",
+  "fetch_from": "customer.billing_address"
+}
+```
+
+**Why use fetch_from:**
+- Reduces data entry time
+- Ensures data consistency (always uses source document's value)
+- Prevents typos and errors
+- Automatically updates if source document changes (on save)
+- Improves user experience
+
+**Limitations:**
+- Only works with Link fields (not Dynamic Link directly)
+- Source field must exist in linked DocType
+- Fetches on save, not real-time (unless using client-side script)
+- Cannot fetch computed/virtual fields from linked document
 
 #### `fetch_if_empty` (Check)
 - **Type**: Boolean (0 or 1)
@@ -259,15 +849,164 @@ All fields share a common set of properties. Below is a comprehensive list with 
 - **Type**: Boolean (0 or 1)
 - **Default**: 0
 - **Description**: Field must have a value before saving
-- **Restrictions**: Cannot be mandatory for layout fields (Section Break, Column Break, etc.)
-- **Example**: `{"reqd": 1}` - Field is required
+
+**What it does:** When `reqd: 1`, the field becomes mandatory - users cannot save the document without providing a value for this field.
+
+**How it works:**
+1. **Client-side validation**: Form shows error immediately if required field is empty
+2. **Server-side validation**: Frappe validates on save and throws error if missing
+3. **Visual indicator**: Required fields show asterisk (*) or red border in forms
+4. **Database constraint**: Can create NOT NULL constraint (if `not_nullable: 1`)
+
+**Validation Flow:**
+```python
+# In frappe/model/document.py
+def validate(self):
+    for field in self.meta.get("fields", {"reqd": 1}):
+        value = self.get(field.fieldname)
+        if not value or (isinstance(value, str) and value.strip() == ""):
+            frappe.throw(
+                _("{0} is mandatory").format(field.label),
+                frappe.MandatoryError
+            )
+```
+
+**Restrictions:**
+- **Cannot be mandatory for layout fields**: Section Break, Column Break, Tab Break, Heading, HTML, Button, Image, Fold
+  - These fields don't store data, so requiring them makes no sense
+- **Cannot be hidden and mandatory**: A field cannot be both `hidden: 1` and `reqd: 1`
+  - Users can't see it, so they can't fill it
+- **Virtual fields**: Can be required, but validation must be handled in code
+
+**Example:**
+```json
+{
+  "fieldname": "customer_name",
+  "fieldtype": "Data",
+  "label": "Customer Name",
+  "reqd": 1  // Required field
+}
+```
+
+**Conditional Mandatory (`mandatory_depends_on`):**
+Fields can be conditionally mandatory:
+```json
+{
+  "fieldname": "approval_reason",
+  "fieldtype": "Text",
+  "mandatory_depends_on": "eval:doc.amount > 10000"
+}
+```
+- Field is only required when amount > 10000
+- Otherwise, field is optional
+
+**Why use required fields:**
+- Ensures data completeness
+- Prevents incomplete records
+- Enforces business rules
+- Improves data quality
+
+**Best Practices:**
+- Only mark truly essential fields as required
+- Use `mandatory_depends_on` for conditional requirements
+- Provide clear error messages
+- Consider user workflow (don't require fields users can't fill yet)
 
 #### `unique` (Check)
 - **Type**: Boolean (0 or 1)
 - **Default**: 0
 - **Description**: Field value must be unique across all documents
-- **Restrictions**: Only valid for Data, Link, and Read Only fieldtypes
-- **Example**: `{"unique": 1}` - No two documents can have the same value
+
+**What it does:** When `unique: 1`, no two documents in the DocType can have the same value for this field. Frappe enforces uniqueness at the database level and application level.
+
+**How it works:**
+1. **Database constraint**: Creates UNIQUE constraint on database column
+2. **Application validation**: Checks uniqueness before saving
+3. **Error on duplicate**: Throws error if duplicate value detected
+4. **Index creation**: Automatically creates database index for performance
+
+**Database Implementation:**
+```sql
+-- When unique: 1, Frappe creates:
+ALTER TABLE `tabCustomer` ADD UNIQUE (`email`);
+-- Or
+CREATE UNIQUE INDEX idx_email ON `tabCustomer` (`email`);
+```
+
+**Validation Code:**
+```python
+# In frappe/model/document.py
+if field.unique:
+    # Check if value already exists
+    existing = frappe.db.get_value(
+        doctype,
+        {field.fieldname: value},
+        "name"
+    )
+    if existing and existing != self.name:
+        frappe.throw(
+            _("{0} must be unique").format(field.label),
+            frappe.UniqueValidationError
+        )
+```
+
+**Restrictions:**
+- **Only valid for specific fieldtypes**: Data, Link, and Read Only
+  - These fieldtypes store single, comparable values
+  - Table, Text, Long Text fields cannot be unique (too complex)
+  - Layout fields (Section Break, etc.) cannot be unique (no data)
+
+**Example:**
+```json
+{
+  "fieldname": "email",
+  "fieldtype": "Data",
+  "label": "Email",
+  "unique": 1  // No two customers can have same email
+}
+```
+
+**Important Considerations:**
+
+**1. Existing Data:**
+- Cannot set `unique: 1` if existing documents have duplicate values
+- Must clean up duplicates first
+- Frappe validates this when enabling uniqueness
+
+**2. NULL Values:**
+- NULL values are considered unique (multiple NULLs allowed)
+- Only non-NULL values must be unique
+- If field is also required (`reqd: 1`), this doesn't matter
+
+**3. Case Sensitivity:**
+- Uniqueness is case-sensitive by default
+- "Email@example.com" and "email@example.com" are considered different
+- Use application-level validation for case-insensitive uniqueness if needed
+
+**4. Performance:**
+- Unique fields automatically get database indexes
+- Speeds up lookups and uniqueness checks
+- But slows down inserts slightly (index maintenance)
+
+**Use Cases:**
+- Email addresses (one email per user)
+- Identification numbers (SSN, Tax ID)
+- Usernames (unique login names)
+- Product codes (unique SKUs)
+- Account numbers (unique identifiers)
+
+**Why use unique fields:**
+- Prevents duplicate data
+- Ensures data integrity
+- Enables efficient lookups
+- Enforces business rules
+
+**Best Practices:**
+- Use for truly unique identifiers
+- Consider case sensitivity requirements
+- Clean up existing duplicates before enabling
+- Use in combination with `reqd: 1` for identifiers
+- Document why field must be unique
 
 #### `non_negative` (Check)
 - **Type**: Boolean (0 or 1)
@@ -359,14 +1098,140 @@ All fields share a common set of properties. Below is a comprehensive list with 
 #### `depends_on` (Code)
 - **Type**: JavaScript expression
 - **Description**: Show/hide field based on other field values
-- **Format**: JavaScript expression (e.g., `"eval:doc.status=='Active'"`)
-- **Examples**:
-  ```json
-  {"depends_on": "eval:doc.status=='Active'"}
-  {"depends_on": "eval:doc.amount > 1000"}
-  {"depends_on": "eval:in_list(['Option1', 'Option2'], doc.type)"}
-  {"depends_on": "eval:doc.customer && doc.customer!=''"}
-  ```
+
+**What it does:** `depends_on` creates conditional field visibility. Fields appear or disappear based on values in other fields, creating dynamic, context-aware forms.
+
+**Format:** JavaScript expression prefixed with `"eval:"`
+- Expression must start with `"eval:"`
+- Has access to `doc` object (current document)
+- Returns `true` to show field, `false` to hide it
+- Evaluated in browser (client-side) for instant updates
+
+**How it works:**
+1. Frappe evaluates the JavaScript expression
+2. Expression has access to `doc` (document object with all field values)
+3. If expression returns `true` (or truthy), field is shown
+4. If expression returns `false` (or falsy), field is hidden
+5. Expression re-evaluates whenever dependent fields change
+
+**Basic Examples:**
+
+**Simple condition:**
+```json
+{
+  "fieldname": "discount_amount",
+  "fieldtype": "Currency",
+  "depends_on": "eval:doc.apply_discount==1"
+}
+```
+- Shows `discount_amount` field only when `apply_discount` checkbox is checked
+
+**Comparison:**
+```json
+{
+  "fieldname": "approval_required",
+  "fieldtype": "Check",
+  "depends_on": "eval:doc.amount > 1000"
+}
+```
+- Shows field only when `amount` is greater than 1000
+
+**Multiple conditions (AND):**
+```json
+{
+  "fieldname": "special_notes",
+  "fieldtype": "Text",
+  "depends_on": "eval:doc.status=='Active' && doc.amount > 5000"
+}
+```
+- Shows field only when status is "Active" AND amount > 5000
+
+**Multiple conditions (OR):**
+```json
+{
+  "fieldname": "urgent_flag",
+  "fieldtype": "Check",
+  "depends_on": "eval:doc.priority=='High' || doc.priority=='Critical'"
+}
+```
+- Shows field when priority is "High" OR "Critical"
+
+**Check if field has value:**
+```json
+{
+  "fieldname": "customer_details",
+  "fieldtype": "Section Break",
+  "depends_on": "eval:doc.customer && doc.customer!=''"
+}
+```
+- Shows section only when customer field has a value
+
+**Using in_list helper:**
+```json
+{
+  "fieldname": "special_field",
+  "fieldtype": "Data",
+  "depends_on": "eval:in_list(['Option1', 'Option2', 'Option3'], doc.type)"
+}
+```
+- Shows field only when `type` is one of the specified options
+
+**Advanced Examples:**
+
+**Nested field access:**
+```json
+{
+  "fieldname": "item_details",
+  "depends_on": "eval:doc.items && doc.items.length > 0"
+}
+```
+- Shows field only when items child table has rows
+
+**Complex logic:**
+```json
+{
+  "fieldname": "approval_section",
+  "fieldtype": "Section Break",
+  "depends_on": "eval:(doc.amount > 10000 && doc.status=='Draft') || doc.requires_approval==1"
+}
+```
+- Shows section when: (amount > 10000 AND status is Draft) OR requires_approval is checked
+
+**Date comparison:**
+```json
+{
+  "fieldname": "expiry_notice",
+  "depends_on": "eval:doc.expiry_date && frappe.datetime.get_diff(doc.expiry_date, frappe.datetime.get_today()) < 30"
+}
+```
+- Shows field when expiry_date is within 30 days
+
+**Available Helpers:**
+- `in_list(array, value)`: Check if value is in array
+- `frappe.datetime.get_diff(date1, date2)`: Get difference between dates
+- `frappe.datetime.get_today()`: Get today's date
+- `frappe.utils.is_json(value)`: Check if value is valid JSON
+
+**Why use depends_on:**
+- Creates dynamic, context-aware forms
+- Reduces form clutter (only shows relevant fields)
+- Improves user experience
+- Prevents errors (hides irrelevant fields)
+- Guides users through workflows
+
+**Best Practices:**
+- Keep expressions simple and readable
+- Test expressions thoroughly
+- Use helper functions for complex logic
+- Document complex expressions
+- Consider performance (avoid heavy computations)
+
+**Common Mistakes:**
+- Forgetting `"eval:"` prefix
+- Using Python syntax instead of JavaScript
+- Not handling null/undefined values
+- Complex expressions that are hard to maintain
+- Circular dependencies (field A depends on B, B depends on A)
 
 #### `mandatory_depends_on` (Code)
 - **Type**: JavaScript expression
@@ -956,12 +1821,45 @@ All fields share a common set of properties. Below is a comprehensive list with 
 #### 15. Link
 **Purpose**: Link to another DocType
 
+**What it is:** A Link field creates a relationship between two DocTypes. It stores a reference (the document name/ID) to another document, enabling you to connect documents together.
+
+**How it works:**
+- **Stores reference**: Link fields store the document name (ID) of the linked document, not the full document data
+- **Validates existence**: Frappe ensures the linked document exists before saving
+- **Shows dropdown**: In forms, Link fields show a searchable dropdown with available documents
+- **Creates relationship**: Enables querying related documents and maintaining referential integrity
+
+**Database Storage:**
+- Link fields are stored as `VARCHAR(140)` columns
+- Stores the document name (e.g., "_Test Customer", "CUST-00001")
+- No foreign key constraint (Frappe handles relationships in application layer)
+
 **Properties**:
 - `options`: **Required** - DocType name to link to
+  - Must be a valid DocType name
+  - Example: `"options": "Customer"` links to Customer DocType
+  - Case-sensitive: Must match exact DocType name
+
 - `link_filters`: JSON filters for dropdown
+  - Filters which documents appear in the dropdown
+  - Format: JSON array of filter conditions
+  - Example: Only show active customers: `[{"fieldname": "status", "condition": "=", "value": "Active"}]`
+  - Applied when loading dropdown options
+
 - `ignore_user_permissions`: Bypass user permissions
+  - When `1`, shows all documents regardless of user permissions
+  - When `0` (default), respects user permission restrictions
+  - Use carefully - can expose data users shouldn't see
+
 - `remember_last_selected_value`: Remember selection
+  - When `1`, remembers last selected value for this field
+  - Pre-fills field with last selection when creating new document
+  - Improves data entry speed for frequently used values
+
 - `fetch_from`: Fetch fields from linked document
+  - Automatically copies values from linked document
+  - Format: `"link_fieldname.source_fieldname"`
+  - Example: `"fetch_from": "customer.email"` copies email from Customer
 
 **Example**:
 ```json
@@ -1592,7 +2490,7 @@ Option 3
 **Purpose**: Multi-select child table
 
 **Properties**:
-- `options`: **Required** - Child DocType name
+- `options`: **Required** - Child DocType name and this child doctype must have a Link field that links to the Doctype that we will multiselect from.
 - Similar to Table but allows selecting existing documents
 
 **Example**:
@@ -1766,6 +2664,399 @@ Required child table with bulk editing enabled.
 
 ---
 
+## How Fields Work Behind the Scenes
+
+Understanding how fields work internally helps you use them more effectively and troubleshoot issues. This section explains the technical implementation details.
+
+### The Field Lifecycle
+
+#### 1. **Field Definition**
+
+Fields start as definitions in JSON files or database records:
+
+**Standard Fields (JSON):**
+```json
+// apps/erpnext/erpnext/selling/doctype/customer/customer.json
+{
+  "fields": [
+    {
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "label": "Customer Name",
+      "reqd": 1
+    }
+  ]
+}
+```
+
+**Custom Fields (Database):**
+```python
+# Created via UI or code
+frappe.get_doc({
+    "doctype": "Custom Field",
+    "dt": "Customer",
+    "fieldname": "custom_notes",
+    "fieldtype": "Text",
+    "label": "Custom Notes"
+}).insert()
+```
+
+#### 2. **Meta Object Creation**
+
+When Frappe needs field information, it creates a Meta object:
+
+```python
+# In frappe/model/meta.py
+class Meta(Document):
+    def __init__(self, doctype):
+        # Loads DocType definition
+        self.load_from_db()
+        # Processes fields
+        self.process()
+    
+    def process(self):
+        # Adds custom fields
+        self.add_custom_fields()
+        # Applies property setters
+        self.apply_property_setters()
+        # Initializes field caches
+        self.init_field_caches()
+        # Sorts fields by idx
+        self.sort_fields()
+```
+
+**What Meta Contains:**
+- All field definitions (standard + custom)
+- Field properties and validations
+- Permissions and workflows
+- Relationships and links
+
+#### 3. **Database Schema Creation**
+
+Frappe creates database columns based on field definitions:
+
+```python
+# In frappe/database/schema.py
+class DBTable:
+    def get_columns_from_docfields(self):
+        fields = self.meta.get_fieldnames_with_value(with_field_meta=True)
+        
+        for field in fields:
+            if field.get("is_virtual"):
+                continue  # Skip virtual fields
+            
+            # Creates DbColumn object
+            self.columns[field.get("fieldname")] = DbColumn(
+                fieldname=field.get("fieldname"),
+                fieldtype=field.get("fieldtype"),
+                length=field.get("length"),
+                precision=field.get("precision"),
+                # ... other properties
+            )
+```
+
+**Database Column Mapping:**
+
+| Fieldtype | Database Type | Example |
+|-----------|--------------|---------|
+| Data | VARCHAR(length) | `customer_name VARCHAR(140)` |
+| Int | INT or BIGINT | `quantity INT` |
+| Float | DECIMAL(18, precision) | `rate DECIMAL(18,2)` |
+| Currency | DECIMAL(18, precision) | `amount DECIMAL(18,2)` |
+| Date | DATE | `posting_date DATE` |
+| Datetime | DATETIME | `creation DATETIME(6)` |
+| Text | TEXT | `description TEXT` |
+| Long Text | LONGTEXT | `notes LONGTEXT` |
+| Check | INT(1) | `is_active INT(1)` |
+| Link | VARCHAR(140) | `customer VARCHAR(140)` |
+| Table | (No column) | Stored as separate documents |
+
+#### 4. **Form Generation**
+
+Frappe generates forms from field definitions:
+
+**Frontend Process:**
+1. Loads Meta object (cached)
+2. Reads field definitions
+3. Generates HTML form elements based on fieldtype
+4. Applies field properties (width, depends_on, etc.)
+5. Adds validation rules
+
+**Fieldtype → Widget Mapping:**
+
+| Fieldtype | Form Widget |
+|-----------|-------------|
+| Data | `<input type="text">` |
+| Int/Float/Currency | `<input type="number">` |
+| Date | Date picker component |
+| Datetime | Date-time picker component |
+| Link | Searchable dropdown |
+| Select | Dropdown select |
+| Check | Checkbox |
+| Table | Editable grid |
+| Text/Long Text | Textarea |
+| Attach | File upload button |
+
+#### 5. **Validation Execution**
+
+When saving a document, Frappe validates fields:
+
+**Validation Order:**
+1. **Type Validation**: Ensures value matches fieldtype
+2. **Required Validation**: Checks mandatory fields have values
+3. **Unique Validation**: Verifies uniqueness (if `unique: 1`)
+4. **Custom Validation**: Runs Python/JavaScript validators
+5. **Link Validation**: Verifies linked documents exist
+
+**Code Example:**
+```python
+# In frappe/model/document.py
+def validate(self):
+    # Type validation
+    for field in self.meta.fields:
+        value = self.get(field.fieldname)
+        if value:
+            # Validate based on fieldtype
+            self.validate_fieldtype(field, value)
+    
+    # Required validation
+    for field in self.meta.get("fields", {"reqd": 1}):
+        if not self.get(field.fieldname):
+            frappe.throw(f"{field.label} is mandatory")
+    
+    # Custom validation
+    self.run_method("validate")
+```
+
+### Field Property Processing
+
+#### Default Values
+
+Default values are processed when creating new documents:
+
+**Special Default Values:**
+- `"Today"` → Current date (for Date fields)
+- `"now"` → Current datetime (for Datetime fields)
+- `"__user"` → Current logged-in user
+- `":fieldname"` → Value from another field
+
+**Processing:**
+```python
+# In frappe/model/document.py
+def set_default_values(self):
+    for field in self.meta.fields:
+        if field.default:
+            if field.default == "Today":
+                self.set(field.fieldname, today())
+            elif field.default == "__user":
+                self.set(field.fieldname, frappe.session.user)
+            elif field.default.startswith(":"):
+                # Fetch from another field
+                source_field = field.default[1:]
+                self.set(field.fieldname, self.get(source_field))
+```
+
+#### Fetch From
+
+Fetch from automatically copies values from linked documents:
+
+**How It Works:**
+1. User selects a value in Link field
+2. Frappe detects Link field change
+3. Reads `fetch_from` property (e.g., `"customer.email"`)
+4. Loads linked document
+5. Copies specified field value
+6. Updates current document
+
+**Code Flow:**
+```python
+# When customer field changes
+if self.has_value_changed("customer"):
+    # Get fetch_from fields
+    fetch_fields = [f for f in self.meta.fields 
+                   if f.fetch_from and f.fetch_from.startswith("customer.")]
+    
+    # Load customer document
+    customer = frappe.get_doc("Customer", self.customer)
+    
+    # Copy values
+    for field in fetch_fields:
+        source_field = field.fetch_from.split(".")[1]
+        self.set(field.fieldname, customer.get(source_field))
+```
+
+#### Depends On
+
+Depends on controls field visibility using JavaScript expressions:
+
+**How It Works:**
+1. Frappe evaluates JavaScript expression
+2. Expression has access to `doc` object (current document)
+3. If expression returns `true`, field is shown
+4. If `false`, field is hidden
+5. Re-evaluates when dependent fields change
+
+**Example Expression:**
+```javascript
+// depends_on: "eval:doc.status=='Active'"
+// Evaluates to true if status equals "Active"
+if (doc.status == 'Active') {
+    show_field();
+} else {
+    hide_field();
+}
+```
+
+**Frontend Implementation:**
+- Frappe watches dependent fields
+- Re-evaluates expression on change
+- Shows/hides field dynamically
+- Updates form layout
+
+### Field Caching
+
+Frappe caches Meta objects for performance:
+
+**Cache Structure:**
+```python
+# Cache key: "doctype_meta:{doctype_name}"
+frappe.cache.hset("doctype_meta", "Customer", meta_object)
+```
+
+**Cache Invalidation:**
+- When DocType is updated
+- When Custom Field is added/modified
+- When Property Setter is applied
+- Manual cache clear: `frappe.clear_cache(doctype="Customer")`
+
+**Why Caching Matters:**
+- Loading Meta from database is expensive
+- Forms load faster with cached Meta
+- Reduces database queries
+- Improves overall application performance
+
+### Virtual Fields
+
+Virtual fields don't create database columns:
+
+**How They Work:**
+1. Defined in DocType but `is_virtual: 1`
+2. No database column created
+3. Value computed in Python when document loads
+4. Can access other fields, linked documents, etc.
+
+**Example:**
+```python
+# In Customer DocType Python file
+def get_full_name(self):
+    return f"{self.first_name} {self.last_name}"
+
+# Virtual field definition
+{
+    "fieldname": "full_name",
+    "fieldtype": "Data",
+    "is_virtual": 1,
+    "read_only": 1
+}
+
+# Value computed when accessed
+doc.full_name  # Calls get_full_name() method
+```
+
+**Use Cases:**
+- Computed values (totals, concatenations)
+- Formatted displays
+- Values derived from linked documents
+- Complex calculations
+
+### Field Permissions
+
+Fields can have permission levels (`permlevel`):
+
+**How It Works:**
+1. Fields have `permlevel` property (0-9)
+2. DocPerm records define user role permissions
+3. Users only see/edit fields they have permission for
+4. Higher permlevel = more restricted
+
+**Example:**
+```python
+# Field definition
+{
+    "fieldname": "salary",
+    "fieldtype": "Currency",
+    "permlevel": 1  # Restricted access
+}
+
+# Permission definition
+{
+    "role": "Employee",
+    "permlevel": 0,  # Can only access permlevel 0 fields
+    "read": 1
+}
+# Employee role cannot see salary field (permlevel 1)
+
+{
+    "role": "HR Manager",
+    "permlevel": 1,  # Can access permlevel 0 and 1
+    "read": 1,
+    "write": 1
+}
+# HR Manager can see and edit salary field
+```
+
+### Field Indexing
+
+Fields can have database indexes for faster searching:
+
+**Search Index (`search_index: 1`):**
+- Creates database index on field
+- Speeds up WHERE clause queries
+- Useful for frequently searched fields
+- Only for certain fieldtypes (Data, Link, etc.)
+
+**Unique Index (`unique: 1`):**
+- Creates unique constraint
+- Prevents duplicate values
+- Automatically creates index
+- Only for Data, Link, Read Only fields
+
+**Code:**
+```python
+# In frappe/database/schema.py
+if field.search_index:
+    # Creates index
+    frappe.db.sql(f"CREATE INDEX idx_{fieldname} ON `tab{doctype}` (`{fieldname}`)")
+
+if field.unique:
+    # Creates unique constraint
+    frappe.db.sql(f"ALTER TABLE `tab{doctype}` ADD UNIQUE (`{fieldname}`)")
+```
+
+---
+
 ## Conclusion
 
 Fields are the core building blocks of Frappe DocTypes, defining data structure, validation, user interface, and business logic. Understanding field types and properties is essential for effective Frappe development. This documentation covers all 47 field types and their properties, providing a comprehensive reference for working with Frappe fields.
+
+### Key Takeaways
+
+1. **Fields define everything**: Data structure, validation, UI, database schema, and business logic
+2. **Fields are stored as DocField documents**: Enabling dynamic creation and modification
+3. **Fields map to database columns**: Understanding this helps with performance and data management
+4. **Fields control form generation**: Frappe automatically creates forms from field definitions
+5. **Fields enable relationships**: Link fields create connections between documents
+6. **Fields support business logic**: Fetch from, depends on, virtual fields enable automation
+7. **Fields have permissions**: Fine-grained access control through permission levels
+8. **Fields are cached**: Meta objects are cached for performance
+
+### Next Steps
+
+- Practice creating DocTypes with different field types
+- Experiment with field properties (depends_on, fetch_from, etc.)
+- Understand how fields map to database columns
+- Learn about Custom Fields and Property Setters
+- Explore field validation and business logic
+- Study how fields work in forms and list views
+
+This comprehensive guide provides everything you need to understand and work with Frappe fields effectively.
