@@ -825,17 +825,17 @@ All fields share a common set of properties. Below is a comprehensive list with 
 ```
 
 **Why use fetch_from:**
-- Reduces data entry time
-- Ensures data consistency (always uses source document's value)
-- Prevents typos and errors
-- Automatically updates if source document changes (on save)
-- Improves user experience
+-  Reduces data entry time
+-  Ensures data consistency (always uses source document's value)
+-  Prevents typos and errors
+-  Automatically updates if source document changes (on save)
+-  Improves user experience
 
 **Limitations:**
-- Only works with Link fields (not Dynamic Link directly)
-- Source field must exist in linked DocType
-- Fetches on save, not real-time (unless using client-side script)
-- Cannot fetch computed/virtual fields from linked document
+-  Only works with Link fields (not Dynamic Link directly)
+-  Source field must exist in linked DocType
+-  Fetches on save, not real-time (unless using client-side script)
+-  Cannot fetch computed/virtual fields from linked document
 
 #### `fetch_if_empty` (Check)
 - **Type**: Boolean (0 or 1)
@@ -901,16 +901,16 @@ Fields can be conditionally mandatory:
 - Otherwise, field is optional
 
 **Why use required fields:**
-- Ensures data completeness
-- Prevents incomplete records
-- Enforces business rules
-- Improves data quality
+-  Ensures data completeness
+-  Prevents incomplete records
+-  Enforces business rules
+-  Improves data quality
 
 **Best Practices:**
-- Only mark truly essential fields as required
-- Use `mandatory_depends_on` for conditional requirements
-- Provide clear error messages
-- Consider user workflow (don't require fields users can't fill yet)
+-  Only mark truly essential fields as required
+-  Use `mandatory_depends_on` for conditional requirements
+-  Provide clear error messages
+-  Consider user workflow (don't require fields users can't fill yet)
 
 #### `unique` (Check)
 - **Type**: Boolean (0 or 1)
@@ -989,24 +989,24 @@ if field.unique:
 - But slows down inserts slightly (index maintenance)
 
 **Use Cases:**
-- Email addresses (one email per user)
-- Identification numbers (SSN, Tax ID)
-- Usernames (unique login names)
-- Product codes (unique SKUs)
-- Account numbers (unique identifiers)
+-  Email addresses (one email per user)
+-  Identification numbers (SSN, Tax ID)
+-  Usernames (unique login names)
+-  Product codes (unique SKUs)
+-  Account numbers (unique identifiers)
 
 **Why use unique fields:**
-- Prevents duplicate data
-- Ensures data integrity
-- Enables efficient lookups
-- Enforces business rules
+-  Prevents duplicate data
+-  Ensures data integrity
+-  Enables efficient lookups
+-  Enforces business rules
 
 **Best Practices:**
-- Use for truly unique identifiers
-- Consider case sensitivity requirements
-- Clean up existing duplicates before enabling
-- Use in combination with `reqd: 1` for identifiers
-- Document why field must be unique
+-  Use for truly unique identifiers
+-  Consider case sensitivity requirements
+-  Clean up existing duplicates before enabling
+-  Use in combination with `reqd: 1` for identifiers
+-  Document why field must be unique
 
 #### `non_negative` (Check)
 - **Type**: Boolean (0 or 1)
@@ -1043,6 +1043,97 @@ if field.unique:
 - **Description**: Hide field in forms (but still stored in database)
 - **Usage**: Hide fields used for calculations or system purposes
 - **Example**: `{"hidden": 1}` - Field is hidden
+
+---
+
+###  **IMPORTANT NOTES: Hidden Field Constraints**
+
+#### Constraint: Hidden + Mandatory Requires Default
+
+**Rule:** A field **cannot be both hidden (`hidden: 1`) and mandatory (`reqd: 1`) without a default value**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_hidden_and_mandatory(docname, d):
+    if d.hidden and d.reqd and not d.default and not frappe.flags.in_migrate:
+        frappe.throw(
+            _("{0}: Field {1} in row {2} cannot be hidden and mandatory without default").format(
+                docname, d.label, d.idx
+            ),
+            HiddenAndMandatoryWithoutDefaultError,
+        )
+```
+
+**Error Message:**
+```
+"{doctype}: Field {label} in row {idx} cannot be hidden and mandatory without default"
+```
+
+**Why this constraint exists:**
+- If field is hidden, users can't see it to fill it
+- If field is mandatory, it must have a value
+- Without default, field would be impossible to fill
+- This would cause save failures
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "system_field",
+  "fieldtype": "Data",
+  "hidden": 1,
+  "reqd": 1
+  // ERROR: Hidden + mandatory without default!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "system_field",
+  "fieldtype": "Data",
+  "hidden": 1,
+  "reqd": 1,
+  "default": "system_value"  // Provides default value
+}
+```
+
+**Alternative Solutions:**
+
+**Option 1: Remove mandatory requirement**
+```json
+{
+  "fieldname": "system_field",
+  "fieldtype": "Data",
+  "hidden": 1,
+  "reqd": 0  // Not mandatory
+}
+```
+
+**Option 2: Set default value**
+```json
+{
+  "fieldname": "system_field",
+  "fieldtype": "Data",
+  "hidden": 1,
+  "reqd": 1,
+  "default": "auto_value"  // Auto-filled
+}
+```
+
+**Option 3: Set in code instead**
+```python
+# In DocType Python file
+def before_save(self):
+    if not self.system_field:
+        self.system_field = "calculated_value"
+```
+
+**Use Cases for Hidden Fields:**
+- System-calculated values
+- Internal tracking fields
+- Fields populated by scripts
+- Fields used in formulas but not user-editable
 
 #### `read_only` (Check)
 - **Type**: Boolean (0 or 1)
@@ -1213,25 +1304,25 @@ if field.unique:
 - `frappe.utils.is_json(value)`: Check if value is valid JSON
 
 **Why use depends_on:**
-- Creates dynamic, context-aware forms
-- Reduces form clutter (only shows relevant fields)
-- Improves user experience
-- Prevents errors (hides irrelevant fields)
-- Guides users through workflows
+-  Creates dynamic, context-aware forms
+-  Reduces form clutter (only shows relevant fields)
+-  Improves user experience
+-  Prevents errors (hides irrelevant fields)
+-  Guides users through workflows
 
 **Best Practices:**
-- Keep expressions simple and readable
-- Test expressions thoroughly
-- Use helper functions for complex logic
-- Document complex expressions
-- Consider performance (avoid heavy computations)
+-  Keep expressions simple and readable
+-  Test expressions thoroughly
+-  Use helper functions for complex logic
+-  Document complex expressions
+-  Consider performance (avoid heavy computations)
 
 **Common Mistakes:**
-- Forgetting `"eval:"` prefix
-- Using Python syntax instead of JavaScript
-- Not handling null/undefined values
-- Complex expressions that are hard to maintain
-- Circular dependencies (field A depends on B, B depends on A)
+-  Forgetting `"eval:"` prefix
+-  Using Python syntax instead of JavaScript
+-  Not handling null/undefined values
+-  Complex expressions that are hard to maintain
+-  Circular dependencies (field A depends on B, B depends on A)
 
 #### `mandatory_depends_on` (Code)
 - **Type**: JavaScript expression
@@ -1408,12 +1499,209 @@ if field.unique:
 - **Description**: Create database index for faster searching
 - **Example**: `{"search_index": 1}` - Add database index
 
+---
+
+###  **IMPORTANT NOTES: Search Index Constraints**
+
+#### Constraint: Cannot Index Text Fields
+
+**Rule:** Fields of type Text, Long Text, Small Text, Code, or Text Editor **cannot be indexed**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+if d.search_index and d.fieldtype in ("Text", "Long Text", "Small Text", "Code", "Text Editor"):
+    frappe.throw(
+        _("{0}:Fieldtype {1} for {2} cannot be indexed").format(docname, d.fieldtype, d.label),
+        CannotIndexedError,
+    )
+```
+
+**Error Message:**
+```
+"{doctype}:Fieldtype {fieldtype} for {label} cannot be indexed"
+```
+
+**Why this constraint exists:**
+- Text fields can store very large amounts of data
+- Database indexes on large text fields are inefficient
+- MySQL/MariaDB have limitations on indexing TEXT columns
+- Full-text search is used instead for text fields
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "description",
+  "fieldtype": "Long Text",
+  "search_index": 1  // ERROR: Text fields can't be indexed!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "item_code",
+  "fieldtype": "Data",
+  "search_index": 1  // Data fields can be indexed
+}
+```
+
+**Fields That CAN Be Indexed:**
+- Data (with length limit)
+- Link
+- Int
+- Float
+- Currency
+- Date
+- Datetime
+- Check
+
+**Fields That CANNOT Be Indexed:**
+- Text
+- Long Text
+- Small Text
+- Code
+- Text Editor
+- HTML Editor
+- Markdown Editor
+- Virtual fields
+
+**How Indexes Work:**
+
+**Database Level:**
+```sql
+-- When search_index: 1, Frappe creates:
+CREATE INDEX idx_item_code ON `tabItem` (`item_code`);
+```
+
+**Performance Impact:**
+-  **Faster queries**: `WHERE item_code = 'ABC'` uses index
+-  **Faster sorting**: `ORDER BY item_code` uses index
+-  **Faster joins**: Joins on indexed fields are faster
+-  **Slower inserts**: Indexes must be updated on insert
+-  **More storage**: Indexes take additional disk space
+
+**When to Use Search Index:**
+- Fields frequently used in WHERE clauses
+- Fields used for sorting
+- Fields used in joins
+- Fields with many unique values
+
+**When NOT to Use Search Index:**
+- Fields rarely queried
+- Fields with few unique values (like status fields with 3-4 options)
+- Text fields (use full-text search instead)
+
 #### `is_virtual` (Check)
 - **Type**: Boolean (0 or 1)
 - **Default**: 0
 - **Description**: Field doesn't exist in database, computed on-the-fly
 - **Usage**: For calculated fields that don't need storage
 - **Example**: `{"is_virtual": 1}` - Virtual field
+
+---
+
+###  **IMPORTANT NOTES: Virtual Field Constraints**
+
+#### Constraint 1: Cannot Appear in List View
+
+**Rule:** Virtual fields **cannot be included in list view** (`in_list_view: 1`).
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+not_allowed_in_list_view = list(copy.copy(no_value_fields))
+# ... includes virtual fields
+
+def check_in_list_view(is_table, d):
+    if d.in_list_view and (d.fieldtype in not_allowed_in_list_view):
+        property_label = "In Grid View" if is_table else "In List View"
+        frappe.throw(
+            _("'{0}' not allowed for type {1} in row {2}").format(property_label, d.fieldtype, d.idx)
+        )
+```
+
+**Error Message:**
+```
+"'In List View' not allowed for type {fieldtype} in row {idx}"
+```
+
+**Why this constraint exists:**
+- Virtual fields are computed on-the-fly
+- List views query database directly
+- Virtual fields don't exist in database
+- Computing virtual fields for many rows would be slow
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "full_name",
+  "fieldtype": "Data",
+  "is_virtual": 1,
+  "in_list_view": 1  // ERROR: Virtual fields can't be in list view!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "full_name",
+  "fieldtype": "Data",
+  "is_virtual": 1,
+  "in_list_view": 0  // Virtual fields only in forms
+}
+```
+
+#### Constraint 2: Cannot Be Indexed
+
+**Rule:** Virtual fields **cannot have search index** (`search_index: 1`).
+
+**Why this constraint exists:**
+- Indexes are database structures
+- Virtual fields don't exist in database
+- Cannot create index on non-existent column
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "computed_value",
+  "fieldtype": "Data",
+  "is_virtual": 1,
+  "search_index": 1  // ERROR: Cannot index virtual fields!
+}
+```
+
+#### How Virtual Fields Work
+
+**Computation:**
+Virtual fields are computed in Python when document is loaded:
+
+```python
+# In DocType Python file (e.g., customer.py)
+class Customer(Document):
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    # Virtual field is accessed like regular field
+    # doc.full_name calls get_full_name() method
+```
+
+**When Computed:**
+- When document is loaded: `doc = frappe.get_doc("Customer", "CUST-00001")`
+- When accessed: `doc.full_name` triggers computation
+- Not stored in database
+- Re-computed each time document is accessed
+
+**Use Cases:**
+- Computed values (totals, concatenations)
+- Formatted displays
+- Values derived from other fields
+- Complex calculations
+
+**Performance Considerations:**
+- Virtual fields are computed every time document loads
+- Avoid heavy computations in virtual fields
+- Consider caching if computation is expensive
 
 #### `ignore_xss_filter` (Check)
 - **Type**: Boolean (0 or 1)
@@ -1491,6 +1779,8 @@ if field.unique:
 #### 1. Data
 **Purpose**: Single-line text input field
 
+**What it is:** Data field is the most basic text input field. It stores single-line text strings. Can be enhanced with special validation types through the `options` property.
+
 **Properties**:
 - `length`: Maximum characters (default: 140)
 - `options`: Special validation types:
@@ -1503,6 +1793,107 @@ if field.unique:
 - `default`: Default value
 - `placeholder`: Placeholder text
 - `translatable`: Enable translation
+
+---
+
+###  **IMPORTANT NOTES: Data Field Constraints**
+
+#### Constraint: Options Must Be Valid Data Field Type
+
+**Rule:** If `options` is specified, it **must be one of the allowed special types**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def validate_data_field_type(docfield):
+    if docfield.fieldtype == "Data" and not (docfield.oldfieldtype and docfield.oldfieldtype != "Data"):
+        if docfield.options and (docfield.options not in data_field_options):
+            df_str = frappe.bold(_(docfield.label, context=docfield.parent))
+            text_str = (
+                _("{0} is an invalid Data field.").format(df_str)
+                + "<br>" * 2
+                + _("Only Options allowed for Data field are:")
+                + "<br>"
+            )
+            df_options_str = "<ul><li>" + "</li><li>".join(_(x) for x in data_field_options) + "</ul>"
+            
+            frappe.msgprint(text_str + df_options_str, title="Invalid Data Field", alert=True)
+```
+
+**Allowed Options:**
+- `"Email"` - Email format validation
+- `"Name"` - Name format (alphanumeric, spaces, hyphens)
+- `"Phone"` - Phone number format
+- `"URL"` - URL format validation
+- `"Barcode"` - Barcode scanner support
+- `"IBAN"` - IBAN bank account format
+
+**Error Message:**
+```
+"{field_label} is an invalid Data field.
+Only Options allowed for Data field are:
+• Email
+• Name
+• Phone
+• URL
+• Barcode
+• IBAN"
+```
+
+**Why this constraint exists:**
+- Data field `options` is reserved for special validation types
+- Prevents confusion with other fieldtypes (like Select)
+- Ensures consistent validation behavior
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "status",
+  "fieldtype": "Data",
+  "options": "Draft\nSubmitted\nCancelled"  // ERROR: Use Select fieldtype instead!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "email",
+  "fieldtype": "Data",
+  "options": "Email"  // Valid: Enables email validation
+}
+```
+
+**Special Option Behaviors:**
+
+**Email (`options: "Email"`):**
+- Validates email format (contains @, valid domain)
+- Shows email icon in forms
+- Can trigger email-related features
+
+**Name (`options: "Name"`):**
+- Validates name format (alphanumeric, spaces, hyphens allowed)
+- Prevents special characters
+- Useful for person/company names
+
+**Phone (`options: "Phone"`):**
+- Validates phone number format
+- Can include country codes
+- Format: +1234567890 or (123) 456-7890
+
+**URL (`options: "URL"`):**
+- Validates URL format (http://, https://)
+- Shows clickable link icon when valid
+- Opens URL in new tab on click
+
+**Barcode (`options: "Barcode"`):**
+- Shows barcode scanner button
+- Validates barcode format
+- Can display barcode image
+
+**IBAN (`options: "IBAN"`):**
+- Validates IBAN bank account format
+- Automatically formats with spaces
+- Length: up to 34 characters
 
 **Examples**:
 ```json
@@ -1646,6 +2037,8 @@ if field.unique:
 #### 7. Float
 **Purpose**: Decimal number input
 
+**What it is:** Float field stores decimal numbers (numbers with fractional parts). Useful for prices, rates, percentages, measurements, etc.
+
 **Properties**:
 - `precision`: Decimal places (0-9)
 - `default`: Default decimal value
@@ -1664,11 +2057,80 @@ if field.unique:
 
 ---
 
+###  **IMPORTANT NOTES: Float Field Constraints**
+
+#### Constraint: Precision Must Be Between 1 and 6
+
+**Rule:** `precision` for Float, Currency, and Percent fields **must be between 1 and 6**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_precision(d):
+    if (
+        d.fieldtype in ("Currency", "Float", "Percent")
+        and d.precision is not None
+        and not (1 <= cint(d.precision) <= 6)
+    ):
+        frappe.throw(_("Precision should be between 1 and 6"))
+```
+
+**Error Message:**
+```
+"Precision should be between 1 and 6"
+```
+
+**Why this constraint exists:**
+- Precision 0 means no decimals (use Int instead)
+- Precision > 6 becomes impractical for most use cases
+- Database storage considerations (DECIMAL(18,6) is standard)
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "rate",
+  "fieldtype": "Float",
+  "precision": "0"  // ERROR: Use Int fieldtype instead!
+}
+```
+
+```json
+{
+  "fieldname": "rate",
+  "fieldtype": "Float",
+  "precision": "10"  // ERROR: Must be 1-6!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "rate",
+  "fieldtype": "Float",
+  "precision": "2"  // Shows 2 decimal places: 100.50
+}
+```
+
+**Database Storage:**
+- Float fields stored as `DECIMAL(18, precision)`
+- Example: `precision: "2"` → `DECIMAL(18,2)` → Stores up to 18 digits total, 2 after decimal
+- Maximum value: 999,999,999,999,999.99 (with precision 2)
+
+**Common Precision Values:**
+- **Precision 1**: Simple decimals (10.5)
+- **Precision 2**: Currency, percentages (100.50)
+- **Precision 3**: Detailed measurements (100.500)
+- **Precision 4-6**: Scientific/technical calculations
+
+---
+
 #### 8. Currency
 **Purpose**: Currency amount with formatting
 
+**What it is:** Currency field stores monetary amounts with automatic currency symbol formatting. It's similar to Float but with currency-specific formatting and validation.
+
 **Properties**:
-- `precision`: Decimal places (default: 2)
+- `precision`: Decimal places (default: 2, must be 1-6)
 - `default`: Default amount
 - `non_negative`: Prevent negative values
 
@@ -1684,6 +2146,121 @@ if field.unique:
 ```
 
 **Behavior**: Automatically formats with currency symbol based on company settings
+
+---
+
+###  **IMPORTANT NOTES: Currency Field Constraints**
+
+#### Constraint 1: Precision Must Be 1-6
+
+**Rule:** `precision` **must be between 1 and 6** (same as Float field).
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_precision(d):
+    if (
+        d.fieldtype in ("Currency", "Float", "Percent")
+        and d.precision is not None
+        and not (1 <= cint(d.precision) <= 6)
+    ):
+        frappe.throw(_("Precision should be between 1 and 6"))
+```
+
+**Error Message:**
+```
+"Precision should be between 1 and 6"
+```
+
+**Why this constraint exists:**
+- Currency precision determines decimal places (cents, etc.)
+- Standard is 2 decimal places (dollars and cents)
+- Precision > 6 becomes impractical for currency
+- Database storage considerations
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "amount",
+  "fieldtype": "Currency",
+  "precision": "10"  // ERROR: Must be 1-6!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "amount",
+  "fieldtype": "Currency",
+  "precision": "2"  // Standard: dollars and cents
+}
+```
+
+#### Constraint 2: Width Limitation
+
+**Rule:** Currency fields have a **maximum width of 100px**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_width(d):
+    if d.fieldtype == "Currency" and cint(d.width) < 100:
+        frappe.throw(_("Max width for type Currency is 100px in row {0}").format(d.idx))
+```
+
+**Error Message:**
+```
+"Max width for type Currency is 100px in row {idx}"
+```
+
+**Why this constraint exists:**
+- Currency values need space for currency symbol, formatting, and numbers
+- Too narrow fields truncate currency display
+- Ensures proper formatting visibility
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "amount",
+  "fieldtype": "Currency",
+  "width": "50px"  // ERROR: Too narrow! Minimum 100px
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "amount",
+  "fieldtype": "Currency",
+  "width": "150px"  // Adequate width for currency display
+}
+```
+
+#### Currency Formatting
+
+**How Currency is Displayed:**
+
+Currency fields automatically format based on:
+1. **Company currency**: From Company DocType
+2. **System currency**: From System Settings
+3. **User preferences**: User's preferred currency
+
+**Format Examples:**
+- USD: `$1,234.56`
+- EUR: `€1.234,56` (European format)
+- INR: `₹1,234.56`
+- GBP: `£1,234.56`
+
+**Database Storage:**
+- Stored as `DECIMAL(18, precision)`
+- Example: `precision: "2"` → `DECIMAL(18,2)`
+- Stores numeric value only (no currency symbol)
+- Currency symbol added during display
+
+**Currency Conversion:**
+- Currency fields can be converted using Currency Exchange rates
+- Multi-currency transactions supported
+- Base currency vs transaction currency
 
 ---
 
@@ -1712,6 +2289,8 @@ if field.unique:
 #### 10. Check
 **Purpose**: Boolean checkbox (True/False, 1/0)
 
+**What it is:** Check field is a boolean field that stores either 0 (unchecked/false) or 1 (checked/true). It displays as a checkbox in forms.
+
 **Properties**:
 - `default`: Default value (`"0"` or `"1"`)
 - Must be 0 or 1
@@ -1724,6 +2303,85 @@ if field.unique:
   "label": "Is Active",
   "default": "1"
 }
+```
+
+---
+
+###  **IMPORTANT NOTES: Check Field Constraints**
+
+#### Constraint 1: Default Must Be 0 or 1
+
+**Rule:** Check field `default` value **must be exactly `"0"` or `"1"`** (as strings).
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_illegal_default(d):
+    if d.fieldtype == "Check" and not d.default:
+        d.default = "0"  # Auto-set to "0" if not provided
+    if d.fieldtype == "Check" and cint(d.default) not in (0, 1):
+        frappe.throw(
+            _("Default for 'Check' type of field {0} must be either '0' or '1'").format(
+                frappe.bold(d.fieldname)
+            )
+        )
+```
+
+**Error Message:**
+```
+"Default for 'Check' type of field {fieldname} must be either '0' or '1'"
+```
+
+**Why this constraint exists:**
+- Check fields only store boolean values (0 or 1)
+- Database column is INT(1) which only accepts 0 or 1
+- Prevents invalid default values
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "is_active",
+  "fieldtype": "Check",
+  "default": "true"  // ERROR: Must be "0" or "1"
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "is_active",
+  "fieldtype": "Check",
+  "default": "1"  // Checked by default
+}
+```
+
+#### Constraint 2: Auto-Default to 0
+
+**Rule:** If no default is specified, Frappe **automatically sets default to `"0"`**.
+
+**Behavior:**
+- If `default` is not provided → Set to `"0"` (unchecked)
+- If `default` is empty string → Set to `"0"`
+- If `default` is `null` → Set to `"0"`
+
+**Database Storage:**
+- Check fields are stored as `INT(1)` in database
+- `0` = unchecked/false
+- `1` = checked/true
+- Default database constraint: `NOT NULL DEFAULT 0`
+
+**Usage in Code:**
+```python
+# Check if checkbox is checked
+if doc.is_active:  # True if value is 1
+    # Do something
+
+# Set checkbox
+doc.is_active = 1  # Check
+doc.is_active = 0  # Uncheck
+
+# Toggle
+doc.is_active = 1 - doc.is_active  # Toggle value
 ```
 
 ---
@@ -1861,6 +2519,165 @@ if field.unique:
   - Format: `"link_fieldname.source_fieldname"`
   - Example: `"fetch_from": "customer.email"` copies email from Customer
 
+---
+
+###  **IMPORTANT NOTES: Link Field Constraints**
+
+#### Constraint 1: Options Must Be Valid DocType
+
+**Rule:** `options` **must be a valid DocType name** that exists in the system.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_link_table_options(docname, d):
+    if d.fieldtype in ("Link", *table_fields):
+        if not d.options:
+            frappe.throw(
+                _("{0}: Options required for Link or Table type field {1} in row {2}").format(
+                    docname, d.label, d.idx
+                ),
+                DoctypeLinkError,
+            )
+        if d.options == "[Select]" or d.options == d.parent:
+            return
+        if d.options != d.parent:
+            options = frappe.db.get_value("DocType", d.options, "name")
+            if not options:
+                frappe.throw(
+                    _("{0}: Options must be a valid DocType for field {1} in row {2}").format(
+                        docname, d.label, d.idx
+                    ),
+                    WrongOptionsDoctypeLinkError,
+                )
+```
+
+**Error Messages:**
+1. If options not provided: `"{doctype}: Options required for Link or Table type field {label} in row {idx}"`
+2. If DocType doesn't exist: `"{doctype}: Options must be a valid DocType for field {label} in row {idx}"`
+
+**Why this constraint exists:**
+- Link fields need to know which DocType to link to
+- Invalid DocType names would cause runtime errors
+- Ensures referential integrity
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "customer",
+  "fieldtype": "Link"
+  // ERROR: options missing!
+}
+```
+
+```json
+{
+  "fieldname": "customer",
+  "fieldtype": "Link",
+  "options": "NonExistentDocType"  // ERROR: DocType doesn't exist!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "customer",
+  "fieldtype": "Link",
+  "options": "Customer"  // Valid DocType name
+}
+```
+
+#### Constraint 2: Self-Reference Allowed
+
+**Rule:** Link fields **can link to the same DocType** (`options` can equal `parent`).
+
+**Special Case:**
+```python
+if d.options == d.parent:
+    return  # Self-reference is allowed
+```
+
+**Use Case:** DocTypes that reference themselves (tree structures):
+- Employee → Manager (Employee)
+- Account → Parent Account (Account)
+- Company → Parent Company (Company)
+
+**Example:**
+```json
+{
+  "doctype": "Employee",
+  "fields": [
+    {
+      "fieldname": "manager",
+      "fieldtype": "Link",
+      "options": "Employee"  // Self-reference allowed!
+    }
+  ]
+}
+```
+
+#### Constraint 3: Case Sensitivity
+
+**Rule:** DocType names are **case-sensitive**. `"Customer"` ≠ `"customer"`.
+
+**Validation:**
+```python
+elif not (options == d.options):
+    frappe.throw(
+        _("{0}: Options {1} must be the same as doctype name {2} for the field {3}").format(
+            docname, d.options, options, d.label
+        ),
+        DoctypeLinkError,
+    )
+```
+
+**Example:**
+```json
+// If DocType is "Customer" (capital C)
+{
+  "fieldname": "customer",
+  "fieldtype": "Link",
+  "options": "customer"  // ERROR: Case mismatch!
+}
+
+// Correct:
+{
+  "fieldname": "customer",
+  "fieldtype": "Link",
+  "options": "Customer"  // Matches exact case
+}
+```
+
+#### How Link Fields Validate Documents
+
+**Validation Process:**
+
+1. **On Save**: Frappe checks if linked document exists
+2. **If not exists**: Throws validation error
+3. **If exists**: Saves the link
+
+**Code:**
+```python
+# In frappe/model/document.py
+def validate_link(self, df, value):
+    if value and df.fieldtype == "Link":
+        if not frappe.db.exists(df.options, value):
+            frappe.throw(
+                _("Invalid Link: {0}").format(value),
+                frappe.LinkValidationError
+            )
+```
+
+**Error Message:**
+```
+"Invalid Link: {document_name}"
+```
+
+**Why This Matters:**
+- Prevents broken references
+- Ensures data integrity
+- Catches typos and invalid selections
+
 **Example**:
 ```json
 {
@@ -1896,8 +2713,10 @@ if field.unique:
 #### 16. Dynamic Link
 **Purpose**: Link to any DocType based on another field value
 
+**What it is:** Dynamic Link is a special Link field that can link to different DocTypes based on the value in another field. Unlike regular Link fields that link to a fixed DocType, Dynamic Link changes its target DocType dynamically.
+
 **Properties**:
-- `options`: **Required** - Fieldname that contains the DocType name
+- `options`: **Required** - Fieldname that contains the DocType name (not the DocType name itself!)
 - `link_filters`: JSON filters (same as Link)
 
 **Example**:
@@ -1922,8 +2741,213 @@ if field.unique:
 
 ---
 
+###  **IMPORTANT NOTES: Dynamic Link Constraints**
+
+#### Constraint 1: Options Must Point to Another Field
+
+**Rule:** `options` must be a **fieldname** (not a DocType name) that contains the DocType name.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_dynamic_link_options(d):
+    if d.fieldtype == "Dynamic Link":
+        doctype_pointer = list(filter(lambda df: df.fieldname == d.options, fields))
+        if (
+            not doctype_pointer
+            or (doctype_pointer[0].fieldtype not in ("Link", "Select"))
+            or (doctype_pointer[0].fieldtype == "Link" and doctype_pointer[0].options != "DocType")
+        ):
+            frappe.throw(
+                _(
+                    "Options 'Dynamic Link' type of field must point to another Link Field with options as 'DocType'"
+                )
+            )
+```
+
+**Error Message:**
+```
+"Options 'Dynamic Link' type of field must point to another Link Field with options as 'DocType'"
+```
+
+**Why this constraint exists:**
+- Dynamic Link needs to know which DocType to link to
+- It reads this from another field's value
+- That field must exist and contain valid DocType names
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "Sales Order"  // ERROR: Should be a fieldname, not DocType name!
+}
+```
+
+**Example -  Correct:**
+```json
+// Step 1: Create the "pointer" field
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Select",  // Or Link with options: "DocType"
+  "options": "Sales Order\nPurchase Order\nDelivery Note"
+}
+
+// Step 2: Create Dynamic Link field pointing to the pointer field
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "reference_type"  // Points to fieldname, not DocType!
+}
+```
+
+#### Constraint 2: Pointer Field Must Be Link or Select
+
+**Rule:** The field specified in `options` must be either:
+- **Link field** with `options: "DocType"` (links to DocType DocType)
+- **Select field** with DocType names as options
+
+**Why Each Approach:**
+
+**Approach 1: Link to DocType DocType**
+```json
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Link",
+  "options": "DocType",  // Links to DocType DocType
+  "label": "Reference Type"
+}
+
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "reference_type"  // Reads DocType name from reference_type
+}
+```
+- **Pros**: User can select from all DocTypes in system
+- **Cons**: Less control, can select invalid DocTypes
+
+**Approach 2: Select with Specific Options**
+```json
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Select",
+  "options": "Sales Order\nPurchase Order\nDelivery Note",
+  "label": "Reference Type"
+}
+
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "reference_type"  // Reads DocType name from reference_type
+}
+```
+- **Pros**: Controlled list, only valid DocTypes
+- **Cons**: Must update options if new DocTypes added
+
+#### How Dynamic Link Works
+
+**Step-by-Step Process:**
+
+1. **User selects reference type:**
+   ```python
+   doc.reference_type = "Sales Order"  # Selected from Select field
+   ```
+
+2. **Dynamic Link field reads the value:**
+   ```python
+   # Frappe internally does:
+   target_doctype = doc.reference_type  # "Sales Order"
+   ```
+
+3. **Dynamic Link changes its target:**
+   ```python
+   # Now reference_name links to Sales Order DocType
+   doc.reference_name = "SO-00001"  # Valid Sales Order name
+   ```
+
+4. **If reference_type changes:**
+   ```python
+   doc.reference_type = "Purchase Order"  # Changed
+   # reference_name now links to Purchase Order DocType
+   doc.reference_name = "PO-00001"  # Valid Purchase Order name
+   ```
+
+**Real-World Use Case:**
+
+**Payment Entry** can reference multiple DocTypes:
+```json
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Select",
+  "options": "Sales Invoice\nPurchase Invoice\nJournal Entry",
+  "label": "Reference Type"
+},
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "reference_type",
+  "label": "Reference Name"
+}
+```
+
+**How It Works:**
+- If `reference_type = "Sales Invoice"` → `reference_name` links to Sales Invoice
+- If `reference_type = "Purchase Invoice"` → `reference_name` links to Purchase Invoice
+- One field handles multiple DocTypes dynamically!
+
+**Common Mistakes:**
+
+ **Mistake 1: Using DocType name instead of fieldname**
+```json
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "Sales Order"  // WRONG: Should be fieldname
+}
+```
+
+ **Mistake 2: Pointer field doesn't exist**
+```json
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "non_existent_field"  // WRONG: Field doesn't exist
+}
+```
+
+ **Mistake 3: Pointer field is wrong type**
+```json
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Data",  // WRONG: Should be Link or Select
+  "options": "Sales Order"
+}
+```
+
+ **Correct Setup:**
+```json
+// 1. Create pointer field first
+{
+  "fieldname": "reference_type",
+  "fieldtype": "Select",
+  "options": "Sales Order\nPurchase Order"
+}
+
+// 2. Create Dynamic Link pointing to pointer field
+{
+  "fieldname": "reference_name",
+  "fieldtype": "Dynamic Link",
+  "options": "reference_type"  // Points to fieldname
+}
+```
+
+---
+
 #### 17. Select
 **Purpose**: Dropdown selection from predefined options
+
+**What it is:** Select field provides a dropdown list of predefined options. Users can only select from the provided options, ensuring data consistency.
 
 **Properties**:
 - `options`: **Required** - Options separated by newlines
@@ -1948,6 +2972,177 @@ if field.unique:
 Option 1
 Option 2
 Option 3
+```
+
+---
+
+###  **IMPORTANT NOTES: Select Field Constraints**
+
+#### Constraint 1: Options Must Be Set Before Default
+
+**Rule:** If `default` is specified, `options` **must be set first** and default value **must exist in options**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_illegal_default(d):
+    if d.fieldtype == "Select" and d.default:
+        if not d.options:
+            frappe.throw(
+                _("Options for {0} must be set before setting the default value.").format(
+                    frappe.bold(d.fieldname)
+                )
+            )
+        elif d.default not in d.options.split("\n"):
+            frappe.throw(
+                _("Default value for {0} must be in the list of options.").format(
+                    frappe.bold(d.fieldname)
+                )
+            )
+```
+
+**Error Messages:**
+1. If options not set: `"Options for {fieldname} must be set before setting the default value."`
+2. If default not in options: `"Default value for {fieldname} must be in the list of options."`
+
+**Why this constraint exists:**
+- Default value must be a valid option
+- Prevents invalid defaults that don't exist in dropdown
+- Ensures data consistency
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "status",
+  "fieldtype": "Select",
+  "default": "Draft",  // ERROR: Options not set yet!
+  "options": "Draft\nSubmitted"
+}
+```
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "status",
+  "fieldtype": "Select",
+  "options": "Draft\nSubmitted",
+  "default": "Active"  // ERROR: "Active" not in options!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "status",
+  "fieldtype": "Select",
+  "options": "Draft\nSubmitted\nCancelled",
+  "default": "Draft"  // "Draft" exists in options
+}
+```
+
+#### Constraint 2: Options Are Trimmed
+
+**Rule:** Frappe automatically **strips whitespace** from options.
+
+**Validation Code:**
+```python
+def scrub_options_in_select(field):
+    if field.fieldtype == "Select" and field.options is not None:
+        options_list = []
+        for i, option in enumerate(field.options.split("\n")):
+            _option = option.strip()  # Strips whitespace
+            if i == 0 or _option:
+                options_list.append(_option)
+        field.options = "\n".join(options_list)
+```
+
+**Behavior:**
+- Leading/trailing spaces are removed
+- Empty lines are removed (except first line)
+- `"Option 1\n  Option 2  \nOption 3"` becomes `"Option 1\nOption 2\nOption 3"`
+
+**Why this matters:**
+- Prevents issues with spaces in option values
+- Ensures consistent matching
+- `"Draft"` and `"Draft "` would be treated as different without trimming
+
+#### Constraint 3: Options Format
+
+**Rule:** Options must be separated by **newlines** (`\n`), not commas or other separators.
+
+**Correct Format:**
+```
+Option 1
+Option 2
+Option 3
+```
+
+**In JSON:**
+```json
+{
+  "options": "Option 1\nOption 2\nOption 3"
+}
+```
+
+**Common Mistakes:**
+
+ **Wrong - Using commas:**
+```json
+{
+  "options": "Draft, Submitted, Cancelled"  // WRONG!
+}
+```
+
+ **Wrong - Using semicolons:**
+```json
+{
+  "options": "Draft; Submitted; Cancelled"  // WRONG!
+}
+```
+
+ **Correct - Using newlines:**
+```json
+{
+  "options": "Draft\nSubmitted\nCancelled"  // CORRECT!
+}
+```
+
+#### Best Practices for Select Fields
+
+**1. Use Clear, Consistent Option Names:**
+ **Good:**
+```
+Draft
+Submitted
+Cancelled
+```
+
+ **Bad:**
+```
+draft
+SUBMITTED
+Cancelled
+Draft (old)
+```
+
+**2. Order Options Logically:**
+- Most common first
+- Or alphabetical (if `sort_options: 1`)
+- Or workflow order (Draft → Submitted → Cancelled)
+
+**3. Keep Options Stable:**
+- Avoid changing option names (breaks existing data)
+- Add new options at end
+- Mark deprecated options clearly
+
+**4. Use Translatable for User-Facing Options:**
+```json
+{
+  "fieldname": "status",
+  "fieldtype": "Select",
+  "options": "Draft\nSubmitted\nCancelled",
+  "translatable": 1  // Allows translation
+}
 ```
 
 ---
@@ -2164,9 +3359,11 @@ Option 3
 #### 28. Rating
 **Purpose**: Star rating (1-5 stars)
 
+**What it is:** Rating field displays an interactive star rating widget. Users click stars to set a rating value.
+
 **Properties**:
-- `default`: Default rating (1-5)
-- `options`: Maximum rating (default: 5)
+- `default`: Default rating (0-5, where 0 means no rating)
+- `options`: Maximum rating (default: 5, must be between 3 and 10)
 
 **Example**:
 ```json
@@ -2180,6 +3377,72 @@ Option 3
 ```
 
 **Behavior**: Interactive star rating, stores numeric value (1-5)
+
+---
+
+###  **IMPORTANT NOTES: Rating Field Constraints**
+
+#### Constraint: Options Must Be Between 3 and 10
+
+**Rule:** `options` (maximum rating) **must be between 3 and 10**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_no_of_ratings(docfield):
+    if docfield.fieldtype == "Rating":
+        if docfield.options and (int(docfield.options) > 10 or int(docfield.options) < 3):
+            frappe.throw(_("Options for Rating field can range from 3 to 10"))
+```
+
+**Error Message:**
+```
+"Options for Rating field can range from 3 to 10"
+```
+
+**Why this constraint exists:**
+- Too few stars (1-2) doesn't provide enough granularity
+- Too many stars (11+) becomes cluttered and hard to use
+- 3-10 range provides good UX balance
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "rating",
+  "fieldtype": "Rating",
+  "options": "2"  // ERROR: Must be 3-10!
+}
+```
+
+```json
+{
+  "fieldname": "rating",
+  "fieldtype": "Rating",
+  "options": "15"  // ERROR: Must be 3-10!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "rating",
+  "fieldtype": "Rating",
+  "options": "5"  // Standard 5-star rating
+}
+```
+
+```json
+{
+  "fieldname": "rating",
+  "fieldtype": "Rating",
+  "options": "10"  // 10-star rating (maximum allowed)
+}
+```
+
+**Common Rating Scales:**
+- **3 stars**: Simple (Good/Bad/Neutral)
+- **5 stars**: Standard (Most common)
+- **10 stars**: Detailed (More granular)
 
 ---
 
@@ -2356,8 +3619,10 @@ Option 3
 #### 37. Fold
 **Purpose**: Collapsible section (similar to Section Break)
 
+**What it is:** Fold is a layout field that creates a collapsible section in forms. It's similar to Section Break but with stricter constraints. Fields after a Fold field are grouped together and can be collapsed/expanded.
+
 **Properties**:
-- `label`: Section title
+- `label`: Section title (displayed when collapsed/expanded)
 
 **Example**:
 ```json
@@ -2368,7 +3633,257 @@ Option 3
 }
 ```
 
-**Behavior**: Collapsible section, collapsed by default
+**Behavior**: Collapsible section, collapsed by default. All fields after Fold until the next Section Break are grouped together.
+
+---
+
+###  **CRITICAL CONSTRAINTS: Fold Field**
+
+Fold fields have **strict validation rules** that developers must follow. Violating these rules will cause `frappe.throw()` errors when saving the DocType.
+
+#### Constraint 1: Only One Fold Per Form
+
+**Rule:** A DocType can have **maximum one Fold field**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_fold(fields):
+    fold_exists = False
+    for i, f in enumerate(fields):
+        if f.fieldtype == "Fold":
+            if fold_exists:
+                frappe.throw(_("There can be only one Fold in a form"))
+            fold_exists = True
+```
+
+**Error Message:**
+```
+"There can be only one Fold in a form"
+```
+
+**Why this constraint exists:**
+- Fold is designed to hide "advanced" or "optional" fields
+- Having multiple Folds would create confusing UI
+- One Fold is sufficient for organizing form sections
+
+**What happens if violated:**
+- DocType save fails with validation error
+- Must remove extra Fold fields before saving
+
+**Example -  Wrong:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"},
+    {"fieldname": "advanced1", "fieldtype": "Data"},
+    {"fieldname": "fold2", "fieldtype": "Fold", "label": "More Advanced"},  // ERROR!
+    {"fieldname": "advanced2", "fieldtype": "Data"}
+  ]
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"},
+    {"fieldname": "advanced1", "fieldtype": "Data"},
+    {"fieldname": "advanced2", "fieldtype": "Data"}
+  ]
+}
+```
+
+#### Constraint 2: Fold Must Come Before a Section Break
+
+**Rule:** Fold field **must be immediately followed by a Section Break**.
+
+**Validation Code:**
+```python
+if i < len(fields) - 1:
+    nxt = fields[i + 1]
+    if nxt.fieldtype != "Section Break":
+        frappe.throw(_("Fold must come before a Section Break"))
+```
+
+**Error Message:**
+```
+"Fold must come before a Section Break"
+```
+
+**Why this constraint exists:**
+- Fold groups fields until the next Section Break
+- Section Break marks the end of the Fold section
+- Without Section Break, Fold wouldn't know where to end
+
+**What happens if violated:**
+- DocType save fails
+- Must add Section Break immediately after Fold
+
+**Example -  Wrong:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"},
+    {"fieldname": "advanced1", "fieldtype": "Data"},  // ERROR: No Section Break after Fold!
+    {"fieldname": "advanced2", "fieldtype": "Data"}
+  ]
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"},
+    {"fieldname": "section_break_1", "fieldtype": "Section Break", "label": "Advanced Fields"},
+    {"fieldname": "advanced1", "fieldtype": "Data"},
+    {"fieldname": "advanced2", "fieldtype": "Data"}
+  ]
+}
+```
+
+#### Constraint 3: Fold Cannot Be at the End of Form
+
+**Rule:** Fold field **cannot be the last field** in the DocType.
+
+**Validation Code:**
+```python
+if i < len(fields) - 1:
+    # Check next field
+else:
+    frappe.throw(_("Fold can not be at the end of the form"))
+```
+
+**Error Message:**
+```
+"Fold can not be at the end of the form"
+```
+
+**Why this constraint exists:**
+- Fold needs fields after it to group together
+- If Fold is last, there's nothing to collapse
+- Fold must have content to organize
+
+**What happens if violated:**
+- DocType save fails
+- Must add fields after Fold or remove Fold
+
+**Example -  Wrong:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"}  // ERROR: Last field!
+  ]
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fields": [
+    {"fieldname": "basic_field", "fieldtype": "Data"},
+    {"fieldname": "fold1", "fieldtype": "Fold", "label": "Advanced"},
+    {"fieldname": "section_break_1", "fieldtype": "Section Break"},
+    {"fieldname": "advanced1", "fieldtype": "Data"}  // Fields after Fold
+  ]
+}
+```
+
+#### Complete Valid Fold Example
+
+** Correct Structure:**
+```json
+{
+  "fields": [
+    {
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "label": "Customer Name"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email"
+    },
+    {
+      "fieldname": "advanced_fold",
+      "fieldtype": "Fold",
+      "label": "Advanced Settings"
+    },
+    {
+      "fieldname": "advanced_section",
+      "fieldtype": "Section Break",
+      "label": "Advanced Options"
+    },
+    {
+      "fieldname": "custom_field1",
+      "fieldtype": "Data",
+      "label": "Custom Field 1"
+    },
+    {
+      "fieldname": "custom_field2",
+      "fieldtype": "Data",
+      "label": "Custom Field 2"
+    }
+  ]
+}
+```
+
+**Field Order Explanation:**
+1. Regular fields (customer_name, email) - always visible
+2. **Fold field** - marks start of collapsible section
+3. **Section Break** - required immediately after Fold
+4. Fields after Section Break - grouped in Fold section (collapsible)
+
+#### Summary of Fold Constraints
+
+| Constraint | Rule | Error Message |
+|------------|------|---------------|
+| **Only One Fold** | Maximum one Fold per DocType | "There can be only one Fold in a form" |
+| **Must Have Section Break** | Fold must be followed by Section Break | "Fold must come before a Section Break" |
+| **Cannot Be Last** | Fold cannot be the last field | "Fold can not be at the end of the form" |
+
+#### Best Practices for Fold
+
+ **Do:**
+- Use Fold for optional/advanced fields
+- Place Fold after main/required fields
+- Always add Section Break immediately after Fold
+- Add descriptive label to Fold
+
+ **Don't:**
+- Create multiple Fold fields
+- Place Fold at the end of form
+- Forget Section Break after Fold
+- Use Fold for required fields (they should be visible)
+
+#### Troubleshooting Fold Errors
+
+**Error: "There can be only one Fold in a form"**
+- **Solution**: Remove extra Fold fields, keep only one
+
+**Error: "Fold must come before a Section Break"**
+- **Solution**: Add Section Break field immediately after Fold field
+
+**Error: "Fold can not be at the end of the form"**
+- **Solution**: Add fields after Fold, or remove Fold if not needed
+
+**Visual Structure:**
+```
+Form Layout:
+┌─────────────────────────┐
+│ Basic Fields (visible)  │
+├─────────────────────────┤
+│ ▼ Advanced Settings     │ ← Fold (collapsed)
+│   └─ Advanced Fields    │ ← Section Break + Fields
+└─────────────────────────┘
+```
 
 ---
 
@@ -2463,9 +3978,11 @@ Option 3
 #### 42. Table
 **Purpose**: Child table (one-to-many relationship)
 
+**What it is:** Table field creates a one-to-many relationship where one parent document can have multiple child records. Each row in the table is a separate document in the child DocType.
+
 **Properties**:
-- `options`: **Required** - Child DocType name
-- `allow_bulk_edit`: Enable bulk editing
+- `options`: **Required** - Child DocType name (must be a table DocType with `istable: 1`)
+- `allow_bulk_edit`: Enable bulk editing of multiple rows at once
 
 **Example**:
 ```json
@@ -2486,12 +4003,161 @@ Option 3
 
 ---
 
+###  **IMPORTANT NOTES: Table Field Constraints**
+
+#### Constraint 1: Child DocType Must Be a Table
+
+**Rule:** The DocType specified in `options` **must have `istable: 1`**.
+
+**Validation Code:**
+```python
+# In frappe/core/doctype/doctype/doctype.py
+def check_child_table_option(docfield):
+    if docfield.fieldtype not in ["Table MultiSelect", "Table"]:
+        return
+    
+    doctype = docfield.options
+    child_doctype_meta = frappe.get_meta(doctype)
+    
+    if not child_doctype_meta.istable:
+        frappe.throw(
+            _("Option {0} for field {1} is not a child table").format(
+                frappe.bold(doctype), frappe.bold(docfield.fieldname)
+            ),
+            title=_("Invalid Option"),
+        )
+```
+
+**Error Message:**
+```
+"Option {doctype} for field {fieldname} is not a child table"
+```
+
+**Why this constraint exists:**
+- Only table DocTypes can be child tables
+- Table DocTypes have special structure for parent-child relationships
+- Regular DocTypes don't have `parent`, `parenttype`, `parentfield` fields
+
+**Example -  Wrong:**
+```json
+{
+  "fieldname": "customer",
+  "fieldtype": "Table",
+  "options": "Customer"  // ERROR: Customer is not a table DocType!
+}
+```
+
+**Example -  Correct:**
+```json
+{
+  "fieldname": "items",
+  "fieldtype": "Table",
+  "options": "Sales Invoice Item"  // Sales Invoice Item has istable: 1
+}
+```
+
+#### Constraint 2: Virtual DocType Compatibility
+
+**Rule:** If parent DocType is virtual (`is_virtual: 1`), child DocType **must also be virtual**. If parent is not virtual, child **cannot be virtual**.
+
+**Validation Code:**
+```python
+if not (meta.is_virtual == child_doctype_meta.is_virtual):
+    error_msg = " should be virtual." if meta.is_virtual else " cannot be virtual."
+    frappe.throw(
+        _("Child Table {0} for field {1}" + error_msg).format(
+            frappe.bold(doctype), frappe.bold(docfield.fieldname)
+        ),
+        title=_("Invalid Option"),
+    )
+```
+
+**Error Messages:**
+- If parent is virtual: `"Child Table {doctype} for field {fieldname} should be virtual."`
+- If parent is not virtual: `"Child Table {doctype} for field {fieldname} cannot be virtual."`
+
+**Why this constraint exists:**
+- Virtual DocTypes don't have database tables
+- Child tables of virtual DocTypes also shouldn't have database tables
+- Ensures consistency in data storage approach
+
+**Example:**
+```json
+// Parent DocType
+{
+  "doctype": "Virtual Parent",
+  "is_virtual": 1,
+  "fields": [
+    {
+      "fieldname": "child_table",
+      "fieldtype": "Table",
+      "options": "Virtual Child"  // Must also be virtual
+    }
+  ]
+}
+
+// Child DocType
+{
+  "doctype": "Virtual Child",
+  "istable": 1,
+  "is_virtual": 1  // Must match parent
+}
+```
+
+#### How Child Tables Work
+
+**Automatic Fields:**
+When you create a child table DocType, Frappe automatically adds these fields:
+
+1. **`parent`**: Stores parent document name
+2. **`parenttype`**: Stores parent DocType name
+3. **`parentfield`**: Stores the fieldname of the Table field in parent
+
+**Example:**
+```json
+// Parent: Sales Invoice
+{
+  "fieldname": "items",
+  "fieldtype": "Table",
+  "options": "Sales Invoice Item"
+}
+
+// Child: Sales Invoice Item (automatically has)
+{
+  "fieldname": "parent",      // Auto: "SINV-00001"
+  "fieldname": "parenttype",  // Auto: "Sales Invoice"
+  "fieldname": "parentfield", // Auto: "items"
+  "fieldname": "item_code",   // Your custom field
+  "fieldname": "qty"          // Your custom field
+}
+```
+
+**Why These Fields Exist:**
+- **`parent`**: Links child row to specific parent document
+- **`parenttype`**: Ensures child belongs to correct DocType
+- **`parentfield`**: Allows one parent to have multiple child tables
+
+**Querying Child Tables:**
+```python
+# Get all items for a Sales Invoice
+items = frappe.get_all("Sales Invoice Item", 
+    filters={"parent": "SINV-00001", "parenttype": "Sales Invoice"}
+)
+
+# Or simpler (Frappe handles parent/parenttype automatically)
+items = frappe.get_doc("Sales Invoice", "SINV-00001").items
+```
+
+---
+
 #### 43. Table MultiSelect
 **Purpose**: Multi-select child table
 
+**What it is:** Table MultiSelect is a special type of child table that allows you to select multiple existing documents from another DocType and link them to the current document. Unlike regular Table fields where you create new child records, Table MultiSelect references existing documents.
+
 **Properties**:
-- `options`: **Required** - Child DocType name and this child doctype must have a Link field that links to the Doctype that we will multiselect from.
-- Similar to Table but allows selecting existing documents
+- `options`: **Required** - Child DocType name (must be a table DocType with `istable: 1`)
+- Similar to Table but allows selecting existing documents instead of creating new ones
 
 **Example**:
 ```json
@@ -2499,11 +4165,178 @@ Option 3
   "fieldname": "related_items",
   "fieldtype": "Table MultiSelect",
   "label": "Related Items",
-  "options": "Item"
+  "options": "Related Item Link"
 }
 ```
 
-**Behavior**: Allows selecting multiple existing documents, creates links
+**Behavior**: Allows selecting multiple existing documents, creates links through child table rows
+
+---
+
+###  **IMPORTANT NOTES: Table MultiSelect Architecture**
+
+#### Why Table MultiSelect Requires a Child Table with Link Field
+
+**The Architecture Problem:**
+
+Table MultiSelect cannot directly link to a DocType. It needs an intermediate child table because:
+
+1. **Table MultiSelect stores multiple relationships**: You want to link multiple documents (e.g., multiple Items to a Product Bundle)
+2. **Child tables are required for "many" relationships**: To store multiple links, you need a child table (one-to-many relationship)
+3. **The child table needs a Link field**: The child table must have a Link field that points to the DocType you want to multiselect from
+
+**Why Not Direct Linking?**
+
+If Table MultiSelect could link directly to a DocType (like `options: "Item"`), it would face these problems:
+
+ **No way to store multiple values**: A single field can only store one value. To store multiple Items, you need multiple rows.
+
+ **No additional metadata**: With direct linking, you can't store additional information about each relationship (like quantity, rate, notes, etc.)
+
+ **No relationship tracking**: Child tables automatically track parent-child relationships through `parent`, `parenttype`, `parentfield` fields.
+
+**The Correct Architecture:**
+
+```
+Parent DocType (Product Bundle)
+    │
+    └─→ Table MultiSelect Field: "items"
+            │
+            └─→ Child DocType: "Product Bundle Item" (istable: 1)
+                    │
+                    ├─→ Link Field: "item_code" → Links to "Item" DocType
+                    ├─→ Other fields: "qty", "rate", "description", etc.
+                    └─→ Auto fields: "parent", "parenttype", "parentfield"
+```
+
+**Step-by-Step Setup:**
+
+1. **Create the Child DocType** (must be a table):
+```json
+{
+  "doctype": "Product Bundle Item",
+  "istable": 1,  // MUST be a table DocType
+  "fields": [
+    {
+      "fieldname": "item_code",
+      "fieldtype": "Link",
+      "options": "Item",  // Links to Item DocType
+      "reqd": 1
+    },
+    {
+      "fieldname": "qty",
+      "fieldtype": "Float"
+    }
+  ]
+}
+```
+
+2. **Create Table MultiSelect Field** in Parent DocType:
+```json
+{
+  "fieldname": "items",
+  "fieldtype": "Table MultiSelect",
+  "options": "Product Bundle Item"  // Points to child table, NOT Item directly
+}
+```
+
+**How It Works:**
+
+1. User selects multiple Items in the Table MultiSelect field
+2. Frappe creates child table rows in "Product Bundle Item"
+3. Each row has `item_code` Link field pointing to selected Item
+4. Parent document links to child rows through `parent`/`parentfield` relationship
+
+**Validation Rules:**
+
+Frappe validates Table MultiSelect fields with these rules:
+
+1. **Child DocType must be a table** (`istable: 1`):
+   ```python
+   # Error if not table:
+   frappe.throw("Option {0} for field {1} is not a child table")
+   ```
+
+2. **Child DocType must have at least one Link field**:
+   ```python
+   # Error if no Link field:
+   frappe.throw("DocType <b>{0}</b> provided for the field <b>{1}</b> must have atleast one Link field")
+   ```
+
+3. **Virtual DocType compatibility**: If parent is virtual, child must also be virtual (and vice versa)
+
+**Real-World Example:**
+
+**Product Bundle** DocType wants to link multiple Items:
+
+```json
+// Child DocType: Product Bundle Item
+{
+  "doctype": "Product Bundle Item",
+  "istable": 1,
+  "fields": [
+    {
+      "fieldname": "item_code",
+      "fieldtype": "Link",
+      "options": "Item",  // This is the Link field Table MultiSelect needs
+      "reqd": 1
+    },
+    {
+      "fieldname": "qty",
+      "fieldtype": "Float",
+      "default": 1
+    }
+  ]
+}
+
+// Parent DocType: Product Bundle
+{
+  "doctype": "Product Bundle",
+  "fields": [
+    {
+      "fieldname": "items",
+      "fieldtype": "Table MultiSelect",
+      "options": "Product Bundle Item"  // Points to child table
+    }
+  ]
+}
+```
+
+**Why This Architecture?**
+
+ **Flexibility**: Can add additional fields to child table (qty, rate, notes, etc.)
+ **Data Integrity**: Child table structure ensures proper relationships
+ **Query Performance**: Can efficiently query related items
+ **Extensibility**: Easy to add more fields to the relationship later
+
+**Common Mistake:**
+
+ **Wrong:**
+```json
+{
+  "fieldname": "items",
+  "fieldtype": "Table MultiSelect",
+  "options": "Item"  // ERROR: Item is not a table DocType!
+}
+```
+
+ **Correct:**
+```json
+{
+  "fieldname": "items",
+  "fieldtype": "Table MultiSelect",
+  "options": "Product Bundle Item"  // Child table that has Link to Item
+}
+```
+
+**Summary:**
+
+Table MultiSelect requires a child table because:
+1. It needs to store multiple relationships (one-to-many)
+2. The child table provides the structure for multiple rows
+3. The Link field in the child table creates the actual link to target DocType
+4. This architecture allows storing additional metadata about each relationship
+5. It maintains proper parent-child relationships automatically
 
 ---
 
@@ -2630,22 +4463,309 @@ Required child table with bulk editing enabled.
 
 ## Field Validation Rules
 
+This section summarizes all validation rules and constraints that Frappe enforces on fields. Violating these rules will cause `frappe.throw()` errors when saving DocTypes.
+
 ### General Rules
-1. **Fieldname Uniqueness**: Fieldnames must be unique within a DocType
-2. **Reserved Keywords**: Cannot use Python reserved keywords as fieldnames
-3. **Mandatory Restrictions**: Layout fields (Section Break, Column Break, etc.) cannot be mandatory
-4. **Unique Restrictions**: Only Data, Link, and Read Only fields can be unique
-5. **Hidden + Mandatory**: A field cannot be both hidden and mandatory
-6. **Virtual Fields**: Virtual fields cannot appear in list view
+
+#### 1. **Fieldname Uniqueness**
+**Rule:** Fieldnames must be unique within a DocType.
+
+**Validation Code:**
+```python
+def check_unique_fieldname(docname, fieldname):
+    duplicates = list(
+        filter(None, map(lambda df: df.fieldname == fieldname and str(df.idx) or None, fields))
+    )
+    if len(duplicates) > 1:
+        frappe.throw(
+            _("{0}: Fieldname {1} appears multiple times in rows {2}").format(
+                docname, fieldname, ", ".join(duplicates)
+            ),
+            UniqueFieldnameError,
+        )
+```
+
+**Error Message:**
+```
+"{doctype}: Fieldname {fieldname} appears multiple times in rows {row_numbers}"
+```
+
+**Why:** Prevents confusion and ensures each field has a unique identifier.
+
+#### 2. **Reserved Keywords**
+**Rule:** Cannot use Python reserved keywords as fieldnames.
+
+**Validation Code:**
+```python
+if fieldname in Document._reserved_keywords:
+    frappe.throw(
+        _("{0}: fieldname cannot be set to reserved keyword {1}").format(
+            frappe.bold(docname), frappe.bold(fieldname)
+        ),
+        title=_("Invalid Fieldname"),
+    )
+```
+
+**Error Message:**
+```
+"{doctype}: fieldname cannot be set to reserved keyword {keyword}"
+```
+
+**Reserved Keywords:** `name`, `doctype`, `docstatus`, `parent`, `parenttype`, `parentfield`, `idx`, `owner`, `creation`, `modified`, `modified_by`, etc.
+
+#### 3. **Mandatory Restrictions**
+**Rule:** Layout fields (Section Break, Column Break, Tab Break, Heading, HTML, Button, Image, Fold) cannot be mandatory.
+
+**Validation Code:**
+```python
+if (d.fieldtype in no_value_fields) and d.fieldtype not in table_fields and d.reqd:
+    frappe.throw(
+        _("{0}: Field {1} of type {2} cannot be mandatory").format(docname, d.label, d.fieldtype),
+        IllegalMandatoryError,
+    )
+```
+
+**Error Message:**
+```
+"{doctype}: Field {label} of type {fieldtype} cannot be mandatory"
+```
+
+**Why:** Layout fields don't store data, so requiring them makes no sense.
+
+#### 4. **Unique Restrictions**
+**Rule:** Only Data, Link, Read Only, and Int fieldtypes can be unique.
+
+**Validation Code:**
+```python
+if getattr(d, "unique", False):
+    if d.fieldtype not in ("Data", "Link", "Read Only", "Int"):
+        frappe.throw(
+            _("{0}: Fieldtype {1} for {2} cannot be unique").format(docname, d.fieldtype, d.label),
+            NonUniqueError,
+        )
+```
+
+**Error Message:**
+```
+"{doctype}: Fieldtype {fieldtype} for {label} cannot be unique"
+```
+
+**Why:** Database unique constraints only work on simple, comparable values.
+
+#### 5. **Hidden + Mandatory**
+**Rule:** A field cannot be both hidden (`hidden: 1`) and mandatory (`reqd: 1`) without a default value.
+
+**Validation Code:**
+```python
+if d.hidden and d.reqd and not d.default and not frappe.flags.in_migrate:
+    frappe.throw(
+        _("{0}: Field {1} in row {2} cannot be hidden and mandatory without default").format(
+            docname, d.label, d.idx
+        ),
+        HiddenAndMandatoryWithoutDefaultError,
+    )
+```
+
+**Error Message:**
+```
+"{doctype}: Field {label} in row {idx} cannot be hidden and mandatory without default"
+```
+
+**Why:** Users can't see hidden fields, so they can't fill mandatory fields without defaults.
+
+#### 6. **Virtual Fields**
+**Rule:** Virtual fields cannot appear in list view.
+
+**Validation Code:**
+```python
+if d.in_list_view and (d.fieldtype in not_allowed_in_list_view):
+    frappe.throw(
+        _("'{0}' not allowed for type {1} in row {2}").format(property_label, d.fieldtype, d.idx)
+    )
+```
+
+**Error Message:**
+```
+"'In List View' not allowed for type {fieldtype} in row {idx}"
+```
+
+**Why:** Virtual fields are computed on-the-fly, not stored in database. List views query database directly.
 
 ### Fieldtype-Specific Rules
-1. **Link Fields**: Must have `options` set to valid DocType name
-2. **Dynamic Link**: Must have `options` pointing to another field that contains DocType name
-3. **Select Fields**: Must have `options` with at least one option
-4. **Table Fields**: Must have `options` set to valid child DocType name
-5. **Check Fields**: Default must be `"0"` or `"1"`
-6. **Date Fields**: Default `"Today"` only works for Date fieldtype
-7. **Datetime Fields**: Default `"now"` only works for Datetime fieldtype
+
+#### 1. **Link Fields**
+**Rule:** Must have `options` set to valid DocType name.
+
+**Error Messages:**
+- If missing: `"{doctype}: Options required for Link or Table type field {label} in row {idx}"`
+- If invalid: `"{doctype}: Options must be a valid DocType for field {label} in row {idx}"`
+
+**Why:** Link fields need to know which DocType to link to.
+
+#### 2. **Dynamic Link**
+**Rule:** Must have `options` pointing to another Link or Select field that contains DocType name.
+
+**Error Message:**
+```
+"Options 'Dynamic Link' type of field must point to another Link Field with options as 'DocType'"
+```
+
+**Why:** Dynamic Link reads target DocType from another field's value.
+
+#### 3. **Select Fields**
+**Rules:**
+- Must have `options` with at least one option
+- Default value must exist in options list
+
+**Error Messages:**
+- If options not set: `"Options for {fieldname} must be set before setting the default value."`
+- If default not in options: `"Default value for {fieldname} must be in the list of options."`
+
+**Why:** Ensures default value is valid and options are defined.
+
+#### 4. **Table Fields**
+**Rules:**
+- Must have `options` set to valid child DocType name
+- Child DocType must have `istable: 1`
+- If parent is virtual, child must also be virtual (and vice versa)
+
+**Error Messages:**
+- If not table: `"Option {doctype} for field {fieldname} is not a child table"`
+- If virtual mismatch: `"Child Table {doctype} for field {fieldname} should be virtual."` or `"cannot be virtual."`
+
+**Why:** Only table DocTypes can be child tables, and virtual compatibility ensures consistency.
+
+#### 5. **Table MultiSelect**
+**Rules:**
+- Must have `options` set to valid child DocType name
+- Child DocType must have `istable: 1`
+- Child DocType must have at least one Link field
+
+**Error Messages:**
+- If no Link field: `"DocType <b>{doctype}</b> provided for the field <b>{fieldname}</b> must have atleast one Link field"`
+- Same as Table field for other constraints
+
+**Why:** Table MultiSelect needs Link field in child table to create links to target documents.
+
+#### 6. **Check Fields**
+**Rule:** Default must be `"0"` or `"1"`.
+
+**Error Message:**
+```
+"Default for 'Check' type of field {fieldname} must be either '0' or '1'"
+```
+
+**Why:** Check fields only store boolean values (0 or 1).
+
+#### 7. **Date Fields**
+**Rule:** Default `"Today"` only works for Date fieldtype.
+
+**Why:** Special default values are fieldtype-specific.
+
+#### 8. **Datetime Fields**
+**Rule:** Default `"now"` only works for Datetime fieldtype.
+
+**Why:** Special default values are fieldtype-specific.
+
+#### 9. **Float/Currency/Percent Fields**
+**Rule:** Precision must be between 1 and 6.
+
+**Error Message:**
+```
+"Precision should be between 1 and 6"
+```
+
+**Why:** Database and practical limitations on decimal precision.
+
+#### 10. **Rating Fields**
+**Rule:** Options (maximum rating) must be between 3 and 10.
+
+**Error Message:**
+```
+"Options for Rating field can range from 3 to 10"
+```
+
+**Why:** UX considerations - too few or too many stars are impractical.
+
+#### 11. **Fold Fields**
+**Rules:**
+- Only one Fold per DocType
+- Must be followed by Section Break
+- Cannot be last field in form
+
+**Error Messages:**
+- Multiple Folds: `"There can be only one Fold in a form"`
+- No Section Break: `"Fold must come before a Section Break"`
+- At end: `"Fold can not be at the end of the form"`
+
+**Why:** Fold has specific UI requirements for proper form layout.
+
+#### 12. **Data Fields**
+**Rule:** If `options` is specified, must be one of: Email, Name, Phone, URL, Barcode, IBAN.
+
+**Error Message:**
+```
+"{field_label} is an invalid Data field.
+Only Options allowed for Data field are:
+• Email
+• Name
+• Phone
+• URL
+• Barcode
+• IBAN"
+```
+
+**Why:** Data field options are reserved for special validation types.
+
+#### 13. **Search Index**
+**Rule:** Cannot index Text, Long Text, Small Text, Code, or Text Editor fields.
+
+**Error Message:**
+```
+"{doctype}:Fieldtype {fieldtype} for {label} cannot be indexed"
+```
+
+**Why:** Database limitations on indexing large text columns.
+
+#### 14. **Unique Constraint**
+**Rule:** Cannot set unique if existing documents have duplicate values.
+
+**Error Message:**
+```
+"{doctype}: Field '{label}' cannot be set as Unique as it has non-unique values"
+```
+
+**Why:** Prevents breaking existing data integrity.
+
+### Complete Constraint Summary Table
+
+| Field Type | Constraint | Error Trigger |
+|------------|------------|---------------|
+| **All Fields** | Fieldname must be unique | Duplicate fieldnames |
+| **All Fields** | Cannot use reserved keywords | Reserved keyword as fieldname |
+| **Layout Fields** | Cannot be mandatory | `reqd: 1` on layout field |
+| **Hidden Fields** | Cannot be mandatory without default | `hidden: 1` + `reqd: 1` + no default |
+| **Virtual Fields** | Cannot be in list view | `is_virtual: 1` + `in_list_view: 1` |
+| **Virtual Fields** | Cannot be indexed | `is_virtual: 1` + `search_index: 1` |
+| **Link** | Options required | Missing `options` |
+| **Link** | Options must be valid DocType | Invalid DocType name |
+| **Dynamic Link** | Options must point to Link/Select field | Invalid pointer field |
+| **Select** | Options required before default | Default without options |
+| **Select** | Default must be in options | Default not in options list |
+| **Table** | Options must be table DocType | Non-table DocType |
+| **Table** | Virtual compatibility | Parent/child virtual mismatch |
+| **Table MultiSelect** | Child must have Link field | No Link field in child |
+| **Check** | Default must be 0 or 1 | Invalid default value |
+| **Float/Currency/Percent** | Precision 1-6 | Precision outside range |
+| **Currency** | Width minimum 100px | Width < 100px |
+| **Rating** | Options 3-10 | Options outside range |
+| **Fold** | Only one per form | Multiple Fold fields |
+| **Fold** | Must have Section Break after | No Section Break after Fold |
+| **Fold** | Cannot be last field | Fold at end of form |
+| **Data** | Options must be valid type | Invalid options value |
+| **Text Fields** | Cannot be indexed | `search_index: 1` on text field |
+| **Unique** | Only Data/Link/Read Only/Int | Unique on invalid fieldtype |
+| **Unique** | No duplicate values exist | Duplicates in existing data |
 
 ---
 
