@@ -10,6 +10,7 @@
 7. [Advanced Testing Scenarios](#advanced-testing-scenarios)
 8. [Best Practices](#best-practices)
 9. [Complete Examples](#complete-examples)
+10. [Generic Report Testing Template For Any Report](#generic-report-testing-template-for-any-report)
 
 ---
 
@@ -2026,6 +2027,386 @@ If you have filter validation in your report, you can test it like this:
         with self.assertRaises(frappe.ValidationError):
             run(self.report_name, invalid_filters, ignore_prepared_report=True)
 ```
+
+You can use `execute` instead of `run` if you want to test the report's `execute` function directly.
+
+```python
+import frappe
+from frappe.tests.utils import FrappeTestCase
+from .<report_file_name> import execute
+
+class TestReportName(FrappeTestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.enable_safe_exec()
+        return super().setUpClass()
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.filters = frappe._dict(
+            from_date="2023-01-01",
+            to_date="2024-01-01",
+        )
+
+    def tearDown(self):
+        """Clean up after tests"""
+        frappe.db.rollback()
+
+    def test_report_executes(self):
+        """Ensure the report executes without errors"""
+        columns, data = execute(self.filters)
+        self.assertIsInstance(columns, list)
+        self.assertIsInstance(data, list)
+
+    def test_columns_valid(self):
+        """Ensure columns exist and follow valid structure"""
+        columns, data = execute(self.filters)
+
+        self.assertIsInstance(columns, list)
+        self.assertGreater(len(columns), 0)
+
+    def test_result_structure(self):
+        """Ensure returned rows are list/dict (valid Frappe format)"""
+        columns, data = execute(self.filters)
+
+        self.assertIsInstance(data, list)
+        for row in data:
+            self.assertTrue(
+                isinstance(row, (list, dict)),
+                "Each result row must be a list or dict"
+            )
+    def test_no_filters(self):
+        """If no filters are passed, ensure the function handles it gracefully."""
+        # Note: The execute function often expects filters, so passing an empty dict is safer than None.
+        columns, data = execute({}) 
+
+        self.assertIsInstance(columns, list)
+        self.assertIsInstance(data, list)
+        # Depending on your report's logic, columns/data might be empty or populated by default logic.
+        # You would assert based on the expected default behavior.
+
+    def test_invalid_date_range(self):
+        """Ensure the report throws validation error when to_date < from_date"""
+        invalid_filters = frappe._dict(
+            from_date="2024-02-01",
+            to_date="2024-01-01"
+        )
+
+        # The ValidationError should still be raised by the logic inside the execute function
+        with self.assertRaises(frappe.ValidationError):
+            execute(invalid_filters)
+```
+
+---
+
+## Understanding `run()` vs `execute()`: Deep Dive
+
+**Note**: This section explains the fundamental differences between using `frappe.desk.query_report.run()` and calling the report's `execute()` function directly, based on the actual Frappe framework implementation.
+
+### Architecture Overview
+
+Frappe's report execution follows a layered architecture:
+
+```
+User Request
+    ↓
+run() [High-level API]
+    ↓
+generate_report_result() [Infrastructure layer]
+    ↓
+get_report_result() [Report type router]
+    ↓
+report.execute_script_report() [Report DocType method]
+    ↓
+report.execute_module() [Module loader]
+    ↓
+frappe.get_attr(module_path + ".execute")() [Dynamic import]
+    ↓
+execute() [Your report's core logic]
+```
+
+### `run()` Function: The High-Level API
+
+**Location**: `frappe.desk.query_report.run()`
+
+**What it does**:
+`run()` is a comprehensive, production-ready API function that handles the complete report execution lifecycle. It's decorated with `@frappe.whitelist()` (making it callable from the frontend) and `@frappe.read_only()` (ensuring it doesn't modify data).
+
+**Key Responsibilities**:
+
+1. **Permission Validation**:
+   - Validates filter permissions using `validate_filters_permissions()`
+   - Checks if user has report permission on the DocType: `frappe.has_permission(report.ref_doctype, "report")`
+   - Verifies report access permissions: `report.is_permitted()`
+   - Throws `frappe.PermissionError` if user lacks access
+
+2. **Report Document Loading**:
+   - Loads the Report DocType: `get_report_doc(report_name)`
+   - Handles Custom Reports (reports that reference other reports)
+   - Applies custom filters if configured
+   - Checks if report is disabled
+
+3. **Prepared Report Handling**:
+   - Checks if prepared reports are enabled and should be used
+   - Retrieves cached prepared report results if available
+   - Falls back to live execution if prepared reports are ignored or unavailable
+
+4. **Report Execution**:
+   - Calls `generate_report_result()` which orchestrates the execution
+   - Handles different report types (Script Report, Query Report, Report Builder, Custom Report)
+   - Tracks execution time and adds monitoring data
+
+5. **Post-Processing**:
+   - Normalizes result format (converts list of lists to list of dicts)
+   - Adds custom columns if specified
+   - Applies User Permissions filtering
+   - Adds total rows if configured
+   - Handles tree/hierarchical data structures
+   - Applies data translation if requested
+
+6. **Return Format**:
+   Returns a comprehensive dictionary:
+   ```python
+   {
+       "result": [...],           # Report data (list of dicts)
+       "columns": [...],           # Column definitions
+       "message": "...",           # Optional message
+       "chart": {...},             # Optional chart data
+       "report_summary": [...],    # Optional summary cards
+       "skip_total_row": 0,        # Whether to skip total row
+       "status": None,             # Execution status
+       "execution_time": 0.5,      # Time taken in seconds
+       "add_total_row": True,      # Whether to add total row
+       "custom_filters": {...}     # Custom filter values
+   }
+   ```
+
+**When to use `run()`**:
+- Testing the complete report execution flow (as users would experience it)
+- Testing permission checks and access control
+- Testing prepared report functionality
+- Testing custom columns and filters
+- Testing User Permissions filtering
+- Integration testing (testing how reports work within the Frappe ecosystem)
+- When you want to test the full infrastructure, not just the core logic
+
+**Advantages**:
+- Tests the complete user experience
+- Validates security and permissions
+- Handles all edge cases and infrastructure concerns
+- Returns rich metadata (execution time, charts, summaries)
+- Production-ready testing approach
+
+**Disadvantages**:
+- Slower execution (more overhead)
+- Requires Report DocType to exist
+- May fail due to permission issues unrelated to report logic
+- More complex setup (may need test users, roles, permissions)
+
+### `execute()` Function: The Core Logic
+
+**Location**: Direct import from your report module (e.g., `from your_app.module.report.report_name.report_name import execute`)
+
+**What it does**:
+`execute()` is the low-level, core business logic function defined in each Script Report's Python file. It contains only the essential report calculation logic without any infrastructure concerns.
+
+**Key Characteristics**:
+
+1. **Minimal Function Signature**:
+   ```python
+   def execute(filters):
+       # Your report logic here
+       return columns, data
+   ```
+   - Takes only `filters` as input (typically a `frappe._dict`)
+   - Returns a simple tuple: `(columns, data)`
+   - No permission checks
+   - No infrastructure handling
+
+2. **Direct Execution**:
+   - Called directly without going through Frappe's infrastructure
+   - No permission validation
+   - No prepared report handling
+   - No custom column processing
+   - No User Permissions filtering
+   - No post-processing
+
+3. **Pure Business Logic**:
+   - Contains only the core calculation/query logic
+   - Focuses on data retrieval and transformation
+   - No security or infrastructure concerns
+
+**When to use `execute()` directly**:
+- Unit testing the core report logic in isolation
+- Testing specific calculations or data transformations
+- Fast execution (no infrastructure overhead)
+- Testing edge cases in data processing
+- When you want to test logic independently of Frappe infrastructure
+- When testing report logic that doesn't depend on permissions
+- When you need fine-grained control over test inputs
+
+**Advantages**:
+- Fast execution (minimal overhead)
+- Focuses on core logic, not infrastructure
+- Easier to debug (simpler call stack)
+- No dependency on Report DocType existence
+- No permission setup required
+- Ideal for TDD (Test-Driven Development)
+
+**Disadvantages**:
+- Doesn't test the complete user experience
+- Bypasses security checks (may miss permission issues)
+- Doesn't test prepared reports
+- Doesn't test custom columns/filters
+- Doesn't test User Permissions filtering
+- May not catch integration issues
+
+### Why `enable_safe_exec()` is Needed
+
+**Understanding Safe Execution**:
+
+Frappe has two types of Script Reports:
+
+1. **Standard Script Reports** (`is_standard="Yes"`):
+   - Python modules stored in the filesystem
+   - Located at: `apps/[app]/[app]/[module]/report/[report_name]/[report_name].py`
+   - Executed via `frappe.get_attr()` - direct Python import and execution
+   - **Do NOT require `enable_safe_exec()`**
+
+2. **Custom Script Reports** (`is_standard="No"`):
+   - Server Scripts stored in the database (`report_script` field)
+   - Created through the UI or API
+   - Executed via `safe_exec()` - restricted Python execution
+   - **REQUIRE `enable_safe_exec()`**
+
+**What `safe_exec()` Does**:
+
+`safe_exec()` is Frappe's secure script execution mechanism that:
+- Uses RestrictedPython to compile and execute Python code safely
+- Prevents dangerous operations (file system access, imports, etc.)
+- Provides a sandboxed environment with limited globals
+- Requires explicit enablement via site configuration for security
+
+**Why It's Disabled by Default**:
+
+Server Scripts are disabled by default (`SAFE_EXEC_CONFIG_KEY = 0`) because:
+- Security: Prevents arbitrary code execution
+- Safety: Reduces attack surface
+- Control: Requires explicit administrator enablement
+
+**When `enable_safe_exec()` is Required**:
+
+1. **When using `run()` with Custom Script Reports**:
+   - `run()` → `generate_report_result()` → `report.execute_script_report()` → `report.execute_script()` → `safe_exec()`
+   - If the report is a Custom Script Report, `safe_exec()` will be called
+   - Without `enable_safe_exec()`, you'll get `ServerScriptNotEnabled` exception
+
+2. **When testing infrastructure that may call `safe_exec()`**:
+   - Even if testing Standard Reports, the infrastructure code path may check for safe_exec
+   - Some report execution paths conditionally use `safe_exec()` based on report configuration
+
+3. **When using `execute()` directly**:
+   - **Usually NOT required** because `execute()` bypasses the infrastructure
+   - **However**, if your test setup somehow triggers `safe_exec()` (e.g., through hooks, custom code, or if testing a Custom Script Report directly), you'll need it
+   - **Best Practice**: Always include it when testing Script Reports to ensure compatibility with both Standard and Custom Script Reports
+
+**How `enable_safe_exec()` Works**:
+
+```python
+@classmethod
+def enable_safe_exec(cls) -> None:
+    """Enable safe exec and disable them after test case is completed."""
+    from frappe.installer import update_site_config
+    from frappe.utils.safe_exec import SAFE_EXEC_CONFIG_KEY
+
+    # Update common_site_config.json to enable safe_exec
+    cls._common_conf = os.path.join(frappe.local.sites_path, "common_site_config.json")
+    update_site_config(SAFE_EXEC_CONFIG_KEY, 1, validate=False, site_config_path=cls._common_conf)
+
+    # Automatically disable after test class completes
+    cls.addClassCleanup(
+        lambda: update_site_config(
+            SAFE_EXEC_CONFIG_KEY, 0, validate=False, site_config_path=cls._common_conf
+        )
+    )
+```
+
+**Key Points**:
+- Updates `common_site_config.json` to set `allow_server_script = 1`
+- Uses `addClassCleanup()` to automatically disable after tests complete
+- Ensures tests don't leave the system in an unsafe state
+- Must be called in `setUpClass()` (class method), not `setUp()` (instance method)
+
+### Decision Matrix: When to Use Which Approach
+
+| Scenario | Use `run()` | Use `execute()` | Need `enable_safe_exec()` |
+|----------|-------------|-----------------|---------------------------|
+| Testing complete user experience | ✅ Yes | ❌ No | ✅ Yes (if Custom Script Report) |
+| Unit testing core logic | ❌ No | ✅ Yes | ⚠️ Usually No (but include for safety) |
+| Testing permissions | ✅ Yes | ❌ No | ✅ Yes |
+| Testing prepared reports | ✅ Yes | ❌ No | ✅ Yes |
+| Fast execution needed | ❌ No | ✅ Yes | ⚠️ Usually No |
+| Testing custom columns | ✅ Yes | ❌ No | ✅ Yes |
+| Testing User Permissions | ✅ Yes | ❌ No | ✅ Yes |
+| Testing calculations only | ❌ No | ✅ Yes | ⚠️ Usually No |
+| Integration testing | ✅ Yes | ❌ No | ✅ Yes |
+| TDD / Isolated unit tests | ❌ No | ✅ Yes | ⚠️ Usually No |
+
+### Best Practices
+
+1. **For Most Tests**: Use `run()` with `enable_safe_exec()` to test the complete flow
+2. **For Fast Unit Tests**: Use `execute()` directly with `enable_safe_exec()` (defensive programming)
+3. **Always Include `enable_safe_exec()`**: Even when using `execute()`, include it to ensure compatibility with both Standard and Custom Script Reports
+4. **Test Both Approaches**: Consider testing both `run()` (integration) and `execute()` (unit) for comprehensive coverage
+5. **Understand Your Report Type**: Know whether you're testing a Standard Script Report (Python module) or Custom Script Report (Server Script) to understand when `safe_exec()` is actually called
+
+### Code Flow Comparison
+
+**Using `run()`**:
+```python
+run("Report Name", filters)
+    ↓
+validate_filters_permissions()  # Permission check
+    ↓
+get_report_doc()  # Load Report DocType
+    ↓
+generate_report_result()
+    ↓
+get_report_result()
+    ↓
+report.execute_script_report()
+    ↓
+report.execute_module()  # For Standard Reports
+    OR
+report.execute_script()  # For Custom Reports (calls safe_exec)
+    ↓
+frappe.get_attr("module.path.execute")()  # Your execute() function
+    ↓
+Post-processing (normalize, filter, add totals, etc.)
+    ↓
+Return rich dictionary
+```
+
+**Using `execute()` directly**:
+```python
+from report_module import execute
+
+execute(filters)
+    ↓
+Your report logic (direct execution)
+    ↓
+Return (columns, data) tuple
+```
+
+### Summary
+
+- **`run()`**: High-level API that tests the complete report execution flow including permissions, infrastructure, and post-processing. Use for integration testing and testing the user experience.
+
+- **`execute()`**: Low-level function that tests only the core report logic. Use for unit testing and fast execution when you want to test logic in isolation.
+
+- **`enable_safe_exec()`**: Required when testing Custom Script Reports or when using `run()` with Script Reports. Should be included defensively even when using `execute()` directly to ensure compatibility with both report types.
+
+**Recommendation**: For comprehensive testing, use both approaches - `run()` for integration tests and `execute()` for unit tests. Always include `enable_safe_exec()` in `setUpClass()` when testing Script Reports to ensure compatibility with both Standard and Custom Script Reports.
 
 ---
 
