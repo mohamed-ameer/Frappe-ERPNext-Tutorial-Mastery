@@ -117,3 +117,20 @@ Customization in ERPNext can be done at two levels:
 ## Why the name ERPNext?
 
 because it was the cheapest domain name which include the word "ERP" that they could find at the time. (that's the story)
+
+---
+
+## Why ERPNext is better than other ERPs? Why ERPNext Is Different From Other Business Software?
+
+ERPNext is special because:
+
+- It is completely free forever - no hidden costs, no licenses to buy.
+- It has all features included - no extra modules to buy.
+- It is easy to change for your business needs - no need to hire expensive programmers.
+- You can host it on your own server - your data stays safe with you.
+- It uses modern technology - fast and works well.
+- It has a big helpful community - many people use and support it.
+
+In short: ERPNext gives you everything you need to run your business, for free, with full control, and you can make it fit perfectly for your company.
+
+---
