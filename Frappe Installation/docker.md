@@ -213,6 +213,10 @@ bench start
 
 ## Development Workflow
 
+> we will use `Dev Containers` which is a VS Code extension that allows you to develop in a container.
+>
+> watch the following video to understand how it works: [Dockerized DEV Environment with DevContainers | Multiple Containers | VSCode](https://www.youtube.com/watch?v=xfeQ6vDuidA)
+
 ### Daily Development Routine
 
 #### Starting Your Development Session:
@@ -317,3 +321,5 @@ def create_job_id(job_id: str | None = None) -> str:
 #### For More Details => [Read the Official Documentaion](https://github.com/frappe/frappe_docker/blob/main/docs/development.md#bootstrap-containers-for-development)
 
 #### There is a beutiful cli tool called `frappe-manager` that can help you with the above steps automatically and it will be good to try it and have a look at it, you can find it [here](https://github.com/rtCamp/Frappe-Manager) Give it a try.
+
+#### Want to learn Docker Deeply? => [Watch this Docker Course](https://learndocker.online/courses/)
