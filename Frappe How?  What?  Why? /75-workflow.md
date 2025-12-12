@@ -300,6 +300,8 @@ It's important to understand the distinction:
 
 These three concepts work together to provide both system-level control and business process management.
 
+The Flow must be in that order 0 -> 1 -> 2, you can't skip from 0 to 2, you must go through 1, and you can't go back from 1 to 0, you must go through 2 to cancel it or you will get an error.
+
 ## Programmatic Workflow Handling
 
 Frappe provides comprehensive APIs for working with workflows programmatically in both JavaScript (client-side) and Python (server-side). This section covers the most common operations you'll need when building custom workflow integrations.
