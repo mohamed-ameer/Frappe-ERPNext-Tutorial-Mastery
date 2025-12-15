@@ -152,6 +152,32 @@ def calculate_something(param1, param2):
 1. **Client Request**
    ```javascript
    frm.call('calculate_total', {multiplier: 1.5})
+   // or
+   frappe.call({
+       method: "your_whitelisted_instance_method_in_the_doctype_class",
+       doc: frm.doc,
+       args: {
+           param1: 'value1',
+           param2: 'value2'
+       }
+   }).then(function(response) {
+       // Handle success
+   });
+   // or 
+    frappe.call({
+       method: "your_whitelisted_instance_method_in_the_doctype_class",
+       doc: frm.doc,
+       args: {
+           param1: 'value1',
+           param2: 'value2'
+       },
+       callback: function(response) {
+           // Handle success
+       },
+       error: function(error) {
+           // Handle errors
+       }
+   })
    ```
 
 2. **Request Processing**
@@ -363,3 +389,7 @@ This revolutionary approach transforms Frappe from just another framework into a
 ### Configuration and Hooks
 - **`/apps/frappe/frappe/core/doctype/client_script/client_script.js`** - Client script execution and method calling
 - **`/apps/frappe/frappe/model/workflow.py`** - Workflow integration with document methods
+
+---
+
+[Frappe API](./87-frappe_API.md)
