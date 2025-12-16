@@ -76,6 +76,8 @@ It’s a full business management system used by thousands of companies worldwid
 And the best part?  
 It’s **100% free and open source** — built entirely on the Frappe framework.
 
+BTW it named **ERPNext** because it was the cheapest domain name which include the word "ERP" that they could find at the time. (that's the story)
+
 ---
 
 ## How to Get Started (Beginner-Friendly)

@@ -76,6 +76,8 @@ When you install Frappe, you don't get an empty shell. You get ready-to-use modu
 - Frappe decided to offer their flagship product (ERPNext) as Software-as-a-Service (SaaS)
 - Platform became more accessible to businesses
 
+> Just to know: The first web framework that the founder was using in his beginning was **Zope** and it gave him inspiration to build Frappe.
+
 #### Today 
 **Thousands** use Frappe to build not just ERPs, but also Custom business apps across industries, with Global community and ecosystem.
 
