@@ -660,7 +660,7 @@ or_filters=[
 ]
 ```
 
-but Frappe's REST API should recieve filter query params as json:
+and Frappe's REST API can also recieve filter query params as json:
 
 ```python
 ?filters={"fieldname": "value"}

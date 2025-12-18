@@ -122,7 +122,10 @@ So:
 
 ### Summary
 
+**WebHook** is nothing but an HTTP POST request that is sent from external system to your system (webhook URL) when an event occurs in the external system.
+
 - Webhook = automated HTTP POST triggered by an event.
 - API = manual HTTP request made when needed.
 - Webhooks are ideal for real-time, event-driven integrations.
 - They are widely used in systems like GitHub, Stripe, Frappe, Shopify, and others.
+- Weebhook URL = the HTTP POST request that is sent from external system to your system (webhook URL) when an event occurs in the external system.
