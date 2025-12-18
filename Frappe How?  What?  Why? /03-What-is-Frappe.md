@@ -113,3 +113,14 @@ Welcome to the Frappe world!
 
 ---
 
+**The different between Frappe and Oracle, SAP, etc?**
+
+Frappe is a **web framework** for building any type of web applications, while Oracle and SAP are **applications** themselves. Frappe provides the tools and infrastructure to build your own applications whatever you want (versatile), whereas Oracle and SAP are complete, ready-to-use solutions for specific business needs only.
+
+Frappe did built ERPNext which is just an application built on top of Frappe framework, but Frappe is not limited to ERP only unlike Oracle and SAP. You can build any type of application you want on top of it no matter how complex it is or what it does.
+
+Oracle and SAP are like pre-built houses, while Frappe is like a construction kit that lets you build whatever you want.
+
+**Prove that Frappe is Powerful and Versatile?**
+
+FRAPPE DID BUILD ERPNEXT!! no need other prove.
