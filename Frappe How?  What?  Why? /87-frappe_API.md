@@ -617,7 +617,7 @@ Frappe supports standard HTTP methods:
 
 **Example Request:**
 ```bash
-curl -X GET "http://localhost:8000/api/resource/User?fields=[\"name\",\"email\"]&filters=[[\"User\",\"enabled\",\"=\",1]]&limit_start=0&limit_page_length=10&order_by=creation desc" \
+curl -X GET "http://localhost:8000/api/resource/User?fields=[\"name\",\"email\"]&filters={\"enabled\": 1}" \
   -H "Authorization: token api_key:api_secret"
 ```
 
@@ -658,6 +658,14 @@ or_filters=[
   ["DocType", "field1", "=", "value1"],
   ["DocType", "field2", "=", "value2"]
 ]
+```
+
+but Frappe's REST API should recieve filter query params as json:
+
+```python
+?filters={"fieldname": "value"}
+// or
+?filters={"fieldname": ["operator", "value"]}
 ```
 
 **Operators:** `=`, `!=`, `>`, `<`, `>=`, `<=`, `like`, `not like`, `in`, `not in`, `is`, `is not`, `between`
