@@ -137,5 +137,34 @@ there is a checkbox called "Commit" that you can check it if you want to commit 
 
 ## 8. Important Doctypes
 
-- Deleted Documents: `http:your-site.com/app/deleted-document`
+BEST 3 steps you do to make your development life easier :
+
+1. get commit app in your bench
+```bash
+bench get-app --branch main The-commit-company/commit 
+```
+(btw as i remember frappe bench get-app will add https ://github.com/
+then it will be "https ://github. com/The-commit-company/commit")
+
+2. install it in your site:
+```bash
+bench --site {site_name} install-app commit 
+```
+
+3. route to /commit 
+`http://localhost:8000/commit `
+
+and congratulations 🎉 
+you have the best frappe development tool that will make your life easier 
+
+
+commit is nothing but a frappe app that provide two major functionality:
+
+1. it list for you every single api in your system and you can documents and test it immediately 
+
+2. it draw ERD for your system database 
+
+as well as
+
+3. it list all bench commands for you as cheat sheet.
 

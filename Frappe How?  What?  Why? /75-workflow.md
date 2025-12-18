@@ -646,6 +646,19 @@ counts = get_workflow_state_count(
 
 7. **Test Transition Conditions**: When programmatically applying workflows, ensure transition conditions are satisfied before attempting the transition.
 
+---
+
+### How to read the workflow diagram/table?
+
+1. At the current State "eg. Draft", 
+2. Who Allowed to do this state's action? "All", 
+3. They can do the following action: "action1"
+4. If they do this action, the next state will be? "Pending Approval"  
+
+and repeat the same for the next state and so on.
+
+---
+
 ## Conclusion
 
 Workflows in Frappe provide a robust framework for managing document approval processes. By understanding the relationship between states, transitions, docstatus, and workflow_state, developers can create sophisticated business process automation that enforces organizational policies while maintaining flexibility and user-friendliness.
