@@ -44,6 +44,9 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - [Day 9 - 2021/8/2](https://www.youtube.com/watch?v=UoOPB0AKxaE&list=PLLbgRul3LE3NW6T9yQROiIihYpWm5RyHw&index=23)  
 - [Day 10 - 2021/8/6](https://www.youtube.com/watch?v=naJiQaOZlxo&list=PLLbgRul3LE3NW6T9yQROiIihYpWm5RyHw&index=25)
 
+#### Tips Videos
+- [ERPNext Developer Training](https://www.youtube.com/playlist?list=PLu2PFV-uCakuN7MruIuJ-pwYai8xIKdfU)
+
 ---
 
 ### 🎓 Other Valuable Resources
@@ -75,12 +78,14 @@ the following resources are in arabic for implementation and not development
     - [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
     - [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
     - [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
-    - [Free ERPNext Implementation | Help? Check Description | All Modules Self Implementation Step-by-Step Guide | Frappe | Involve | Self Implementers](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
+    - [Free ERPNext Implementation Training](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
     - [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
     - [ERPGulf Training](https://cloud.erpgulf.com/training)
     - [Learning ERPNext Implementation (BWH)](https://www.youtube.com/playlist?list=PLQGFK8RiEPSKjsII3xNjZ6DD_UZu0d-rb)
     - [ERPNext Implementation by Sayed Ibrahim Radwan](https://www.youtube.com/@sayedibrahimradwan)
         - [Telegram Channel](https://t.me/+kZrA_H8orHVjNjA0)
+    - [تطبيق ERPNext للمحاسبين: تدريب المحاسبين مقدم من شركة Creative Max)](https://www.youtube.com/playlist?list=PLJPb_p6wBrJa7KtvFIlzRI2hSZIjanFFD)
+    - [ERPNext Academy by Mr.karani](https://www.youtube.com/playlist?list=PLu2PFV-uCaktEpoHAScyol23ZtERbf2We)
 
 ---
 
