@@ -86,6 +86,7 @@ the following resources are in arabic for implementation and not development
         - [Telegram Channel](https://t.me/+kZrA_H8orHVjNjA0)
     - [تطبيق ERPNext للمحاسبين: تدريب المحاسبين مقدم من شركة Creative Max)](https://www.youtube.com/playlist?list=PLJPb_p6wBrJa7KtvFIlzRI2hSZIjanFFD)
     - [ERPNext Academy by Mr.karani](https://www.youtube.com/playlist?list=PLu2PFV-uCaktEpoHAScyol23ZtERbf2We)
+    - [ERPNext Implementation By Systems House](https://www.youtube.com/@systemhc/playlists)
 
 ---
 
