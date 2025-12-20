@@ -124,3 +124,9 @@ Oracle and SAP are like pre-built houses, while Frappe is like a construction ki
 **Prove that Frappe is Powerful and Versatile?**
 
 FRAPPE DID BUILD ERPNEXT!! no need other prove.
+
+**What is the difference between Frappe and other web frameworks?**
+
+Frappe allow the end user to build their own application without coding, while other web frameworks require hard coding, and above and byond the system is very relaiable ,stable, fast, and secure.
+
+In my opinion: With due respect to other frameworks, Frappe is the future of software development.
