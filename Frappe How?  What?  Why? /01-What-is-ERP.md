@@ -134,3 +134,12 @@ ERPNext is special because:
 In short: ERPNext gives you everything you need to run your business, for free, with full control, and you can make it fit perfectly for your company.
 
 ---
+
+## Why ERPNext?
+- ERPNext is your company operating system, only single plateform contains literally everything in your company.
+- ERPNext follows modularity approach which means you can resize the ERP to fit your needs, you can choose modules that you need only and don't have to use all modules, and time by time you can increase modules as your company become bigger and bigger without changing anything in your data, same as installing app in your phone.
+- ERPNext is your single source of truth, every module is connected to each other's data.
+- ERPNext is customizable which means you can customize the system to fit your needs and you can create new module that is not exist (it doesn't force you with the core only, build what you want)
+- ERPNext is integrable with other external systems you use and have (whatsapp, ecommerce, payment, ...etc).
+- ERPNext is not only software, it is entire solution, it is your company in a computer.
+- 
