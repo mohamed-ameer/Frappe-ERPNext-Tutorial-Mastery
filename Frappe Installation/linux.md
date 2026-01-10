@@ -224,3 +224,6 @@ default-character-set = utf8mb4
    ```
 > If there are no other instances of Frappe running on your server or machine, it will automatically start on port 8000.
 > To access the site, visit either `[Your Server IP Address:8000]` for a live server or `[site-name:8000]` for a local development server.
+
+#### 28. **Install Database Client Extension**
+- [Database Client](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2)
