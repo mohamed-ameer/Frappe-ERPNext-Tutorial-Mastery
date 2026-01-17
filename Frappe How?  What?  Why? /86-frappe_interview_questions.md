@@ -36,6 +36,18 @@
 25. [How do you optimize performance in Frappe applications?](#25-how-do-you-optimize-performance-in-frappe-applications)
 26. [What is the difference between `frappe.get_doc()` and `frappe.get_all()`?](#26-what-is-the-difference-between-frappeget_doc-and-frappeget_all)
 27. [What are Server Scripts in Frappe?](#27-what-are-server-scripts-in-frappe)
+28. [How to change the Frappe built-in DocType API response?](#28-how-to-change-the-frappe-built-in-doctype-api-response)
+29. [How to secure the API? Auth, permission check, rate_limit](#29-how-to-secure-the-api-auth-permission-check-rate_limit)
+30. [How to move customizations (Custom Fields, Property Setters, Client Scripts) to another site without manual migration?](#30-how-to-move-customizations-custom-fields-property-setters-client-scripts-to-another-site-without-manual-migration)
+31. [Why does changing a field type to Float with default value cause "cannot convert str to float" error?](#31-why-does-changing-a-field-type-to-float-with-default-value-cause-cannot-convert-str-to-float-error)
+32. [Why doesn't setting a default value on a field fix existing records during bench migrate?](#32-why-doesnt-setting-a-default-value-on-a-field-fix-existing-records-during-bench-migrate)
+33. [Why does Frappe fail when changing field type to Float if existing records contain NULL or empty string values?](#33-why-does-frappe-fail-when-changing-field-type-to-float-if-existing-records-contain-null-or-empty-string-values)
+34. [Why does Frappe perform type casting when loading DocTypes, especially during bench migrate?](#34-why-does-frappe-perform-type-casting-when-loading-doctypes-especially-during-bench-migrate)
+35. [What is the correct approach to safely change a field type in Frappe when existing data may be incompatible?](#35-what-is-the-correct-approach-to-safely-change-a-field-type-in-frappe-when-existing-data-may-be-incompatible)
+36. [Why does Frappe not rely only on database data types and instead enforce its own type casting at the ORM level?](#36-why-does-frappe-not-rely-only-on-database-data-types-and-instead-enforce-its-own-type-casting-at-the-orm-level)
+37. [Is Frappe MVC or MVT? What system architecture does Frappe follow?](#37-is-frappe-mvc-or-mvt-what-system-architecture-does-frappe-follow)
+38. [What is anti pattern? How can we prevent anti pattern in Frappe?](#38-what-is-anti-pattern-how-can-we-prevent-anti-pattern-in-frappe)
+39. [If the company changes the domain name and all employee emails, how to change all emails in the app DB safely?](#39-if-the-company-changes-the-domain-name-and-all-employee-emails-how-to-change-all-emails-in-the-app-db-safely)
 
 ---
 
@@ -2189,6 +2201,1944 @@ frappe.sendmail(
 
 ---
 
+### 28. How to change the Frappe built-in DocType API response?
+
+**Answer:** You can override Frappe's built-in API responses using **hooks** or by overriding the API method directly (Source: `frappe/api/`).
+
+**Method 1: Override Whitelisted Methods Hook** (Recommended):
+
+```python
+# hooks.py
+override_whitelisted_methods = {
+    "frappe.client.get": "myapp.api.custom_get",
+    "frappe.client.get_list": "myapp.api.custom_get_list",
+    "frappe.desk.reportview.get": "myapp.api.custom_reportview_get"
+}
+
+# myapp/api.py
+import frappe
+from frappe.client import get as original_get
+
+@frappe.whitelist()
+def custom_get(doctype, name=None, filters=None, fields=None, **kwargs):
+    """Override the default frappe.client.get"""
+    # Call original method
+    result = original_get(doctype, name, filters, fields, **kwargs)
+    
+    # Modify response
+    if doctype == "Customer":
+        # Add custom field to response
+        if isinstance(result, dict):
+            result["custom_field"] = "custom_value"
+        elif isinstance(result, list):
+            for item in result:
+                item["custom_field"] = "custom_value"
+    
+    return result
+```
+
+**Method 2: Override DocType Controller Method**:
+
+```python
+# myapp/doctype/customer/customer.py
+import frappe
+from frappe.model.document import Document
+
+class Customer(Document):
+    def as_dict(self, no_nulls=False, no_default_fields=False, convert_dates_to_str=False):
+        """Override the default as_dict method"""
+        data = super().as_dict(no_nulls, no_default_fields, convert_dates_to_str)
+        
+        # Add custom fields to API response
+        data["custom_computed_field"] = self.compute_something()
+        
+        return data
+```
+
+**Method 3: Override API Handler** (Advanced):
+
+```python
+# hooks.py
+override_whitelisted_methods = {
+    "frappe.handler": "myapp.api.custom_handler"
+}
+
+# myapp/api.py
+def custom_handler():
+    """Override the main API handler"""
+    import frappe
+    from frappe import _
+    
+    cmd = frappe.form_dict.cmd
+    doctype = frappe.form_dict.doctype
+    
+    # Intercept specific API calls
+    if cmd == "frappe.client.get" and doctype == "Sales Order":
+        return custom_sales_order_get()
+    
+    # Fallback to original handler
+    from frappe.handler import handle
+    return handle()
+```
+
+**Method 4: Modify Response in DocType Event**:
+
+```python
+# hooks.py
+doc_events = {
+    "Customer": {
+        "on_update": "myapp.custom.modify_api_response"
+    }
+}
+
+# myapp/custom.py
+def modify_api_response(doc, method):
+    """This runs on document update, but doesn't directly modify API response"""
+    # For API response modification, use Method 1 or 2
+    pass
+```
+
+**Best Practices:**
+- Use `override_whitelisted_methods` hook for API-level changes
+- Override `as_dict()` in DocType controller for document-level changes
+- Always call the original method first, then modify the response
+- Document your overrides clearly
+- Test thoroughly as overrides affect all API consumers
+
+---
+
+### 29. How to secure the API? Auth, permission check, rate_limit
+
+**Answer:** Frappe provides multiple layers of API security through decorators, hooks, and built-in mechanisms (Source: `frappe/auth.py`, `frappe/api/`).
+
+**1. Authentication with `@frappe.whitelist()`**:
+
+```python
+import frappe
+from frappe.rate_limiter import rate_limit
+
+# Basic authentication (default)
+@frappe.whitelist()
+def protected_api():
+    """Requires user to be logged in"""
+    return {"data": "protected"}
+
+# Public API (no authentication)
+@frappe.whitelist(allow_guest=True)
+def public_api():
+    """Publicly accessible"""
+    return {"data": "public"}
+
+# Method-specific authentication
+@frappe.whitelist(methods=["GET", "POST"])
+def method_specific_api():
+    """Only GET and POST allowed"""
+    return {"data": "method_specific"}
+```
+
+**2. Permission Checking**:
+
+```python
+@frappe.whitelist()
+def permission_checked_api(doctype, name):
+    """Check permissions before returning data"""
+    # Check DocType-level permission
+    if not frappe.has_permission(doctype, "read"):
+        frappe.throw("Insufficient permissions", frappe.PermissionError)
+    
+    # Get document
+    doc = frappe.get_doc(doctype, name)
+    
+    # Check document-level permission
+    if not frappe.has_permission(doctype, "read", doc):
+        frappe.throw("Cannot access this document", frappe.PermissionError)
+    
+    return doc.as_dict()
+
+# Check specific permission type
+@frappe.whitelist()
+def create_api(data):
+    if not frappe.has_permission("Sales Order", "create"):
+        frappe.throw("Cannot create Sales Order")
+    
+    doc = frappe.get_doc(json.loads(data))
+    doc.insert()
+    return doc.name
+```
+
+**3. Rate Limiting**:
+
+```python
+from frappe.rate_limiter import rate_limit
+
+@frappe.whitelist(allow_guest=True)
+@rate_limit(limit=10, seconds=60)  # 10 requests per minute
+def rate_limited_api():
+    """Rate limited to 10 requests per minute per IP/user"""
+    return {"status": "ok"}
+
+# Different limits for different users
+@frappe.whitelist()
+@rate_limit(limit=100, seconds=60)  # 100 for authenticated users
+def authenticated_rate_limit():
+    return {"status": "ok"}
+
+# Custom rate limit key
+@frappe.whitelist(allow_guest=True)
+@rate_limit(limit=5, seconds=60, key=lambda: frappe.form_dict.email)
+def email_based_rate_limit():
+    """Rate limit based on email parameter"""
+    return {"status": "ok"}
+```
+
+**4. Input Validation and Sanitization**:
+
+```python
+@frappe.whitelist()
+def validated_api(customer_name, amount):
+    """Validate and sanitize inputs"""
+    # Type validation
+    if not isinstance(customer_name, str):
+        frappe.throw("Invalid customer name")
+    
+    # Value validation
+    try:
+        amount = float(amount)
+        if amount < 0:
+            frappe.throw("Amount cannot be negative")
+    except (ValueError, TypeError):
+        frappe.throw("Invalid amount")
+    
+    # Existence check
+    if not frappe.db.exists("Customer", customer_name):
+        frappe.throw("Customer does not exist")
+    
+    return {"status": "valid"}
+```
+
+**5. Role-Based Access**:
+
+```python
+@frappe.whitelist()
+def role_based_api():
+    """Check user roles"""
+    user_roles = frappe.get_roles()
+    
+    if "System Manager" not in user_roles:
+        frappe.throw("Only System Managers can access this API")
+    
+    return {"data": "admin_only"}
+
+# Check multiple roles
+@frappe.whitelist()
+def multi_role_check():
+    user_roles = frappe.get_roles()
+    allowed_roles = ["Sales Manager", "Sales User", "System Manager"]
+    
+    if not any(role in allowed_roles for role in user_roles):
+        frappe.throw("Insufficient role permissions")
+    
+    return {"data": "allowed"}
+```
+
+**6. IP Whitelisting** (Custom Implementation):
+
+```python
+from frappe import get_request_header
+
+@frappe.whitelist()
+def ip_whitelisted_api():
+    """Check IP address"""
+    allowed_ips = ["192.168.1.100", "10.0.0.1"]
+    client_ip = get_request_header("X-Forwarded-For") or frappe.local.request.environ.get("REMOTE_ADDR")
+    
+    if client_ip not in allowed_ips:
+        frappe.throw("IP address not allowed", frappe.AuthenticationError)
+    
+    return {"data": "allowed"}
+```
+
+**7. API Key Authentication** (Custom):
+
+```python
+@frappe.whitelist(allow_guest=True)
+def api_key_authenticated():
+    """Custom API key authentication"""
+    api_key = frappe.form_dict.get("api_key")
+    
+    if not api_key:
+        frappe.throw("API key required", frappe.AuthenticationError)
+    
+    # Validate API key
+    valid_key = frappe.db.get_value("API Key", {"key": api_key, "enabled": 1}, "name")
+    
+    if not valid_key:
+        frappe.throw("Invalid API key", frappe.AuthenticationError)
+    
+    return {"data": "authenticated"}
+```
+
+**8. Comprehensive Security Example**:
+
+```python
+from frappe.rate_limiter import rate_limit
+from frappe import get_request_header
+
+@frappe.whitelist()
+@rate_limit(limit=50, seconds=60)
+def secure_api(doctype, name):
+    """Fully secured API endpoint"""
+    # 1. Authentication (handled by @frappe.whitelist())
+    
+    # 2. Permission check
+    if not frappe.has_permission(doctype, "read"):
+        frappe.throw("Insufficient permissions", frappe.PermissionError)
+    
+    # 3. Input validation
+    if not doctype or not name:
+        frappe.throw("doctype and name are required")
+    
+    # 4. Existence check
+    if not frappe.db.exists(doctype, name):
+        frappe.throw("Document does not exist")
+    
+    # 5. Get document with permission check
+    doc = frappe.get_doc(doctype, name)
+    
+    # 6. Additional business logic permission
+    if doc.status == "Cancelled" and "System Manager" not in frappe.get_roles():
+        frappe.throw("Cannot access cancelled documents")
+    
+    return doc.as_dict()
+```
+
+**Security Best Practices:**
+- Always use `@frappe.whitelist()` for API endpoints
+- Set `allow_guest=True` only when necessary
+- Implement rate limiting for public APIs
+- Validate and sanitize all inputs
+- Check permissions at both DocType and document levels
+- Use parameterized queries to prevent SQL injection
+- Log security events for auditing
+- Implement proper error handling (don't expose sensitive info)
+
+---
+
+### 30. How to move customizations (Custom Fields, Property Setters, Client Scripts) to another site without manual migration?
+
+**Answer:** Use **Fixtures** to package and transfer customizations between sites (Source: `frappe/modules/fixtures.py`).
+
+**Step 1: Configure Fixtures in `hooks.py`**:
+
+```python
+# hooks.py
+fixtures = [
+    "Custom Field",
+    "Property Setter",
+    "Client Script",
+    "Server Script",
+    {"dt": "Custom Field", "filters": [["module", "=", "My App"]]},
+    {"dt": "Property Setter", "filters": [["property", "=", "reqd"]]},
+    {"dt": "Client Script", "filters": [["enabled", "=", 1]]},
+]
+```
+
+**Step 2: Export Fixtures from Source Site**:
+
+```bash
+# Export all fixtures configured in hooks.py
+bench --site source_site.local export-fixtures
+
+# This creates JSON files in:
+# apps/myapp/myapp/fixtures/custom_field.json
+# apps/myapp/myapp/fixtures/property_setter.json
+# apps/myapp/myapp/fixtures/client_script.json
+```
+
+**Step 3: Install Fixtures on Target Site**:
+
+```bash
+# Option 1: Install app (fixtures auto-installed)
+bench --site target_site.local install-app myapp
+
+# Option 2: During migrate
+bench --site target_site.local migrate
+# Fixtures are automatically imported during migration
+```
+
+**Step 4: Verify Installation**:
+
+```bash
+# Check if fixtures were installed
+bench --site target_site.local console
+
+# In console:
+import frappe
+frappe.get_all("Custom Field", filters={"module": "My App"})
+frappe.get_all("Property Setter", filters={"property": "reqd"})
+```
+
+**Advanced: Selective Fixture Export**:
+
+```python
+# hooks.py - Export only specific customizations
+fixtures = [
+    # All Custom Fields for specific DocTypes
+    {"dt": "Custom Field", "filters": [
+        ["dt", "in", ["Customer", "Item", "Sales Order"]]
+    ]},
+    
+    # Only enabled Client Scripts
+    {"dt": "Client Script", "filters": [
+        ["enabled", "=", 1],
+        ["dt", "=", "Sales Order"]
+    ]},
+    
+    # Property Setters for specific properties
+    {"dt": "Property Setter", "filters": [
+        ["property", "in", ["reqd", "hidden", "read_only"]]
+    ]},
+]
+```
+
+**Programmatic Fixture Export** (Alternative):
+
+```python
+# myapp/utils/fixture_export.py
+import frappe
+import json
+
+def export_customizations():
+    """Export customizations programmatically"""
+    customizations = {
+        "Custom Field": frappe.get_all("Custom Field", fields="*"),
+        "Property Setter": frappe.get_all("Property Setter", fields="*"),
+        "Client Script": frappe.get_all("Client Script", fields="*"),
+    }
+    
+    for doctype, records in customizations.items():
+        file_path = f"apps/myapp/myapp/fixtures/{frappe.scrub(doctype)}.json"
+        with open(file_path, "w") as f:
+            json.dump(records, f, indent=2, default=str)
+    
+    print("Customizations exported successfully")
+```
+
+**Best Practices:**
+- Always configure fixtures in `hooks.py` before exporting
+- Test fixtures on a staging site before production
+- Version control fixture files in Git
+- Use filters to export only necessary customizations
+- Document which customizations are included in fixtures
+- Fixtures are automatically updated (not duplicated) on import
+
+---
+
+### 31. Why does changing a field type to Float with default value cause "cannot convert str to float" error?
+
+**Answer:** This error occurs because **Frappe performs type casting when loading documents**, and existing string values in the database cannot be automatically converted to float (Source: `frappe/model/document.py`, `frappe/model/type_map.py`).
+
+**Root Cause:**
+
+```python
+# Source: frappe/model/type_map.py
+def cast_fieldtype(value, fieldtype, doc=None):
+    """Cast value to appropriate type based on fieldtype"""
+    if fieldtype == "Float":
+        if value is None or value == "":
+            return 0.0  # Default for empty
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            # This is where the error occurs
+            frappe.throw(f"Cannot convert {value} to float")
+```
+
+**Why It Happens:**
+
+1. **Existing Data**: When you change a field type from `Data` (string) to `Float`, existing records may contain:
+   - Non-numeric strings: `"N/A"`, `"Pending"`, `"TBD"`
+   - Empty strings: `""`
+   - NULL values: `NULL`
+
+2. **Type Casting on Load**: When Frappe loads a document, it automatically casts field values based on the current field type:
+   ```python
+   # When loading document
+   doc = frappe.get_doc("My DocType", "DOC-001")
+   # Frappe tries to cast existing "N/A" string to float
+   # float("N/A") → ValueError: could not convert string to float
+   ```
+
+3. **Default Value Doesn't Help**: Setting a default value only affects **new documents**, not existing ones:
+   ```python
+   # Default value in DocType JSON
+   {
+       "fieldname": "amount",
+       "fieldtype": "Float",
+       "default": 0  # Only applies to NEW documents
+   }
+   # Existing documents still have old string values
+   ```
+
+**Example Scenario:**
+
+```python
+# Before migration: Field is "Data" type
+# Database has:
+# | name    | amount |
+# |---------|--------|
+# | DOC-001 | "N/A"  |
+# | DOC-002 | ""     |
+# | DOC-003 | "100"  |
+
+# After changing to Float with default=0:
+# When loading DOC-001:
+doc = frappe.get_doc("My DocType", "DOC-001")
+# Frappe tries: float("N/A") → ERROR!
+```
+
+**Solution:** See Question 35 for the correct approach.
+
+---
+
+### 32. Why doesn't setting a default value on a field fix existing records during bench migrate?
+
+**Answer:** Default values in Frappe **only apply to new documents**, not existing records. During migration, Frappe doesn't automatically update existing records with default values (Source: `frappe/model/document.py`).
+
+**How Default Values Work:**
+
+```python
+# Source: frappe/model/document.py
+def set_default_values(self):
+    """Set default values for new documents only"""
+    for df in self.meta.get("fields"):
+        if df.default:
+            if self.get(df.fieldname) is None:
+                # Only sets if field is None (new document)
+                self.set(df.fieldname, df.default)
+```
+
+**Why Defaults Don't Update Existing Records:**
+
+1. **Default values are applied during document creation**, not during migration:
+   ```python
+   # When creating NEW document
+   doc = frappe.get_doc({
+       "doctype": "My DocType",
+       "name": "NEW-001"
+   })
+   # Default value is applied here
+   doc.insert()  # Field gets default value
+   
+   # Existing documents are NOT updated
+   ```
+
+2. **Migration only syncs schema**, not data:
+   ```python
+   # bench migrate does:
+   # 1. Sync DocType schema (add/modify columns)
+   # 2. Run patches
+   # 3. Does NOT update existing field values
+   ```
+
+3. **Database default vs. Frappe default**:
+   - Database default: Applied at database level (only for NULL values)
+   - Frappe default: Applied in Python code (only for new documents)
+
+**Example:**
+
+```python
+# DocType JSON
+{
+    "fieldname": "amount",
+    "fieldtype": "Float",
+    "default": 0
+}
+
+# Existing records:
+# | name    | amount |
+# |---------|--------|
+# | DOC-001 | NULL   |  # Still NULL after migrate
+# | DOC-002 | ""     |  # Still empty string
+# | DOC-003 | "old"  |  # Still old value
+
+# New record:
+doc = frappe.get_doc({"doctype": "My DocType"})
+doc.insert()
+# amount = 0 (default applied)
+```
+
+**Solution:** Use a patch to update existing records:
+
+```python
+# patches/v1_0/update_defaults.py
+def execute():
+    """Update existing records with default values"""
+    frappe.db.sql("""
+        UPDATE `tabMy DocType`
+        SET amount = 0
+        WHERE amount IS NULL OR amount = ''
+    """)
+    frappe.db.commit()
+```
+
+---
+
+### 33. Why does Frappe fail when changing field type to Float if existing records contain NULL or empty string values?
+
+**Answer:** Frappe's **type casting system** attempts to convert all field values to the target type when loading documents. NULL and empty strings can be handled, but the casting logic may fail depending on the context (Source: `frappe/model/type_map.py`).
+
+**Type Casting Logic:**
+
+```python
+# Source: frappe/model/type_map.py
+def cast_fieldtype(value, fieldtype, doc=None):
+    if fieldtype == "Float":
+        if value is None:
+            return None  # NULL is allowed
+        if value == "":
+            return 0.0  # Empty string converted to 0
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            frappe.throw(f"Cannot convert {value} to float")
+```
+
+**Why It Fails:**
+
+1. **Empty String Handling**:
+   - Empty strings `""` are converted to `0.0` during casting
+   - But if the field is marked as `reqd=1` (mandatory), NULL/empty may cause validation errors
+
+2. **Database vs. Python Type Mismatch**:
+   ```python
+   # Database has: amount = "" (empty string, VARCHAR)
+   # DocType says: amount should be Float
+   # When loading:
+   doc = frappe.get_doc("My DocType", "DOC-001")
+   # Frappe tries to cast "" to float → 0.0
+   # But if field is reqd=1 and value is None, validation fails
+   ```
+
+3. **Validation During Load**:
+   ```python
+   # Source: frappe/model/document.py
+   def load_from_db(self):
+       # Loads data from database
+       # Then casts types
+       # Then validates
+       # If reqd field is None after casting, validation fails
+   ```
+
+**Common Failure Scenarios:**
+
+```python
+# Scenario 1: Empty string with reqd field
+{
+    "fieldname": "amount",
+    "fieldtype": "Float",
+    "reqd": 1  # Mandatory
+}
+# Database: amount = ""
+# Casting: "" → 0.0 (works)
+# But if casting returns None, validation fails
+
+# Scenario 2: NULL with reqd field
+# Database: amount = NULL
+# Casting: NULL → None
+# Validation: reqd field cannot be None → ERROR
+
+# Scenario 3: Invalid string
+# Database: amount = "N/A"
+# Casting: float("N/A") → ValueError → ERROR
+```
+
+**Solution:** Clean data before changing field type (see Question 35).
+
+---
+
+### 34. Why does Frappe perform type casting when loading DocTypes, especially during bench migrate?
+
+**Answer:** Frappe performs type casting to ensure **data consistency between database storage and Python object representation**, and to handle schema changes during migration (Source: `frappe/model/document.py`, `frappe/model/type_map.py`).
+
+**Reasons for Type Casting:**
+
+1. **Database Type Flexibility**:
+   - Databases store data in their native types (VARCHAR, INT, DECIMAL)
+   - Frappe needs Python types (str, int, float, datetime)
+   - Casting ensures Python code works with correct types
+
+2. **Schema Evolution**:
+   ```python
+   # Field type changed from Data to Float
+   # Database still has VARCHAR column with string values
+   # Frappe casts strings to floats when loading
+   # This allows gradual migration without immediate data cleanup
+   ```
+
+3. **Type Safety in Python**:
+   ```python
+   # Without casting:
+   doc.amount = "100"  # String from database
+   total = doc.amount + 50  # TypeError: can't add int to str
+   
+   # With casting:
+   doc.amount = 100.0  # Float after casting
+   total = doc.amount + 50  # Works correctly
+   ```
+
+4. **Validation and Business Logic**:
+   ```python
+   # Business logic expects numeric types
+   def validate(self):
+       if self.amount > 1000:  # Requires numeric type
+           frappe.throw("Amount too high")
+   ```
+
+**Casting During Migration:**
+
+```python
+# Source: frappe/model/document.py
+def load_from_db(self):
+    """Load document and cast types"""
+    # 1. Load raw data from database
+    data = self.db_get()
+    
+    # 2. Cast each field to appropriate type
+    for fieldname, value in data.items():
+        df = self.meta.get_field(fieldname)
+        if df:
+            # Cast based on current field type
+            casted_value = cast_fieldtype(value, df.fieldtype, self)
+            self.set(fieldname, casted_value)
+    
+    # 3. Validate (may fail if casting produced invalid values)
+    self.validate()
+```
+
+**Migration Flow:**
+
+```
+bench migrate
+├── Sync DocType schema (change column type in DB)
+├── Load existing documents
+│   ├── Read raw data (old type in DB)
+│   ├── Cast to new type (may fail here)
+│   └── Validate (may fail here)
+└── Continue with patches
+```
+
+**Why This Design:**
+
+- **Flexibility**: Allows field type changes without immediate data migration
+- **Type Safety**: Ensures Python code works with correct types
+- **Validation**: Catches data incompatibilities early
+- **Consistency**: Database and Python representations stay in sync
+
+**Trade-off**: This design requires data to be compatible with new types, or you must clean data first (see Question 35).
+
+---
+
+### 35. What is the correct approach to safely change a field type in Frappe when existing data may be incompatible?
+
+**Answer:** Follow a **three-phase approach**: Clean data → Change type → Verify. Use patches to handle data migration before schema changes (Source: `frappe/modules/patch_handler.py`).
+
+**Step 1: Create Pre-Migration Patch** (Clean Data):
+
+```python
+# patches/v1_0/clean_data_before_type_change.py
+import frappe
+
+def execute():
+    """
+    Clean data before changing field type from Data to Float
+    Run this BEFORE schema sync
+    """
+    # Update NULL values
+    frappe.db.sql("""
+        UPDATE `tabMy DocType`
+        SET amount = 0
+        WHERE amount IS NULL
+    """)
+    
+    # Update empty strings
+    frappe.db.sql("""
+        UPDATE `tabMy DocType`
+        SET amount = 0
+        WHERE amount = ''
+    """)
+    
+    # Handle invalid strings (set to 0 or remove invalid records)
+    invalid_records = frappe.db.sql("""
+        SELECT name, amount
+        FROM `tabMy DocType`
+        WHERE amount NOT REGEXP '^[0-9]+\.?[0-9]*$'
+        AND amount IS NOT NULL
+        AND amount != ''
+    """, as_dict=True)
+    
+    for record in invalid_records:
+        # Option 1: Set to 0
+        frappe.db.set_value("My DocType", record.name, "amount", 0)
+        
+        # Option 2: Delete invalid records
+        # frappe.delete_doc("My DocType", record.name)
+        
+        # Option 3: Log for manual review
+        # frappe.log_error(f"Invalid amount: {record.amount}", "Data Migration")
+    
+    frappe.db.commit()
+    print(f"Cleaned {len(invalid_records)} invalid records")
+```
+
+**Step 2: Register Patch in `patches.txt`**:
+
+```
+# patches.txt
+[pre_model_sync]
+# Run BEFORE schema sync
+myapp.patches.v1_0.clean_data_before_type_change
+
+[post_model_sync]
+# Run AFTER schema sync (if needed)
+myapp.patches.v1_0.verify_data_after_type_change
+```
+
+**Step 3: Update DocType JSON**:
+
+```json
+{
+    "doctype": "DocType",
+    "name": "My DocType",
+    "fields": [
+        {
+            "fieldname": "amount",
+            "fieldtype": "Float",
+            "default": 0,
+            "reqd": 0  // Set to 0 initially, change to 1 after migration
+        }
+    ]
+}
+```
+
+**Step 4: Create Post-Migration Patch** (Verify):
+
+```python
+# patches/v1_0/verify_data_after_type_change.py
+import frappe
+
+def execute():
+    """
+    Verify data after type change
+    Run this AFTER schema sync
+    """
+    # Check for any remaining invalid values
+    invalid = frappe.db.sql("""
+        SELECT name, amount
+        FROM `tabMy DocType`
+        WHERE amount IS NULL
+        AND (SELECT reqd FROM `tabDocField` 
+             WHERE parent='My DocType' AND fieldname='amount') = 1
+    """, as_dict=True)
+    
+    if invalid:
+        frappe.log_error(
+            f"Found {len(invalid)} records with NULL amount",
+            "Post-Migration Verification"
+        )
+        # Optionally fix them
+        for record in invalid:
+            frappe.db.set_value("My DocType", record.name, "amount", 0)
+        frappe.db.commit()
+    
+    print("Data verification complete")
+```
+
+**Step 5: Run Migration**:
+
+```bash
+bench --site site1.local migrate
+```
+
+**Complete Example:**
+
+```python
+# patches/v1_0/migrate_amount_field.py
+import frappe
+
+def execute():
+    """Complete migration: Data → Float"""
+    
+    # Phase 1: Clean NULL and empty
+    frappe.db.sql("""
+        UPDATE `tabSales Order`
+        SET custom_amount = 0
+        WHERE custom_amount IS NULL OR custom_amount = ''
+    """)
+    
+    # Phase 2: Convert valid strings to numbers
+    frappe.db.sql("""
+        UPDATE `tabSales Order`
+        SET custom_amount = CAST(custom_amount AS DECIMAL(10,2))
+        WHERE custom_amount REGEXP '^[0-9]+\.?[0-9]*$'
+    """)
+    
+    # Phase 3: Handle invalid strings
+    invalid = frappe.db.sql("""
+        SELECT name, custom_amount
+        FROM `tabSales Order`
+        WHERE custom_amount NOT REGEXP '^[0-9]+\.?[0-9]*$'
+        AND custom_amount IS NOT NULL
+        AND custom_amount != ''
+    """, as_dict=True)
+    
+    for record in invalid:
+        # Try to extract number from string
+        import re
+        numbers = re.findall(r'\d+\.?\d*', str(record.custom_amount))
+        if numbers:
+            frappe.db.set_value("Sales Order", record.name, 
+                              "custom_amount", float(numbers[0]))
+        else:
+            # Set to 0 if no number found
+            frappe.db.set_value("Sales Order", record.name, 
+                              "custom_amount", 0)
+    
+    frappe.db.commit()
+    print(f"Migration complete. Fixed {len(invalid)} records.")
+```
+
+**Best Practices:**
+- Always create pre-migration patches for data cleanup
+- Test patches on staging first
+- Handle edge cases (NULL, empty, invalid strings)
+- Verify data after migration
+- Make field non-mandatory initially, then make it mandatory after migration
+- Log all changes for audit trail
+- Backup database before migration
+
+---
+
+### 36. Why does Frappe not rely only on database data types and instead enforce its own type casting at the ORM level?
+
+**Answer:** Frappe implements **application-level type casting** to provide **abstraction, flexibility, and consistency** across different database backends, while maintaining type safety in Python code (Source: `frappe/model/type_map.py`, `frappe/database/`).
+
+**Reasons for ORM-Level Type Casting:**
+
+1. **Database Abstraction**:
+   ```python
+   # Frappe supports multiple databases:
+   # - MariaDB/MySQL (VARCHAR, INT, DECIMAL)
+   # - PostgreSQL (TEXT, INTEGER, NUMERIC)
+   # - Different type systems, same Python interface
+   
+   # Without casting:
+   # MariaDB: VARCHAR → Python gets string
+   # PostgreSQL: TEXT → Python gets string
+   # But Float field should return float in Python
+   
+   # With casting:
+   # Database stores as VARCHAR/TEXT
+   # Frappe casts to float in Python
+   # Consistent behavior across databases
+   ```
+
+2. **Schema Evolution Without Data Migration**:
+   ```python
+   # Change field type from Data to Float
+   # Database column might still be VARCHAR (not migrated yet)
+   # Frappe casts string values to float when loading
+   # Allows gradual migration
+   ```
+
+3. **Python Type Safety**:
+   ```python
+   # Database: amount stored as VARCHAR "100.50"
+   # Without casting: doc.amount = "100.50" (string)
+   # Business logic: if doc.amount > 100: ... (fails - can't compare)
+   
+   # With casting: doc.amount = 100.50 (float)
+   # Business logic works correctly
+   ```
+
+4. **Validation and Business Logic**:
+   ```python
+   # Source: frappe/model/document.py
+   def validate(self):
+       # Expects numeric types for calculations
+       if self.amount > self.credit_limit:
+           frappe.throw("Amount exceeds limit")
+       # Requires proper type casting
+   ```
+
+5. **Custom Field Types**:
+   ```python
+   # Frappe has custom field types not in databases:
+   # - Currency (Float with currency symbol)
+   # - Duration (stored as seconds, displayed as HH:MM:SS)
+   # - HTML (stored as TEXT, needs special handling)
+   
+   # Casting handles these custom types
+   ```
+
+6. **Data Transformation**:
+   ```python
+   # Source: frappe/model/type_map.py
+   def cast_fieldtype(value, fieldtype, doc=None):
+       if fieldtype == "Date":
+           # Database: "2024-01-15" (string)
+           # Python: datetime.date(2024, 1, 15)
+           return parse_date(value)
+       
+       if fieldtype == "Datetime":
+           # Database: "2024-01-15 10:30:00" (string)
+           # Python: datetime.datetime(2024, 1, 15, 10, 30)
+           return parse_datetime(value)
+   ```
+
+**Architecture Benefits:**
+
+```python
+# Database Layer (Storage)
+# └── Stores data in database-native types
+#     (VARCHAR, INT, DECIMAL, etc.)
+
+# ORM Layer (Frappe Casting)
+# └── Casts to Python types
+#     (str, int, float, datetime, etc.)
+
+# Application Layer (Business Logic)
+# └── Works with Python types
+#     (type-safe, consistent)
+```
+
+**Trade-offs:**
+
+**Advantages:**
+- Database independence
+- Type safety in Python
+- Schema evolution flexibility
+- Custom field type support
+- Consistent behavior
+
+**Disadvantages:**
+- Performance overhead (casting on every load)
+- Potential for casting errors
+- Requires data compatibility
+- More complex than direct database types
+
+**Example:**
+
+```python
+# Database: amount = "100.50" (VARCHAR)
+# DocType: amount = Float
+
+# Without ORM casting:
+doc = frappe.get_doc("Invoice", "INV-001")
+type(doc.amount)  # <class 'str'>
+doc.amount + 10  # TypeError
+
+# With ORM casting:
+doc = frappe.get_doc("Invoice", "INV-001")
+type(doc.amount)  # <class 'float'>
+doc.amount + 10  # 110.50 (works!)
+```
+
+**Conclusion:** Frappe's ORM-level type casting provides essential abstraction and type safety, enabling database independence and flexible schema evolution, at the cost of some performance overhead and the need for data compatibility.
+
+---
+
+### 37. Is Frappe MVC or MVT? What system architecture does Frappe follow?
+
+**Answer:** Frappe follows a **hybrid architecture** that combines elements of **MVC (Model-View-Controller)** and **MVT (Model-View-Template)**, but is more accurately described as a **Meta-Driven Architecture** or **Document-Oriented Architecture** (Source: `frappe/` structure).
+
+**Frappe's Architecture Pattern:**
+
+**1. Model Layer (Document/ORM)**:
+```python
+# Source: frappe/model/document.py
+class Document:
+    """Model - Represents database records"""
+    def __init__(self, doctype, name=None):
+        self.doctype = doctype
+        self.name = name
+        self.meta = frappe.get_meta(doctype)  # Schema definition
+    
+    def save(self):
+        """Persist to database"""
+        self.db_update()
+    
+    def validate(self):
+        """Business logic validation"""
+        pass
+```
+
+**2. View Layer (UI Components)**:
+```python
+# Frontend: frappe/public/js/frappe/form/
+# - Form View (form.js)
+# - List View (list_view.js)
+# - Report View (report_view.js)
+
+# Auto-generated from DocType metadata
+# No manual view code needed
+```
+
+**3. Controller Layer (Business Logic)**:
+```python
+# DocType Controllers: {doctype}/{doctype}.py
+class SalesOrder(Document):
+    def validate(self):
+        """Controller logic"""
+        if self.grand_total < 0:
+            frappe.throw("Invalid amount")
+    
+    def on_submit(self):
+        """Event handlers"""
+        self.create_delivery_note()
+```
+
+**Frappe's Unique Architecture:**
+
+**Meta-Driven Architecture:**
+```
+DocType Definition (JSON)
+    ↓
+Auto-Generated:
+├── Database Schema (tab{DocType})
+├── REST API (/api/resource/{doctype})
+├── Form UI (auto-rendered)
+├── List UI (auto-rendered)
+└── Python Controller (base class)
+```
+
+**Architecture Components:**
+
+1. **Metadata Layer** (DocType definitions):
+   ```json
+   {
+       "doctype": "DocType",
+       "name": "Customer",
+       "fields": [...],
+       "permissions": [...]
+   }
+   ```
+
+2. **ORM Layer** (Document class):
+   ```python
+   # Handles CRUD operations
+   doc = frappe.get_doc("Customer", "CUST-001")
+   doc.customer_name = "New Name"
+   doc.save()
+   ```
+
+3. **API Layer** (Auto-generated):
+   ```python
+   # /api/resource/Customer
+   # GET, POST, PUT, DELETE automatically available
+   ```
+
+4. **UI Layer** (Auto-generated):
+   ```javascript
+   // Form view auto-generated from DocType
+   // List view auto-generated from DocType
+   // No manual HTML/JS needed
+   ```
+
+5. **Business Logic Layer** (Custom controllers):
+   ```python
+   class Customer(Document):
+       def validate(self):
+           # Custom validation
+           pass
+   ```
+
+**Comparison with Traditional Patterns:**
+
+| Aspect | MVC | MVT | Frappe |
+|--------|-----|-----|--------|
+| Model | Manual models | Manual models | Auto from DocType |
+| View | Manual templates | Manual templates | Auto-generated |
+| Controller | Manual controllers | Manual views | DocType controllers |
+| API | Manual endpoints | Manual endpoints | Auto-generated |
+| Schema | Manual migrations | Manual migrations | Auto-synced |
+
+**Frappe's Architecture Principles:**
+
+1. **Convention over Configuration**: DocType name → Table name, API endpoint, UI
+2. **DRY (Don't Repeat Yourself)**: Define once in DocType, used everywhere
+3. **Separation of Concerns**: Metadata, ORM, API, UI are separate layers
+4. **Inversion of Control**: Framework generates code from metadata
+
+**Architecture Flow:**
+
+```
+User Request
+    ↓
+Router (frappe/app.py)
+    ↓
+API Handler / Form Handler / Web Handler
+    ↓
+Document (Model) ← DocType Meta (Schema)
+    ↓
+Database
+    ↓
+Response (JSON / HTML)
+```
+
+**Conclusion:** Frappe is **neither pure MVC nor MVT**. It's a **Meta-Driven, Document-Oriented Architecture** that auto-generates MVC components from DocType metadata, providing a unique approach where **metadata drives the entire application stack**.
+
+---
+
+### 38. What is anti pattern? How can we prevent anti pattern in Frappe?
+
+**Answer:** An **anti-pattern** is a common solution to a problem that is **ineffective or counterproductive**. In Frappe, several anti-patterns can lead to performance issues, maintenance problems, and security vulnerabilities.
+
+**Common Frappe Anti-Patterns:**
+
+**1. N+1 Query Problem:**
+
+```python
+# ANTI-PATTERN: N+1 queries
+customers = frappe.get_all("Customer")
+for customer in customers:
+    # Each iteration makes a separate query
+    territory = frappe.db.get_value("Customer", customer.name, "territory")
+    orders = frappe.get_all("Sales Order", filters={"customer": customer.name})
+
+# CORRECT: Fetch all data in one query
+customers = frappe.get_all("Customer", fields=["name", "territory"])
+customer_names = [c.name for c in customers]
+orders = frappe.get_all("Sales Order", 
+    filters={"customer": ["in", customer_names]},
+    fields=["customer", "grand_total"]
+)
+# Group orders by customer in Python
+```
+
+**2. Loading Full Documents in Lists:**
+
+```python
+# ANTI-PATTERN: Loading full documents with child tables
+orders = []
+for name in order_names:
+    doc = frappe.get_doc("Sales Order", name)  # Loads everything
+    orders.append(doc)
+
+# CORRECT: Use get_all with specific fields
+orders = frappe.get_all("Sales Order",
+    fields=["name", "customer", "grand_total"],
+    filters={"name": ["in", order_names]}
+)
+```
+
+**3. Direct SQL Without Parameterization:**
+
+```python
+# ANTI-PATTERN: SQL injection vulnerability
+customer_name = frappe.form_dict.customer
+frappe.db.sql(f"SELECT * FROM tabCustomer WHERE name = '{customer_name}'")
+
+# CORRECT: Parameterized queries
+customer_name = frappe.form_dict.customer
+frappe.db.sql("""
+    SELECT * FROM tabCustomer WHERE name = %s
+""", (customer_name,))
+```
+
+**4. Modifying Core Files:**
+
+```python
+# ANTI-PATTERN: Modifying frappe/core files
+# frappe/model/document.py (DON'T MODIFY)
+
+# CORRECT: Use hooks and overrides
+# hooks.py
+override_whitelisted_methods = {
+    "frappe.client.get": "myapp.api.custom_get"
+}
+```
+
+**5. Not Using Caching:**
+
+```python
+# ANTI-PATTERN: Expensive computation on every request
+@frappe.whitelist()
+def get_dashboard_data():
+    # Expensive computation every time
+    data = compute_expensive_data()
+    return data
+
+# CORRECT: Use caching
+@frappe.whitelist()
+def get_dashboard_data():
+    cache_key = f"dashboard_{frappe.session.user}"
+    data = frappe.cache.get_value(cache_key)
+    
+    if not data:
+        data = compute_expensive_data()
+        frappe.cache.set_value(cache_key, data, expires_in_sec=300)
+    
+    return data
+```
+
+**6. Ignoring Permissions:**
+
+```python
+# ANTI-PATTERN: No permission checks
+@frappe.whitelist()
+def get_sensitive_data():
+    return frappe.get_all("Sales Order", fields="*")
+
+# CORRECT: Check permissions
+@frappe.whitelist()
+def get_sensitive_data():
+    if not frappe.has_permission("Sales Order", "read"):
+        frappe.throw("Insufficient permissions")
+    return frappe.get_all("Sales Order", fields="*")
+```
+
+**7. Not Using Background Jobs for Heavy Operations:**
+
+```python
+# ANTI-PATTERN: Heavy operation in request
+@frappe.whitelist()
+def generate_report():
+    # Takes 5 minutes - blocks request
+    report = generate_heavy_report()
+    return report
+
+# CORRECT: Use background jobs
+@frappe.whitelist()
+def generate_report():
+    frappe.enqueue(
+        method="myapp.reports.generate_heavy_report",
+        queue="long",
+        timeout=3600
+    )
+    return {"message": "Report generation started"}
+```
+
+**8. Not Handling Transactions Properly:**
+
+```python
+# ANTI-PATTERN: No transaction management
+def create_order():
+    customer = create_customer()
+    order = create_order()
+    # If order creation fails, customer is still created
+
+# CORRECT: Use transactions
+def create_order():
+    try:
+        customer = create_customer()
+        order = create_order()
+        frappe.db.commit()
+    except Exception:
+        frappe.db.rollback()
+        raise
+```
+
+**9. Not Using DocType Events:**
+
+```python
+# ANTI-PATTERN: Logic scattered everywhere
+# In form script, server script, API, etc.
+
+# CORRECT: Use DocType events
+class SalesOrder(Document):
+    def validate(self):
+        # Centralized validation
+        self.validate_amount()
+    
+    def on_submit(self):
+        # Centralized submit logic
+        self.create_delivery_note()
+```
+
+**10. Not Using Hooks for Customization:**
+
+```python
+# ANTI-PATTERN: Modifying core code
+# Editing frappe/core files directly
+
+# CORRECT: Use hooks
+# hooks.py
+doc_events = {
+    "Sales Order": {
+        "before_save": "myapp.custom.validate_order"
+    }
+}
+```
+
+**11. Writing More Code Instead of Using Frappe Features (Low-Code Anti-Pattern):**
+
+```python
+# ANTI-PATTERN: Writing custom code for what Frappe already provides
+# Custom authentication system
+def custom_login(username, password):
+    # 100+ lines of custom auth code
+    # Manual session management
+    # Custom password hashing
+    pass
+
+# CORRECT: Use Frappe's built-in authentication
+@frappe.whitelist(allow_guest=True)
+def login(usr, pwd):
+    frappe.local.login_manager.authenticate(usr, pwd)
+    frappe.local.login_manager.post_login()
+    # Frappe handles everything: sessions, password hashing, security
+
+# ANTI-PATTERN: Custom API framework
+def custom_api_handler():
+    # Manual routing
+    # Manual request parsing
+    # Manual response formatting
+    # Manual error handling
+    pass
+
+# CORRECT: Use @frappe.whitelist()
+@frappe.whitelist()
+def my_api():
+    # Frappe handles routing, parsing, formatting, errors automatically
+    return {"data": "result"}
+
+# ANTI-PATTERN: Manual form validation
+def validate_form():
+    # 50+ lines of validation code
+    if not field1:
+        return {"error": "Field 1 required"}
+    if not field2:
+        return {"error": "Field 2 required"}
+    # ... more validation
+
+# CORRECT: Use DocType validation
+class MyDocType(Document):
+    def validate(self):
+        # Frappe auto-validates reqd fields, field types, etc.
+        # Only write custom validation logic
+        if self.amount > self.credit_limit:
+            frappe.throw("Amount exceeds limit")
+
+# ANTI-PATTERN: Manual database queries everywhere
+def get_customers():
+    # Direct SQL queries
+    # Manual connection management
+    # Manual error handling
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM tabCustomer")
+    # ... more code
+
+# CORRECT: Use Frappe ORM
+def get_customers():
+    return frappe.get_all("Customer", fields=["name", "customer_name"])
+    # Frappe handles connection, queries, errors automatically
+
+# ANTI-PATTERN: Custom permission system
+def check_permission(user, doctype):
+    # 200+ lines of custom permission logic
+    # Manual role checking
+    # Manual document-level permissions
+    pass
+
+# CORRECT: Use Frappe's permission system
+if not frappe.has_permission("Sales Order", "read", doc):
+    frappe.throw("Insufficient permissions")
+# Frappe handles role permissions, user permissions, controller permissions
+```
+
+**Why This Is an Anti-Pattern:**
+- **Frappe is Low-Code**: The framework provides built-in solutions for 80% of common tasks
+- **Maintenance Burden**: Custom code requires ongoing maintenance and updates
+- **Security Risks**: Reinventing security features often introduces vulnerabilities
+- **Performance**: Frappe's built-in features are optimized and tested
+- **Upgrade Compatibility**: Custom implementations may break on framework updates
+- **Team Knowledge**: Team members need to learn custom code instead of standard Frappe patterns
+
+**When to Write Custom Code:**
+-  Business logic specific to your domain
+-  Complex calculations not covered by Frappe
+-  Integration with external systems
+-  Custom workflows beyond standard Frappe workflows
+-  Performance-critical operations that need optimization
+
+**When NOT to Write Custom Code:**
+-  Authentication (use Frappe's login system)
+-  Basic CRUD operations (use DocType)
+-  Simple APIs (use @frappe.whitelist())
+-  Form validation (use DocType validation)
+-  Permissions (use Frappe's permission system)
+-  File uploads (use Frappe's file handling)
+-  Email sending (use frappe.sendmail())
+-  Background jobs (use frappe.enqueue())
+
+**Prevention Strategies:**
+
+1. **Code Reviews**: Review code for anti-patterns
+2. **Linting**: Use tools to detect common issues
+3. **Documentation**: Document patterns and anti-patterns
+4. **Testing**: Write tests to catch performance issues
+5. **Monitoring**: Monitor query performance and errors
+6. **Training**: Educate team on Frappe best practices
+
+**Best Practices Checklist:**
+
+-  Use `frappe.get_all()` instead of loading full documents
+-  Always use parameterized queries
+-  Check permissions in APIs
+-  Use caching for expensive operations
+-  Use background jobs for heavy tasks
+-  Use hooks instead of modifying core
+-  Handle transactions properly
+-  Use DocType events for business logic
+-  Avoid N+1 queries
+-  Use fixtures for customizations
+-  **Use Frappe's built-in features instead of writing custom code (embrace low-code)**
+
+---
+
+### 39. If the company changes the domain name and all employee emails, how to change all emails in the app DB safely?
+
+**Answer:** Changing email domains across the system requires a **careful, multi-step approach** using patches to ensure data integrity, maintain relationships, and avoid breaking authentication (Source: `frappe/core/doctype/user/user.py`).
+
+**Step 1: Create a Pre-Migration Patch** (Analysis):
+
+```python
+# patches/v1_0/analyze_email_changes.py
+import frappe
+
+def execute():
+    """
+    Analyze all email addresses that need to be changed
+    Run this FIRST to see what will be affected
+    """
+    old_domain = "oldcompany.com"
+    new_domain = "newcompany.com"
+    
+    # Find all users with old domain
+    users = frappe.get_all("User",
+        filters={"email": ["like", f"%@{old_domain}"]},
+        fields=["name", "email", "enabled"]
+    )
+    
+    print(f"Found {len(users)} users with old domain")
+    
+    # Find all documents referencing these emails
+    email_fields = frappe.get_all("DocField",
+        filters={"fieldtype": "Data", "options": "Email"},
+        fields=["parent", "fieldname"]
+    )
+    
+    affected_docs = []
+    for df in email_fields:
+        docs = frappe.db.sql(f"""
+            SELECT name, {df.fieldname} as email
+            FROM `tab{df.parent}`
+            WHERE {df.fieldname} LIKE %s
+        """, (f"%@{old_domain}",), as_dict=True)
+        affected_docs.extend(docs)
+    
+    print(f"Found {len(affected_docs)} documents with old domain emails")
+    
+    # Save analysis for review
+    frappe.db.commit()
+    return {
+        "users": len(users),
+        "documents": len(affected_docs)
+    }
+```
+
+**Step 2: Create Migration Patch** (Safe Update):
+
+```python
+# patches/v1_0/migrate_email_domain.py
+import frappe
+import re
+
+def execute():
+    """
+    Safely migrate all email addresses from old domain to new domain
+    """
+    old_domain = "oldcompany.com"
+    new_domain = "newcompany.com"
+    
+    # Step 1: Update User emails (most critical)
+    users = frappe.get_all("User",
+        filters={"email": ["like", f"%@{old_domain}"]},
+        fields=["name", "email"]
+    )
+    
+    updated_users = []
+    for user in users:
+        old_email = user.email
+        new_email = old_email.replace(f"@{old_domain}", f"@{new_domain}")
+        
+        # Check if new email already exists
+        if frappe.db.exists("User", new_email):
+            frappe.log_error(
+                f"Email {new_email} already exists. Skipping {old_email}",
+                "Email Migration"
+            )
+            continue
+        
+        try:
+            # Use frappe.rename_doc() for User documents
+            # This automatically handles:
+            # - Updates the document name
+            # - Updates email field to match new name
+            # - Updates all Link fields referencing this user
+            # - Updates owner/modified_by in all tables
+            # - Updates dynamic links
+            # - Updates user settings
+            # - Updates attachments
+            # - Renames passwords
+            # - Updates Notification Settings
+            # - Clears user sessions
+            
+            if user.name == old_email:
+                # Username matches email - use rename_doc (recommended)
+                frappe.rename_doc(
+                    "User",
+                    old_email,
+                    new_email,
+                    force=True,
+                    show_alert=False,
+                    ignore_permissions=True
+                )
+                updated_users.append({"old": old_email, "new": new_email})
+            else:
+                # Username doesn't match email - just update email field
+                frappe.db.set_value("User", user.name, "email", new_email)
+                updated_users.append({"old": old_email, "new": new_email})
+                
+        except Exception as e:
+            frappe.log_error(
+                f"Failed to update user {user.name}: {str(e)}",
+                "Email Migration"
+            )
+    
+    frappe.db.commit()
+    print(f"Updated {len(updated_users)} user emails")
+    
+    # Step 2: Update email fields in all DocTypes
+    email_fields = frappe.get_all("DocField",
+        filters={"fieldtype": "Data", "options": "Email"},
+        fields=["parent", "fieldname"],
+        distinct=True
+    )
+    
+    updated_docs = 0
+    for df in email_fields:
+        try:
+            # Update all email fields in this DocType
+            result = frappe.db.sql(f"""
+                UPDATE `tab{df.parent}`
+                SET {df.fieldname} = REPLACE({df.fieldname}, %s, %s)
+                WHERE {df.fieldname} LIKE %s
+            """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+            
+            updated_docs += result[0] if result else 0
+            
+        except Exception as e:
+            frappe.log_error(
+                f"Failed to update {df.parent}.{df.fieldname}: {str(e)}",
+                "Email Migration"
+            )
+    
+    frappe.db.commit()
+    print(f"Updated {updated_docs} document email fields")
+    
+    # Step 3: Update Communication records
+    frappe.db.sql("""
+        UPDATE `tabCommunication`
+        SET sender = REPLACE(sender, %s, %s)
+        WHERE sender LIKE %s
+    """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+    
+    frappe.db.sql("""
+        UPDATE `tabCommunication`
+        SET recipients = REPLACE(recipients, %s, %s)
+        WHERE recipients LIKE %s
+    """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+    
+    frappe.db.commit()
+    print("Updated Communication records")
+    
+    # Step 4: Update Email Queue
+    frappe.db.sql("""
+        UPDATE `tabEmail Queue`
+        SET recipients = REPLACE(recipients, %s, %s)
+        WHERE recipients LIKE %s
+    """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+    
+    frappe.db.commit()
+    print("Updated Email Queue records")
+    
+    return {
+        "users_updated": len(updated_users),
+        "documents_updated": updated_docs
+    }
+```
+
+**Step 3: Create Verification Patch**:
+
+```python
+# patches/v1_0/verify_email_migration.py
+import frappe
+
+def execute():
+    """
+    Verify email migration completed successfully
+    """
+    old_domain = "oldcompany.com"
+    new_domain = "newcompany.com"
+    
+    # Check for remaining old domain emails
+    remaining_users = frappe.get_all("User",
+        filters={"email": ["like", f"%@{old_domain}"]},
+        fields=["name", "email"]
+    )
+    
+    if remaining_users:
+        frappe.log_error(
+            f"Found {len(remaining_users)} users still with old domain",
+            "Email Migration Verification"
+        )
+        print(f"WARNING: {len(remaining_users)} users still have old domain")
+    
+    # Verify new domain emails
+    new_users = frappe.get_all("User",
+        filters={"email": ["like", f"%@{new_domain}"]},
+        fields=["name", "email"]
+    )
+    
+    print(f"Verified {len(new_users)} users with new domain")
+    
+    # Check for broken references
+    broken_refs = frappe.db.sql("""
+        SELECT DISTINCT parent, fieldname
+        FROM `tabDocField`
+        WHERE fieldtype = 'Link'
+        AND options = 'User'
+    """, as_dict=True)
+    
+    for ref in broken_refs:
+        invalid = frappe.db.sql(f"""
+            SELECT name
+            FROM `tab{ref.parent}`
+            WHERE {ref.fieldname} NOT IN (
+                SELECT name FROM `tabUser`
+            )
+        """, as_dict=True)
+        
+        if invalid:
+            frappe.log_error(
+                f"Found {len(invalid)} broken user references in {ref.parent}",
+                "Email Migration Verification"
+            )
+    
+    frappe.db.commit()
+    return {"status": "verification_complete"}
+```
+
+**Step 4: Register Patches in `patches.txt`**:
+
+```
+# patches.txt
+[pre_model_sync]
+# Run analysis first
+myapp.patches.v1_0.analyze_email_changes
+
+[post_model_sync]
+# Run migration after schema sync
+myapp.patches.v1_0.migrate_email_domain
+myapp.patches.v1_0.verify_email_migration
+```
+
+**Step 5: Handle Special Cases**:
+
+```python
+# Additional considerations in migration patch
+
+# 1. Update Employee records
+frappe.db.sql("""
+    UPDATE `tabEmployee`
+    SET company_email = REPLACE(company_email, %s, %s)
+    WHERE company_email LIKE %s
+""", (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+
+# 2. Update Contact records
+frappe.db.sql("""
+    UPDATE `tabContact`
+    SET email_id = REPLACE(email_id, %s, %s)
+    WHERE email_id LIKE %s
+""", (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+
+# 3. Update Customer/Supplier emails
+for doctype in ["Customer", "Supplier"]:
+    frappe.db.sql(f"""
+        UPDATE `tab{doctype}`
+        SET email_id = REPLACE(email_id, %s, %s)
+        WHERE email_id LIKE %s
+    """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+
+# 4. Update custom DocTypes with email fields
+custom_doctypes = frappe.get_all("DocType",
+    filters={"custom": 1},
+    fields=["name"]
+)
+
+for dt in custom_doctypes:
+    meta = frappe.get_meta(dt.name)
+    email_fields = [f.fieldname for f in meta.fields if f.fieldtype == "Data" and f.options == "Email"]
+    
+    for field in email_fields:
+        frappe.db.sql(f"""
+            UPDATE `tab{dt.name}`
+            SET {field} = REPLACE({field}, %s, %s)
+            WHERE {field} LIKE %s
+        """, (f"@{old_domain}", f"@{new_domain}", f"%@{old_domain}"))
+```
+
+**Step 6: Execute Migration**:
+
+```bash
+# 1. Backup database first
+bench --site site1.local backup
+
+# 2. Test on staging site
+bench --site staging.local migrate
+
+# 3. Run on production
+bench --site production.local migrate
+
+# 4. Verify manually
+bench --site production.local console
+# In console:
+import frappe
+frappe.get_all("User", filters={"email": ["like", "%@newcompany.com"]})
+```
+
+**Why Use `frappe.rename_doc()` for User Renaming:**
+
+**What `frappe.rename_doc()` Does Automatically (Source: `frappe/model/rename_doc.py`):**
+
+When you use `frappe.rename_doc("User", old_email, new_email)`, it automatically:
+
+1. **Updates Document Name**: Changes the primary key in `tabUser` table
+2. **Updates Link Fields**: Updates ALL Link fields of type "Link" with `options="User"` across ALL DocTypes
+3. **Updates Dynamic Links**: Updates all dynamic link references (e.g., in Communication)
+4. **Updates User Settings**: Updates user settings in linked DocTypes
+5. **Updates Attachments**: Updates attachment references
+6. **Updates Versions**: Updates version history
+7. **Renames Passwords**: Renames encrypted password records (for User doctype)
+8. **Calls Hooks**: Executes `before_rename` and `after_rename` methods
+
+**For User DocType Specifically (Source: `frappe/core/doctype/user/user.py`):**
+
+The `after_rename()` method in User class does additional critical updates:
+
+```python
+def after_rename(self, old_name, new_name, merge=False):
+    # Updates owner/modified_by in ALL database tables
+    tables = frappe.db.get_tables()
+    for tab in tables:
+        desc = frappe.db.get_table_columns_description(tab)
+        has_fields = [d.get("name") for d in desc if d.get("name") in ["owner", "modified_by"]]
+        for field in has_fields:
+            frappe.db.sql(
+                """UPDATE `{}`
+                SET `{}` = {}
+                WHERE `{}` = {}""".format(tab, field, "%s", field, "%s"),
+                (new_name, old_name),
+            )
+    
+    # Renames Notification Settings
+    if frappe.db.exists("Notification Settings", old_name):
+        frappe.rename_doc("Notification Settings", old_name, new_name, force=True, show_alert=False)
+    
+    # Sets email field to match new name
+    frappe.db.set_value("User", new_name, "email", new_name)
+    
+    # Clears user sessions
+    clear_sessions(user=old_name, force=True)
+    clear_sessions(user=new_name, force=True)
+```
+
+**Example of What Gets Updated:**
+
+```python
+# When you rename User from "john@old.com" to "john@new.com"
+# frappe.rename_doc() automatically updates:
+
+# 1. Main table
+# tabUser: name = "john@new.com", email = "john@new.com"
+
+# 2. All Link fields across ALL DocTypes
+# tabSales Order: owner = "john@new.com", assigned_to = "john@new.com"
+# tabCustomer: owner = "john@new.com"
+# tabTask: assigned_to = "john@new.com"
+# tabProject: project_manager = "john@new.com"
+# ... and ALL other DocTypes with User Link fields
+
+# 3. Owner/Modified By in ALL tables (via after_rename hook)
+# tabSales Order: owner = "john@new.com", modified_by = "john@new.com"
+# tabCustomer: owner = "john@new.com", modified_by = "john@new.com"
+# tabItem: owner = "john@new.com", modified_by = "john@new.com"
+# ... updates in EVERY table that has owner/modified_by columns
+
+# 4. Dynamic Links
+# tabCommunication: link_doctype = "User", link_name = "john@new.com"
+
+# 5. User Settings
+# __UserSettings: updates all user preferences and filters
+
+# 6. Attachments
+# tabFile: attached_to_name = "john@new.com"
+
+# 7. Passwords
+# __Auth: updates password hash references
+
+# 8. Notification Settings
+# tabNotification Settings: name = "john@new.com"
+
+# 9. Versions
+# tabVersion: docname = "john@new.com" (for User doctype)
+```
+
+**Why This Is Better Than Manual Updates:**
+
+-  **Automatic**: No need to manually update each table
+-  **Complete**: Updates ALL references, not just known ones
+-  **Safe**: Handles edge cases and relationships
+-  **Tested**: Frappe's built-in function is thoroughly tested
+-  **Maintainable**: Works even if new DocTypes are added later
+-  **Transactional**: All updates happen in a transaction
+
+**Safety Measures:**
+
+1. **Backup First**: Always backup database before migration
+2. **Test on Staging**: Run migration on staging site first
+3. **Check for Conflicts**: Verify new emails don't already exist
+4. **Handle Renames**: Update usernames if they match emails
+5. **Update All References**: Update all DocTypes with email fields
+6. **Log Everything**: Log all changes and errors
+7. **Verify After**: Run verification patch to check success
+8. **Handle Edge Cases**: Custom DocTypes, child tables, etc.
+
+**Best Practices:**
+- Use transactions for atomicity
+- Handle errors gracefully (don't fail entire migration)
+- Log all changes for audit trail
+- Test thoroughly on staging
+- Update all email-related fields (not just User.email)
+- Consider email validation after migration
+- Notify users about email change
+- Update email server settings if needed
+
+---
+
 ## Conclusion
 
 This document covers the most common Frappe/ERPNext interview questions from junior to senior levels. All answers are verified against the actual Frappe framework source code to ensure accuracy and demonstrate deep understanding.
@@ -2201,5 +4151,3 @@ This document covers the most common Frappe/ERPNext interview questions from jun
 - **Caching** has multiple layers: Redis (shared), local (request), and site (process)
 - **Security** is multi-layered with authentication, permissions, CSRF, XSS protection
 - **Performance** optimization involves query optimization, caching, indexing, and background jobs
-
-
