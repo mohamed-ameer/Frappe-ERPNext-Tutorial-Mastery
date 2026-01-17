@@ -142,4 +142,8 @@ In short: ERPNext gives you everything you need to run your business, for free, 
 - ERPNext is customizable which means you can customize the system to fit your needs and you can create new module that is not exist (it doesn't force you with the core only, build what you want)
 - ERPNext is integrable with other external systems you use and have (whatsapp, ecommerce, payment, ...etc).
 - ERPNext is not only software, it is entire solution, it is your company in a computer.
-- 
+- Remember that ERP systems are Buisness software, it is not accounting software, it is not inventory software, it is not HR software, it is all of them together in one place.
+- No business is the same, and no two companies have the same processes, that's why ERPNext is customizable and follows modularity approach to fit every company needs.
+- Any Businees grow from small to big, that's why ERPNext is scalable, you can start with small and add what you need as you grow.
+- ERPNext is not only for small businesses, it is for all businesses of all sizes.
+- No business success without a good system, and ERP is to degitalize your business processes and make it more efficient.
