@@ -1423,6 +1423,24 @@ Only meaningful, testable code is included!
 
 ---
 
+### Update Coverage Report
+
+**To update the coverage report, run the following commands:**
+
+1. add the "# pragma: no cover" to the block of code that you want to exclude from coverage report.
+2. run tests for that test case.
+3. update the coverage report.
+
+```bash
+# run tests coverage for the specific doctype, test case, or app to get the updated coverage report.
+bench --site <site> run-tests --app microfinancing --doctype <doctype>  --skip-test-records --coverage
+# update the html report
+cd sites/
+coverage html
+```
+
+---
+
 ## Conclusion
 
 Configuring coverage exclusions is essential for getting accurate and meaningful test coverage metrics in Frappe applications. By excluding auto-generated files, boilerplate code, and test infrastructure, you can focus on measuring coverage of your actual business logic.
