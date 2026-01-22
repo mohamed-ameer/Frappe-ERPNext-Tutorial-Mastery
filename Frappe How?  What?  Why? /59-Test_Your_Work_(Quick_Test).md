@@ -198,6 +198,17 @@ bench --site <site> run-tests --doctype <doctype> --test <method_name> --skip-te
 
 ---
 
+## Teat Notifications
+
+```bash
+bench console
+# test notification
+from frappe.email.doctype.notification.notification import trigger_daily_alerts
+trigger_daily_alerts()
+```
+
+---
+
 ## Command Reference
 
 | Command | Purpose |

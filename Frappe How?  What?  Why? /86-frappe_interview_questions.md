@@ -48,6 +48,7 @@
 37. [Is Frappe MVC or MVT? What system architecture does Frappe follow?](#37-is-frappe-mvc-or-mvt-what-system-architecture-does-frappe-follow)
 38. [What is anti pattern? How can we prevent anti pattern in Frappe?](#38-what-is-anti-pattern-how-can-we-prevent-anti-pattern-in-frappe)
 39. [If the company changes the domain name and all employee emails, how to change all emails in the app DB safely?](#39-if-the-company-changes-the-domain-name-and-all-employee-emails-how-to-change-all-emails-in-the-app-db-safely)
+40. [What are limitations of Frappe?](#40-what-are-limitations-of-frappe)
 
 ---
 
@@ -4136,6 +4137,37 @@ def after_rename(self, old_name, new_name, merge=False):
 - Consider email validation after migration
 - Notify users about email change
 - Update email server settings if needed
+
+---
+
+### 40. What are limitations of Frappe?
+
+1. Customization can cause technical debt if not done carefully, especially with monkey patching.
+2. Frontend (Desk) UI is built on jQuery, Bootstrap 3, and a custom Frappe UI framework, so it is less flexible than modern frameworks like React, Angular, or Vue.
+3. Version upgrades can be difficult and time-consuming.
+4. Child tables have limitations:
+    - No child table inside another child table
+    - No Dynamic Link inside child tables
+    - Cannot add Child Table or Table MultiSelect inside child tables
+5. Notifications work only based on roles, not specific users.
+6. Heavy customization makes maintenance and upgrades harder.
+7. Permission control is mostly role-based and lacks fine-grained control.
+8. High-traffic systems require extra performance tuning.
+9. Major version upgrades may break custom code.
+10. Frappe mainly supports MariaDB, and PostgreSQL support is still limited.
+11. JWT authentication is not supported out of the box.
+12. The API does not fully follow REST standards and uses dotted notation instead of RESTful paths.
+13. Performance can be slower compared to some lightweight or modern frameworks. 
+14. doctype list view is limited to only 10 columns.
+15. doctype fields has limited properties.
+16. Frappe is not designed for high-traffic public websites.
+17. No built-in support for GraphQL.
+18. force me with boilerplate code that is not required (but that what I like about it :D).
+19. force me with specific UI that hard to change.
+20. cannot has two doctypes with the same name in different apps in the same site.
+
+Most of these limitations are intentional trade-offs, not flaws.
+Frappe is excellent for rapid ERP and business app development and internal systems, but complex enterprise-grade requirements often need custom extensions or external services.
 
 ---
 
