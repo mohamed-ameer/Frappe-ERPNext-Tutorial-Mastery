@@ -297,3 +297,35 @@ You can focus directly on your **business logic and ideas**.
 ### The Freedom
 
 **Frappe isn't just a framework. It's freedom to build what you need, when you need it, without the traditional barriers of enterprise software development.**
+
+---
+
+### What are limitations of Frappe?
+
+1. Customization can cause technical debt if not done carefully, especially with monkey patching.
+2. Frontend (Desk) UI is built on jQuery, Bootstrap 3, and a custom Frappe UI framework, so it is less flexible than modern frameworks like React, Angular, or Vue.
+3. Version upgrades can be difficult and time-consuming.
+4. Child tables have limitations:
+    - No child table inside another child table
+    - No Dynamic Link inside child tables
+    - Cannot add Child Table or Table MultiSelect inside child tables
+5. Notifications work only based on roles, not specific users.
+6. Heavy customization makes maintenance and upgrades harder.
+7. Permission control is mostly role-based and lacks fine-grained control.
+8. High-traffic systems require extra performance tuning.
+9. Major version upgrades may break custom code.
+10. Frappe mainly supports MariaDB, and PostgreSQL support is still limited.
+11. JWT authentication is not supported out of the box.
+12. The API does not fully follow REST standards and uses dotted notation instead of RESTful paths.
+13. Performance can be slower compared to some lightweight or modern frameworks. 
+14. doctype list view is limited to only 10 columns.
+15. doctype fields has limited properties.
+16. Frappe is not designed for high-traffic public websites.
+17. No built-in support for GraphQL.
+18. force me with boilerplate code that is not required (but that what I like about it :D).
+19. force me with specific UI that hard to change.
+20. cannot has two doctypes with the same name in different apps in the same site.
+21. no fully reliable postgresql support for erpnext (only frappe itself is supported).
+22. limited flexibility in database modeling design, you must follow frappe's way of db design.
+23. if you edit core frappe files, you will lose your changes on every update (you freezed. you stop upgrading to the latest version).
+24. mostly frappe is for building internal business apps, ofc you can use it for public apps or external use (but you should build your own custom API for that and external frontend app).

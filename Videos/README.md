@@ -62,6 +62,7 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - **12. ERPNext Tips** [ERPNext By TechDevOps](https://www.youtube.com/playlist?list=PLiwst-u9kIxlQvLzCPEBHk2ALeYBP1UYT)
 - **13. ERPNext Implementation**  
 the following resources are in arabic for implementation and not development
+    - [Software for Accountancy](https://www.youtube.com/playlist?list=PLNGLpHQhvGruDfUp71n3_R6LGR47IzZN8)
     - [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
     - [Financial Accounting as a Theory with Mr. Mostafa samir](https://www.youtube.com/@Ruqqi.consulting/playlists)
     - [Financial Accounting as a Theory with Mr. Adel Mojahed](https://www.youtube.com/@adel-mojahed/playlists)
