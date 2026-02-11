@@ -329,3 +329,5 @@ You can focus directly on your **business logic and ideas**.
 22. limited flexibility in database modeling design, you must follow frappe's way of db design.
 23. if you edit core frappe files, you will lose your changes on every update (you freezed. you stop upgrading to the latest version).
 24. mostly frappe is for building internal business apps, ofc you can use it for public apps or external use (but you should build your own custom API for that and external frontend app).
+25. no connection bool, it open and close database connection per request.
+26. everything is synchronous
