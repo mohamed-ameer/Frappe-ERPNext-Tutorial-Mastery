@@ -135,11 +135,13 @@ i hope you read my summary pdf first to get a better understanding
 
 ---
 
-### Awesome Frappe
+### Awesome Frappe & Gems 
 
 [Awesome Frappe](https://awesome-frappe.gavv.in/) 
 
-> A curated list of awesome things related to the Frappe Framework. Maintained by Gavin D'souza
+[Frappe Gems](https://frappegems.com)
+
+> A curated list of awesome and gem things related to the Frappe Framework.
 
 ### Frappe Wiki & Cheatsheet
 
