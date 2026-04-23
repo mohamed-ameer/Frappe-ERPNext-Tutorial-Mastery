@@ -8,9 +8,12 @@ We may also convert this guide into a free book or video course in the future â€
 
 ---
 
-## Cloud Marketplace:
-
+## Discover apps for Frappe & ERPNext: 
 [70 open-source Frappe apps](https://cloud.frappe.io/marketplace/search)
+
+[Awesome Frappe](https://awesome-frappe.gavv.in/)
+
+[Frappe Gems](https://frappegems.com/gems/)
 
 ---
 
