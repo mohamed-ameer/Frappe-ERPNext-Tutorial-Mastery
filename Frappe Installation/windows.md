@@ -280,6 +280,8 @@ cd ~
 bench init --frappe-branch [version-branch] [bench-folder]
 ```
 >*Ensure you have replaced **[version-branch]** with your desired Frappe version branch name and **[bench-folder]** with your desired folder name. e.g. `bench init --frappe-branch version-15 frappe-bench`*
+>
+> If you got `bench.exceptions.CommandFailedError: uv venv env --seed --python python3` error then disable the uv by running the following comand `export BENCH_DISABLE_UV=1`
 
 ### 21. Set up WSL with VS Code:
 1. **Install the “Remote – WSL” extension**
@@ -409,3 +411,22 @@ Then from now on you can directly connect with VSCode:
 1. Open *This PC*.
 2. Look for the **Linux** directory in the sidebar — that’s your WSL filesystem.
 <img width="1365" height="606" alt="image" src="https://github.com/user-attachments/assets/ddbd01ad-5885-4565-b195-c0ec50f96361" />
+
+
+### Python Downgrade Guide (3.12 to 3.10)
+
+```bash
+curl https://pyenv.run | bash
+
+# Add to ~/.bashrc
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+source ~/.bashrc
+
+pyenv install 3.10.14
+pyenv global 3.10.14
+
+python3 --version  # Should output Python 3.10.14
+which python3      # Should point to /home/user/.pyenv/shims/python3
+```
