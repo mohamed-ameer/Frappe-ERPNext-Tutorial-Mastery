@@ -25,6 +25,7 @@
 ## 1. Whatsapp Integration Resources
 
 #### GitHub Repositories
+- https://frappegems.com/gems/apps?search=whatsapp
 
 #### Video Tutorials (AR)
 - ["Arabic - بالعربي" Working With WhatsApp Cloud API](https://www.youtube.com/playlist?list=PL62tSREI9C-dRA-geWrPbHL1AtT1UZQj4)
