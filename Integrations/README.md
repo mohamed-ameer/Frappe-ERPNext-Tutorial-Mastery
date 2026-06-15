@@ -19,3 +19,13 @@
 - https://www.youtube.com/watch?v=ELAk5bWK0Ac&list=LL&index=3
 - https://www.youtube.com/watch?v=--PXZl4_ofM&list=LL&index=2
 - https://www.youtube.com/watch?v=by03j67H7FM
+
+---
+
+## 1. Whatsapp Integration Resources
+
+#### GitHub Repositories
+
+#### Video Tutorials (AR)
+- ["Arabic - بالعربي" Working With WhatsApp Cloud API](https://www.youtube.com/playlist?list=PL62tSREI9C-dRA-geWrPbHL1AtT1UZQj4)
+- [Everything you need to know about the WhatsApp API 🔥 | A complete guide from beginner to expert](https://www.youtube.com/watch?v=eKgob4XHqS8)
