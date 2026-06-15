@@ -30,3 +30,4 @@
 #### Video Tutorials (AR)
 - ["Arabic - بالعربي" Working With WhatsApp Cloud API](https://www.youtube.com/playlist?list=PL62tSREI9C-dRA-geWrPbHL1AtT1UZQj4)
 - [Everything you need to know about the WhatsApp API 🔥 | A complete guide from beginner to expert](https://www.youtube.com/watch?v=eKgob4XHqS8)
+- [WhatsApp Cloud API playlists by PMS Code Channel](https://www.youtube.com/@pms_code/playlists)
