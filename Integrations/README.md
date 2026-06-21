@@ -22,7 +22,7 @@
 
 ---
 
-## 1. Whatsapp Integration Resources
+## 2. Whatsapp Integration Resources
 
 #### GitHub Repositories
 - https://frappegems.com/gems/apps?search=whatsapp
@@ -31,3 +31,14 @@
 - ["Arabic - بالعربي" Working With WhatsApp Cloud API](https://www.youtube.com/playlist?list=PL62tSREI9C-dRA-geWrPbHL1AtT1UZQj4)
 - [Everything you need to know about the WhatsApp API 🔥 | A complete guide from beginner to expert](https://www.youtube.com/watch?v=eKgob4XHqS8)
 - [WhatsApp Cloud API playlists by PMS Code Channel](https://www.youtube.com/@pms_code/playlists)
+
+---
+
+## 3. Payment Gateway Integration Resources
+
+#### GitHub Repositories
+- https://frappegems.com/gems/apps?search=payment
+
+#### Video Tutorials (AR)
+- [[Arabic] Payment Gateway Integration](https://www.youtube.com/playlist?list=PLaVGFo-3xsHP6yqbLs8qcYUFHswRofTWE)
+- [Building a Paystack Payment Integration for Frappeverse Africa 2025!](https://www.youtube.com/watch?v=MgMB7Rd-dCc)
