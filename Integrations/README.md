@@ -42,3 +42,5 @@
 #### Video Tutorials (AR)
 - [[Arabic] Payment Gateway Integration](https://www.youtube.com/playlist?list=PLaVGFo-3xsHP6yqbLs8qcYUFHswRofTWE)
 - [Building a Paystack Payment Integration for Frappeverse Africa 2025!](https://www.youtube.com/watch?v=MgMB7Rd-dCc)
+#### Useful Sites
+- [Webhook.site](https://docs.webhook.site/)
