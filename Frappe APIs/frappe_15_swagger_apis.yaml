@@ -1,0 +1,2052 @@
+openapi: 3.0.3
+info:
+  title: Frappe Standard APIs for Workflow Integrations
+  version: "1.0.0"
+  summary: A practical API guide for discovering and executing any Frappe workflow from an external system.
+  description: |
+    APIs for external systems that need to work with Frappe documents and workflows without using the Frappe Desk UI.
+
+    ## Required headers
+
+    ```
+    Authorization: token <api_key>:<api_secret>
+    Accept: application/json
+    Content-Type: application/json
+    ```
+
+    ## Workflow integration flow
+
+    1. Read DocType metadata: `GET /api/v2/doctype/{doctype}/meta`
+    2. Find the active workflow: `GET /api/v2/document/Workflow?filters={"document_type":"{doctype}","is_active":1}`
+    3. Read the Workflow document and identify `workflow_state_field`, `states`, and `transitions`.
+    4. Create or retrieve the target business document.
+    5. Read the current workflow state from the document field named by `workflow_state_field`.
+    6. Get actions available to the authenticated user with `frappe.model.workflow.get_transitions`.
+    7. Execute one returned action with `frappe.model.workflow.apply_workflow`.
+    8. Re-read the document to confirm `workflow_state_field`, `docstatus`, and updated fields.
+
+    ## Important rules
+
+    - Actual business fields are dynamic and must be discovered from DocType metadata.
+    - Frappe enforces permissions as the authenticated user.
+    - Runtime workflow actions are filtered by current state, user roles, transition conditions, and self-approval rules.
+    - Do not update the workflow state field directly to perform an approval. Use `apply_workflow`.
+    - REST v2 endpoints usually return `data`; `/api/method/...` endpoints usually return `message`.
+
+    ## Source reviewed
+
+    This document was built from the local Frappe source: `frappe/api/v2.py`, `frappe/api/__init__.py`, `frappe/auth.py`, `frappe/client.py`, `frappe/model/workflow.py`, Workflow DocType JSON files, and `frappe/handler.py`.
+servers:
+  - url: https://{site}
+    description: Frappe site base URL.
+    variables:
+      site:
+        default: example.frappe.local
+        description: Hostname of the Frappe site.
+security:
+  - ApiKeySecretToken: []
+tags:
+  - name: Authentication
+    description: Verify API access and required authentication headers.
+  - name: Metadata
+    description: APIs used to discover fields, child tables, permissions, and document shape.
+  - name: Documents
+    description: Generic CRUD APIs for any Frappe DocType.
+  - name: Workflow Setup
+    description: APIs used to find and understand the active Workflow configured for a DocType.
+  - name: Workflow Actions
+    description: APIs used to calculate and execute available workflow actions for a document.
+  - name: Lifecycle
+    description: Submit, cancel, rename, and document method APIs related to workflow-enabled and submittable documents.
+  - name: Permissions
+    description: APIs used to check the authenticated user's document permissions.
+  - name: Files
+    description: Standard file upload endpoint for attachments.
+x-tagGroups:
+  - name: Start Here
+    tags:
+      - Authentication
+      - Metadata
+  - name: Document Work
+    tags:
+      - Documents
+      - Files
+  - name: Workflow Work
+    tags:
+      - Workflow Setup
+      - Workflow Actions
+      - Lifecycle
+  - name: Security Checks
+    tags:
+      - Permissions
+paths:
+  /api/v2/method/ping:
+    get:
+      tags:
+        - Authentication
+      operationId: pingAuthenticatedApi
+      summary: Check that authentication and API routing work.
+      description: |
+        A lightweight authenticated call exposed by the REST v2 method route. Use this after configuring API key and API secret credentials to confirm that the site accepts the `Authorization` header.
+
+        ## Example
+
+        ```
+        curl -X GET "https://example.frappe.local/api/v2/method/ping" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>"
+        ```
+      responses:
+        "200":
+          description: The site responded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse"
+              example:
+                data: pong
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/doctype/{doctype}/meta:
+    get:
+      tags:
+        - Metadata
+      operationId: getDocTypeMeta
+      summary: Discover metadata for any DocType.
+      description: |
+        Returns Frappe DocType metadata using `frappe.get_meta(doctype)`.
+
+        External systems should call this before creating, updating, or workflow-driving a document. The response describes the fields that can exist on the document, including field names, labels, field types, required flags, read-only flags, hidden flags, default values, options, permissions, and permlevels.
+
+        Child table discovery:
+        - A field with `fieldtype = Table` represents a child table.
+        - Its `options` value is the child DocType name.
+        - Call this same endpoint for the child DocType to discover the child row fields.
+
+        Workflow discovery:
+        - Metadata tells you whether a workflow state field exists on the DocType.
+        - The exact workflow state field for an active workflow is defined by the Workflow document's `workflow_state_field`.
+
+        ## Example
+
+        ```
+        curl -X GET "https://example.frappe.local/api/v2/doctype/{doctype}/meta" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>"
+        ```
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+      responses:
+        "200":
+          description: DocType metadata returned under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocTypeMetaResponse"
+              example:
+                data:
+                  name: <doctype>
+                  doctype: DocType
+                  is_submittable: 1
+                  fields:
+                    - fieldname: field_1
+                      label: Field 1
+                      fieldtype: Link
+                      options: <linked_doctype>
+                      reqd: 1
+                      read_only: 0
+                      hidden: 0
+                      permlevel: 0
+                    - fieldname: workflow_state
+                      label: Workflow State
+                      fieldtype: Link
+                      options: Workflow State
+                      hidden: 1
+                    - fieldname: items
+                      label: Items
+                      fieldtype: Table
+                      options: <child_doctype>
+                  permissions:
+                    - role: <role>
+                      read: 1
+                      write: 1
+                      create: 1
+                      submit: 0
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/{doctype}:
+    get:
+      tags:
+        - Documents
+      operationId: listDocuments
+      summary: List documents for any DocType.
+      description: |
+        Returns a permission-filtered list of documents using Frappe's standard list query.
+
+        Use this endpoint to find documents by business keys, discover candidate workflow records, or page through documents needing synchronization.
+
+        Query parameters are passed as URL query values. JSON-like values such as `fields` and `filters` should be URL-encoded JSON strings.
+
+        ## Example
+
+        ```
+        curl -X GET "https://example.frappe.local/api/v2/document/{doctype}?fields=%5B%22name%22,%22field_1%22,%22workflow_state%22,%22docstatus%22%5D&filters=%7B%22workflow_state%22:%22%3Ccurrent_state%3E%22%7D&limit=20" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>"
+        ```
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/FieldsQuery"
+        - $ref: "#/components/parameters/FiltersQuery"
+        - $ref: "#/components/parameters/OrFiltersQuery"
+        - $ref: "#/components/parameters/OrderByQuery"
+        - $ref: "#/components/parameters/StartQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/GroupByQuery"
+        - $ref: "#/components/parameters/AsDictQuery"
+        - $ref: "#/components/parameters/DebugQuery"
+      responses:
+        "200":
+          description: List results under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponse"
+              example:
+                data:
+                  - name: <name>
+                    field_1: <field_value>
+                    workflow_state: <current_state>
+                    docstatus: 0
+                  - name: <another_name>
+                    field_1: <another_field_value>
+                    workflow_state: <next_state>
+                    docstatus: 1
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Documents
+      operationId: createDocument
+      summary: Create a document for any DocType.
+      description: |
+        Creates a new document by calling `frappe.new_doc(doctype, **data).insert()`.
+
+        The request body is a JSON object containing fields for the target DocType. Actual allowed and required fields must be discovered from `GET /api/v2/doctype/{doctype}/meta`.
+
+        For workflow-enabled DocTypes, Frappe workflow validation can initialize the workflow state field during save. Do not set an arbitrary later workflow state during create unless the business process explicitly allows it.
+
+        ## Example
+
+        ```
+        curl -X POST "https://example.frappe.local/api/v2/document/{doctype}" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>" \
+          -d '{
+            "field_1": "<field_value>",
+            "transaction_date": "2026-06-29",
+            "delivery_date": "2026-07-05"
+          }'
+        ```
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenericDocumentInput"
+            example:
+              field_1: <field_value>
+              transaction_date: "2026-06-29"
+              delivery_date: "2026-07-05"
+              items:
+                - item_code: <item_code>
+                  qty: 1
+                  rate: 100
+      responses:
+        "200":
+          description: Created document under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/{doctype}/{name}/:
+    get:
+      tags:
+        - Documents
+      operationId: getDocument
+      summary: Get one document by DocType and name.
+      description: |
+        Loads a document using `frappe.get_doc(doctype, name)`, checks read permission, applies field-level read permissions, and returns the document.
+
+        For workflow integrations, read the current workflow state from the field named by the active Workflow document's `workflow_state_field`. The standard `docstatus` field is also important:
+        - `0`: Draft
+        - `1`: Submitted
+        - `2`: Cancelled
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+      responses:
+        "200":
+          description: Document returned under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentResponse"
+              example:
+                data:
+                  name: <name>
+                  owner: <user>
+                  creation: "2026-06-29 12:00:00.000000"
+                  modified: "2026-06-29 12:00:00.000000"
+                  modified_by: <user>
+                  docstatus: 0
+                  idx: 0
+                  workflow_state: <current_state>
+                  field_1: <field_value>
+                  field_2: <field_value>
+                  doctype: <doctype>
+                  child_table_field: []
+                  attachment_table_field: []
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    patch:
+      tags:
+        - Documents
+      operationId: patchDocument
+      summary: Update fields on a document.
+      description: |
+        Updates the existing document with the supplied fields and saves it.
+
+        For workflow-enabled documents, use this for business-field edits that are allowed in the current state. Use `apply_workflow` for state transitions. Directly patching the workflow state field bypasses the intent of the workflow action API and can fail workflow validation.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenericDocumentInput"
+            example:
+              delivery_date: "2026-07-10"
+              notes: Updated by external integration.
+      responses:
+        "200":
+          description: Updated document under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Documents
+      operationId: putDocument
+      summary: Replace or update fields on a document.
+      description: |
+        REST v2 maps both `PUT` and `PATCH` to the same update implementation. The supplied JSON fields are merged into the existing document and saved.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenericDocumentInput"
+      responses:
+        "200":
+          description: Updated document under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Documents
+      operationId: deleteDocument
+      summary: Delete a document.
+      description: |
+        Deletes the document through Frappe's standard document delete logic. REST v2 returns HTTP 202 and the string `ok` under `data`.
+
+        Deletion is subject to DocType permissions, document status, links, and business validations.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+      responses:
+        "202":
+          description: Delete accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse"
+              example:
+                data: ok
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/{doctype}/{name}/copy:
+    get:
+      tags:
+        - Documents
+      operationId: copyDocument
+      summary: Copy an existing document.
+      description: |
+        Returns a clean copy of an existing document that can be modified and posted as a new document.
+
+        Frappe checks read permission, applies field-level read permissions, and calls `frappe.copy_doc`. By default, fields marked `no_copy` are ignored.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+        - name: ignore_no_copy
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Whether fields marked as no-copy should be ignored.
+      responses:
+        "200":
+          description: Copied unsaved document under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/doctype/{doctype}/count:
+    get:
+      tags:
+        - Documents
+      operationId: countDocuments
+      summary: Count documents for a DocType.
+      description: |
+        Returns a count of permission-filtered documents for a DocType. Supports filters and debug options through the same report view count implementation used by Frappe.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/FiltersQuery"
+        - $ref: "#/components/parameters/OrFiltersQuery"
+        - $ref: "#/components/parameters/GroupByQuery"
+        - $ref: "#/components/parameters/DebugQuery"
+      responses:
+        "200":
+          description: Count under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CountResponse"
+              example:
+                data: 42
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/Workflow:
+    get:
+      tags:
+        - Workflow Setup
+      operationId: findActiveWorkflow
+      summary: Find the active Workflow for a DocType.
+      description: |
+        Workflow is itself a DocType, so active workflow discovery uses the standard document list API with filters.
+
+        URL-encode the JSON query string in real clients.
+
+        Frappe workflow lookup uses an active Workflow with `document_type` equal to the business DocType. Typically only one active Workflow should apply to a DocType.
+
+        The authenticated integration user must have read access to the Workflow DocType for this standard list endpoint to return Workflow records.
+
+        ## Example
+
+        ```
+        curl -X GET "https://example.frappe.local/api/v2/document/Workflow?filters=%7B%22document_type%22:%22%3Cdoctype%3E%22,%22is_active%22:1%7D&fields=%5B%22name%22,%22workflow_name%22,%22document_type%22,%22is_active%22,%22workflow_state_field%22%5D" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>"
+        ```
+      parameters:
+        - name: filters
+          in: query
+          required: true
+          schema:
+            type: string
+            example: '{"document_type":"<doctype>","is_active":1}'
+          description: JSON object or list filter. Use `document_type` and `is_active` to find the active Workflow for a DocType.
+        - name: fields
+          in: query
+          required: false
+          schema:
+            type: string
+            example: '["name","workflow_name","document_type","is_active","workflow_state_field"]'
+          description: JSON array of Workflow fields to return.
+        - $ref: "#/components/parameters/LimitQuery"
+      responses:
+        "200":
+          description: Matching Workflow records under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowListResponse"
+              example:
+                data:
+                  - name: <workflow_name>
+                    workflow_name: <workflow_name>
+                    document_type: <doctype>
+                    is_active: 1
+                    workflow_state_field: workflow_state
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/Workflow/{workflow_name}/:
+    get:
+      tags:
+        - Workflow Setup
+      operationId: getWorkflowDefinition
+      summary: Read a Workflow definition.
+      description: |
+        Reads the Workflow document after its name is discovered from `/api/v2/document/Workflow`.
+
+        Key fields for external integrations:
+        - `workflow_state_field`: the field on the business document that stores the current workflow state.
+        - `states`: child table rows defining allowed states. Each row includes `state`, target `doc_status`, optional `update_field`, optional `update_value`, and `allow_edit` role.
+        - `transitions`: child table rows defining possible transitions. Each row includes source `state`, user-facing `action`, `next_state`, allowed `Role`, optional `condition`, and `allow_self_approval`.
+        - `doc_status` on state rows maps to the document lifecycle: `0` Draft, `1` Submitted, `2` Cancelled.
+
+        Static transitions are not the same as runtime actions. Always call `get_transitions` for a concrete document and user before showing or applying actions.
+
+        ## Example
+
+        ```
+        curl -X GET "https://example.frappe.local/api/v2/document/Workflow/{workflow_name}/" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>"
+        ```
+      parameters:
+        - $ref: "#/components/parameters/WorkflowNamePath"
+      responses:
+        "200":
+          description: Workflow document under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowResponse"
+              example:
+                data:
+                  doctype: Workflow
+                  name: <workflow_name>
+                  workflow_name: <workflow_name>
+                  document_type: <doctype>
+                  is_active: 1
+                  workflow_state_field: workflow_state
+                  states:
+                    - state: Draft
+                      doc_status: "0"
+                      allow_edit: <role>
+                    - state: <current_state>
+                      doc_status: "0"
+                      allow_edit: <approver_role>
+                    - state: <next_state>
+                      doc_status: "1"
+                      allow_edit: <approver_role>
+                  transitions:
+                    - state: Draft
+                      action: <submit_action>
+                      next_state: <current_state>
+                      allowed: <role>
+                      allow_self_approval: 1
+                    - state: <current_state>
+                      action: <action>
+                      next_state: <next_state>
+                      allowed: <approver_role>
+                      allow_self_approval: 0
+                      condition: doc.numeric_field > 0
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.model.workflow.get_transitions:
+    post:
+      tags:
+        - Workflow Actions
+      operationId: getWorkflowTransitions
+      summary: Get available workflow actions for the authenticated user and document.
+      description: |
+        Returns runtime transitions for a concrete document.
+
+        Frappe behavior confirmed in `frappe/model/workflow.py`:
+        - Parses `doc` from JSON.
+        - Loads the document from the database.
+        - Returns an empty list for a new document.
+        - Checks read permission.
+        - Finds the active Workflow for the document DocType.
+        - Reads the current state from `workflow.workflow_state_field`.
+        - Returns transitions whose source `state` equals the current state and whose `allowed` role is in the authenticated user's roles.
+        - Skips transitions whose Python `condition` evaluates false for the document.
+
+        The result is the authoritative list of actions the external system may present to the current user.
+
+        ## Example
+
+        ```
+        curl -X POST "https://example.frappe.local/api/method/frappe.model.workflow.get_transitions" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>" \
+          -d '{
+            "doc": {
+              "doctype": "<doctype>",
+              "name": "<name>"
+            }
+          }'
+        ```
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetTransitionsRequest"
+            example:
+              doc:
+                doctype: <doctype>
+                name: <name>
+      responses:
+        "200":
+          description: Runtime transitions under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowTransitionsMethodResponse"
+              example:
+                message:
+                  - name: <transition_row_name>
+                    owner: <user>
+                    creation: "2026-06-29 12:00:00.000000"
+                    modified: "2026-06-29 12:00:00.000000"
+                    modified_by: <user>
+                    docstatus: 0
+                    idx: 1
+                    state: <current_state>
+                    action: <action>
+                    next_state: <next_state>
+                    allowed: <approver_role>
+                    allow_self_approval: 0
+                    send_email_to_creator: 0
+                    condition: doc.numeric_field > 0
+                    workflow_builder_id: null
+                    parent: <workflow_name>
+                    parentfield: transitions
+                    parenttype: Workflow
+                    doctype: Workflow Transition
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.model.workflow.apply_workflow:
+    post:
+      tags:
+        - Workflow Actions
+      operationId: applyWorkflowAction
+      summary: Execute a workflow action on a document.
+      description: |
+        Applies one workflow action to a concrete document. The `action` value must be one of the actions returned by `get_transitions` for the same authenticated user and document.
+
+        Frappe behavior confirmed in `frappe/model/workflow.py`:
+        - Loads the document from the database.
+        - Gets runtime transitions using the same filtering as `get_transitions`.
+        - Rejects actions that are not valid runtime transitions.
+        - Enforces self-approval rules. If `allow_self_approval` is false and the current user owns the document, the action is rejected unless the user is Administrator.
+        - Sets the document field named by `workflow.workflow_state_field` to the transition `next_state`.
+        - Reads the target state row from the Workflow `states` table.
+        - If the target state defines `update_field` and `update_value`, Frappe updates that field too.
+        - Uses the target state's `doc_status` to decide whether to save, submit, or cancel:
+          - draft to draft: `doc.save()`
+          - draft to submitted: `doc.submit()` or background submission if configured
+          - submitted to submitted: `doc.save()`
+          - submitted to cancelled: `doc.cancel()`
+        - Adds a Workflow comment with the next state.
+
+        After this call, re-read the document to confirm `workflow_state_field`, `docstatus`, and any fields updated by workflow state rules.
+
+        ## Example
+
+        ```
+        curl -X POST "https://example.frappe.local/api/method/frappe.model.workflow.apply_workflow" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>" \
+          -d '{
+            "doc": {
+              "doctype": "<doctype>",
+              "name": "<name>"
+            },
+            "action": "<action>"
+          }'
+        ```
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyWorkflowRequest"
+            example:
+              doc:
+                doctype: <doctype>
+                name: <name>
+              action: <action>
+      responses:
+        "200":
+          description: Updated document under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentMethodResponse"
+              example:
+                message:
+                  name: <name>
+                  owner: <user>
+                  creation: "2026-06-29 12:00:00.000000"
+                  modified: "2026-06-29 12:01:00.000000"
+                  modified_by: <user>
+                  docstatus: 1
+                  idx: 0
+                  workflow_state: <next_state>
+                  field_1: <field_value>
+                  field_2: <field_value>
+                  doctype: <doctype>
+                  child_table_field: []
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.model.workflow.can_cancel_document:
+    post:
+      tags:
+        - Workflow Actions
+      operationId: canCancelDocumentByWorkflow
+      summary: Check whether direct cancel is allowed for a workflow-enabled DocType.
+      description: |
+        Returns whether a document of the given DocType can be cancelled directly when a workflow exists.
+
+        Frappe checks the workflow for states with `doc_status == "2"` and transitions leading to those cancelling states. If cancellation is modeled as a workflow transition, external integrations should use `apply_workflow` instead of direct cancel.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctype
+              properties:
+                doctype:
+                  type: string
+                  example: <doctype>
+      responses:
+        "200":
+          description: Boolean result under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MethodResponse"
+              example:
+                message: false
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.model.workflow.get_common_transition_actions:
+    post:
+      tags:
+        - Workflow Actions
+      operationId: getCommonTransitionActions
+      summary: Get workflow actions common to multiple documents.
+      description: |
+        Returns the intersection of currently available workflow action names across multiple documents. This is useful for bulk action UIs or integrations that need to know whether the same action can be applied to several documents.
+
+        Each document is evaluated with the same runtime role and condition checks used by `get_transitions`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctype
+                - docs
+              properties:
+                doctype:
+                  type: string
+                  example: <doctype>
+                docs:
+                  oneOf:
+                    - type: string
+                      description: JSON string containing an array of document references.
+                    - type: array
+                      items:
+                        $ref: "#/components/schemas/DocumentReference"
+                  example:
+                    - doctype: <doctype>
+                      name: <name>
+                    - doctype: <doctype>
+                      name: <another_name>
+      responses:
+        "200":
+          description: Common workflow action names under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MethodResponse"
+              example:
+                message:
+                  - <action>
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.model.workflow.bulk_workflow_approval:
+    post:
+      tags:
+        - Workflow Actions
+      operationId: bulkWorkflowApproval
+      summary: Apply one workflow action to multiple documents.
+      description: |
+        Applies one workflow action to multiple document names for a DocType.
+
+        The Frappe implementation accepts up to 500 document names. For fewer than 20 documents it processes immediately; from 20 through 500 it enqueues background work.
+
+        For external systems that need deterministic per-document responses, calling `apply_workflow` one document at a time is usually easier to reconcile. This endpoint is documented because it is a standard workflow API exposed by the source code.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - docnames
+                - doctype
+                - action
+              properties:
+                docnames:
+                  type: string
+                  description: JSON string containing a list of document names. The source implementation calls `json.loads(docnames)`.
+                  example: '["<name>","<another_name>"]'
+                doctype:
+                  type: string
+                  example: <doctype>
+                action:
+                  type: string
+                  example: <action>
+      responses:
+        "200":
+          description: Method response. Immediate processing may return no explicit message; queued processing may add Frappe messages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MethodResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.client.submit:
+    post:
+      tags:
+        - Lifecycle
+      operationId: submitDocument
+      summary: Submit a document directly.
+      description: |
+        Standard whitelisted client method that receives a full document JSON object, loads it as a Frappe document, and calls `doc.submit()`.
+
+        In workflow-enabled DocTypes, prefer `apply_workflow` when submission is represented by a workflow transition. Direct submit is useful when the DocType is submittable but not controlled by a workflow, or when your implementation explicitly allows direct submission.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doc
+              properties:
+                doc:
+                  $ref: "#/components/schemas/GenericDocument"
+            example:
+              doc:
+                doctype: <doctype>
+                name: <name>
+      responses:
+        "200":
+          description: Submitted document under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentMethodResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.client.cancel:
+    post:
+      tags:
+        - Lifecycle
+      operationId: cancelDocument
+      summary: Cancel a document directly.
+      description: |
+        Standard whitelisted client method that loads a document by `doctype` and `name`, then calls `doc.cancel()`.
+
+        In workflow-enabled DocTypes, first check whether cancellation is modeled as a workflow transition. If so, use `apply_workflow` with the cancel/reject action instead of direct cancel.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctype
+                - name
+              properties:
+                doctype:
+                  type: string
+                  example: <doctype>
+                name:
+                  type: string
+                  example: <name>
+      responses:
+        "200":
+          description: Cancelled document under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentMethodResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.client.rename_doc:
+    post:
+      tags:
+        - Lifecycle
+      operationId: renameDocument
+      summary: Rename a document.
+      description: |
+        Standard whitelisted client method that calls `frappe.rename_doc`.
+
+        Rename is subject to DocType rules, permissions, naming constraints, links, and merge behavior.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctype
+                - old_name
+                - new_name
+              properties:
+                doctype:
+                  type: string
+                  example: <doctype>
+                old_name:
+                  type: string
+                  example: <name>
+                new_name:
+                  type: string
+                  example: <new_name>
+                merge:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: New document name under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MethodResponse"
+              example:
+                message: <new_name>
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/v2/document/{doctype}/{name}/method/{method}/:
+    get:
+      tags:
+        - Lifecycle
+      operationId: getDocumentMethod
+      summary: Run a whitelisted document controller method using GET.
+      description: |
+        Executes a whitelisted method on a loaded document through the REST v2 document method route.
+
+        Frappe checks that the method is whitelisted and checks document read permission for GET. Use this for standard or custom whitelisted document methods only when you know the target controller method exists and is safe for GET.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+        - $ref: "#/components/parameters/MethodPath"
+      responses:
+        "200":
+          description: Method result under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Lifecycle
+      operationId: postDocumentMethod
+      summary: Run a whitelisted document controller method using POST.
+      description: |
+        Executes a whitelisted method on a loaded document through the REST v2 document method route.
+
+        Frappe checks that the method is whitelisted and checks document write permission for POST. The built-in `submit`, `cancel`, and `rename` document methods are whitelisted on Frappe Document; however, `frappe.client.submit`, `frappe.client.cancel`, and `frappe.client.rename_doc` are usually clearer for external integrations.
+      parameters:
+        - $ref: "#/components/parameters/DocTypePath"
+        - $ref: "#/components/parameters/NamePath"
+        - $ref: "#/components/parameters/MethodPath"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Method result under `data`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.client.has_permission:
+    get:
+      tags:
+        - Permissions
+      operationId: hasPermissionGet
+      summary: Check one permission for a document.
+      description: |
+        Returns whether the authenticated user has a requested permission type for a document.
+
+        Useful before attempting workflow actions, edits, submit, cancel, or delete. Runtime workflow action availability still requires `get_transitions`.
+      parameters:
+        - name: doctype
+          in: query
+          required: true
+          schema:
+            type: string
+            example: <doctype>
+        - name: docname
+          in: query
+          required: true
+          schema:
+            type: string
+            example: <name>
+        - name: perm_type
+          in: query
+          required: false
+          schema:
+            type: string
+            default: read
+            enum:
+              - read
+              - write
+              - create
+              - submit
+              - cancel
+              - report
+          description: Permission type to evaluate.
+      responses:
+        "200":
+          description: Permission result under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionMethodResponse"
+              example:
+                message:
+                  has_permission: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/frappe.client.get_doc_permissions:
+    get:
+      tags:
+        - Permissions
+      operationId: getDocumentPermissions
+      summary: Get evaluated permissions for a document.
+      description: |
+        Returns the evaluated document permissions for the authenticated user, such as read, write, submit, cancel, print, email, and share flags depending on the DocType and current document.
+      parameters:
+        - name: doctype
+          in: query
+          required: true
+          schema:
+            type: string
+            example: <doctype>
+        - name: docname
+          in: query
+          required: true
+          schema:
+            type: string
+            example: <name>
+      responses:
+        "200":
+          description: Permissions under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocPermissionsMethodResponse"
+              example:
+                message:
+                  permissions:
+                    read: 1
+                    write: 1
+                    submit: 0
+                    cancel: 0
+                    print: 1
+                    email: 1
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/method/upload_file:
+    post:
+      tags:
+        - Files
+      operationId: uploadFile
+      summary: Upload and optionally attach a file.
+      description: |
+        Standard Frappe file upload endpoint implemented by `frappe.handler.upload_file`.
+
+        The endpoint accepts multipart form-data. If `doctype` and `docname` are supplied, Frappe checks write permission on the target document and creates a File record attached to it. If `file_url` is supplied instead of file content, Frappe creates a File record pointing to that URL.
+
+        For workflow-driven integrations, use this endpoint when documents need supporting attachments before approval, submission, or later workflow actions.
+
+        ## Example
+
+        ```
+        curl -X POST "https://example.frappe.local/api/method/upload_file" \
+          -H "Accept: application/json" \
+          -H "Authorization: token <api_key>:<api_secret>" \
+          -F "file=@<file_name>" \
+          -F "doctype=<doctype>" \
+          -F "docname=<name>" \
+          -F "is_private=1"
+        ```
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File content. Form field name must be `file`.
+                doctype:
+                  type: string
+                  example: <doctype>
+                  description: Target DocType to attach the file to.
+                docname:
+                  type: string
+                  example: <name>
+                  description: Target document name.
+                fieldname:
+                  type: string
+                  example: attachment
+                  description: Optional target attach field.
+                is_private:
+                  type: integer
+                  enum:
+                    - 0
+                    - 1
+                  default: 0
+                folder:
+                  type: string
+                  default: Home
+                file_url:
+                  type: string
+                  description: Existing URL to register as a File instead of uploading binary content.
+                file_name:
+                  type: string
+                  description: File name when using `file_url` or raw content.
+                optimize:
+                  type: integer
+                  enum:
+                    - 0
+                    - 1
+                  description: If truthy and the file is an image, Frappe may optimize it.
+                max_width:
+                  type: integer
+                  description: Optional max image width for optimization.
+                max_height:
+                  type: integer
+                  description: Optional max image height for optimization.
+      responses:
+        "200":
+          description: Created File document under `message`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentMethodResponse"
+              example:
+                message:
+                  doctype: File
+                  name: 9f2a8b9c0d
+                  file_name: <file_name>
+                  file_url: /private/files/<file_name>
+                  attached_to_doctype: <doctype>
+                  attached_to_name: <name>
+                  is_private: 1
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "417":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  securitySchemes:
+    ApiKeySecretToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: |
+        Use Frappe API key and API secret token authentication.
+
+        Header format:
+        `Authorization: token <api_key>:<api_secret>`
+
+        Frappe also supports Basic auth for API key pairs in this codebase, but the recommended integration format for this document is the token header above.
+  parameters:
+    DocTypePath:
+      name: doctype
+      in: path
+      required: true
+      schema:
+        type: string
+      description: "DocType name. Examples: `<doctype>`, `<linked_doctype>`, `Workflow`."
+      example: <doctype>
+    NamePath:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Document name, which is Frappe's primary identifier for a record.
+      example: <name>
+    WorkflowNamePath:
+      name: workflow_name
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Workflow document name returned by active Workflow discovery.
+      example: <workflow_name>
+    MethodPath:
+      name: method
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Whitelisted document method name.
+      example: submit
+    FieldsQuery:
+      name: fields
+      in: query
+      required: false
+      schema:
+        type: string
+        example: '["name","field_1","workflow_state","docstatus"]'
+      description: |
+        JSON array of field names to return. If omitted, list APIs commonly return `name`.
+
+        Use field names from DocType metadata. Standard fields such as `name`, `owner`, `creation`, `modified`, `modified_by`, `docstatus`, and `idx` are generally available.
+    FiltersQuery:
+      name: filters
+      in: query
+      required: false
+      schema:
+        type: string
+        example: '{"workflow_state":"<current_state>"}'
+      description: |
+        JSON object or JSON list of filter conditions.
+
+        Examples:
+        - Object equality filter: `{"workflow_state":"<current_state>"}`
+        - List filter: `[["<doctype>","numeric_field",">",1000]]`
+        - IN filter: `[["name","in",["<name>","<another_name>"]]]`
+    OrFiltersQuery:
+      name: or_filters
+      in: query
+      required: false
+      schema:
+        type: string
+        example: '[["workflow_state","=","<current_state>"],["workflow_state","=","<other_state>"]]'
+      description: JSON list or object of OR filter conditions.
+    OrderByQuery:
+      name: order_by
+      in: query
+      required: false
+      schema:
+        type: string
+        example: modified desc
+      description: Sort expression validated by Frappe, for example `modified desc` or `creation asc`.
+    StartQuery:
+      name: start
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Zero-based offset for REST v2 document list pagination.
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 20
+      description: Maximum records to return. REST v2 maps this to Frappe `limit_page_length`.
+    GroupByQuery:
+      name: group_by
+      in: query
+      required: false
+      schema:
+        type: string
+        example: workflow_state
+      description: Group-by field or expression validated by Frappe.
+    AsDictQuery:
+      name: as_dict
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+      description: When false, Frappe can return rows as lists instead of objects.
+    DebugQuery:
+      name: debug
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+      description: When true and permitted, Frappe may include debug information.
+  responses:
+    BadRequest:
+      description: Bad request, invalid JSON, invalid fields, malformed filters, or invalid parameters.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          examples:
+            restV2:
+              summary: REST v2 error shape
+              value:
+                message: "Field not permitted in query: invalid_field"
+                errors:
+                  - type: DataError
+                    message: "Field not permitted in query: invalid_field"
+            rpc:
+              summary: /api/method error shape
+              value:
+                message: Invalid request arguments
+                exc_type: ValidationError
+                _server_messages: "[\"{\\\"message\\\": \\\"Invalid request arguments\\\", \\\"title\\\": \\\"Message\\\", \\\"indicator\\\": \\\"red\\\", \\\"raise_exception\\\": 1}\"]"
+    Unauthorized:
+      description: Authentication failed or missing credentials.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          example:
+            exc_type: AuthenticationError
+    Forbidden:
+      description: Authenticated user does not have the required Frappe permission.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          examples:
+            restV2:
+              value:
+                message: Not permitted
+                errors:
+                  - type: PermissionError
+                    message: Not permitted
+            rpc:
+              value:
+                message: Not permitted
+                exc_type: PermissionError
+                _server_messages: "[\"{\\\"message\\\": \\\"Not permitted\\\", \\\"title\\\": \\\"Message\\\", \\\"indicator\\\": \\\"red\\\", \\\"raise_exception\\\": 1}\"]"
+    NotFound:
+      description: DocType, document, method, or route was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          examples:
+            restV2:
+              summary: REST v2 document route
+              value:
+                message: "<doctype> <name> not found"
+                errors:
+                  - type: DoesNotExistError
+                    message: "<doctype> <name> not found"
+                    title: Message
+                    indicator: red
+            rpc:
+              summary: /api/method route
+              value:
+                message: "<doctype> <name> not found"
+                exc_type: DoesNotExistError
+                _server_messages: "[\"{\\\"message\\\": \\\"<doctype> <name> not found\\\", \\\"title\\\": \\\"Message\\\", \\\"indicator\\\": \\\"red\\\", \\\"raise_exception\\\": 1}\"]"
+    ValidationError:
+      description: Frappe validation, workflow, or business-rule error. Frappe commonly uses HTTP 417 for validation-style exceptions.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          examples:
+            restV2:
+              summary: REST v2 validation shape
+              value:
+                message: Validation failed
+                errors:
+                  - type: ValidationError
+                    message: Validation failed
+            rpcInvalidWorkflowAction:
+              summary: /api/method workflow validation shape
+              value:
+                message: Not a valid Workflow Action
+                exception: "frappe.model.workflow.WorkflowTransitionError: Not a valid Workflow Action"
+                exc_type: WorkflowTransitionError
+                _server_messages: "[\"{\\\"message\\\": \\\"Not a valid Workflow Action\\\", \\\"title\\\": \\\"Message\\\", \\\"indicator\\\": \\\"red\\\", \\\"raise_exception\\\": 1}\"]"
+    ServerError:
+      description: Unexpected server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FrappeErrorResponse"
+          example:
+            exc_type: Exception
+            message: Internal Server Error
+  schemas:
+    DataResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        data:
+          description: REST v2 return value.
+    MethodResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          description: Return value from `/api/method/...` RPC endpoints.
+        messages:
+          type: array
+          description: Optional Frappe message log entries in REST v2 response formatting.
+          items:
+            type: object
+            additionalProperties: true
+    ListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/GenericDocument"
+    CountResponse:
+      type: object
+      properties:
+        data:
+          type: integer
+          example: 42
+    DocumentResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/GenericDocument"
+    DocumentMethodResponse:
+      type: object
+      properties:
+        message:
+          $ref: "#/components/schemas/GenericDocument"
+    GenericDocument:
+      type: object
+      additionalProperties: true
+      description: |
+        Generic Frappe document. Actual fields depend on the DocType metadata.
+
+        Common standard fields include `doctype`, `name`, `owner`, `creation`, `modified`, `modified_by`, `docstatus`, and `idx`. Workflow-enabled documents also contain the field named by the active Workflow's `workflow_state_field`.
+      properties:
+        doctype:
+          type: string
+          example: <doctype>
+        name:
+          type: string
+          example: <name>
+        owner:
+          type: string
+          example: user@example.com
+        creation:
+          type: string
+          example: "2026-06-29 12:00:00.000000"
+        modified:
+          type: string
+          example: "2026-06-29 12:05:00.000000"
+        modified_by:
+          type: string
+          example: approver@example.com
+        docstatus:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+          description: 0 Draft, 1 Submitted, 2 Cancelled.
+    GenericDocumentInput:
+      type: object
+      additionalProperties: true
+      description: Fields to create or update on a dynamic Frappe DocType. Discover allowed field names and child tables from DocType metadata.
+    DocumentReference:
+      type: object
+      required:
+        - doctype
+        - name
+      properties:
+        doctype:
+          type: string
+          example: <doctype>
+        name:
+          type: string
+          example: <name>
+    DocTypeMetaResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/DocTypeMeta"
+    DocTypeMeta:
+      type: object
+      additionalProperties: true
+      properties:
+        name:
+          type: string
+          example: <doctype>
+        doctype:
+          type: string
+          example: DocType
+        is_submittable:
+          type: integer
+          enum:
+            - 0
+            - 1
+        istable:
+          type: integer
+          enum:
+            - 0
+            - 1
+        fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocField"
+        permissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocPerm"
+    DocField:
+      type: object
+      additionalProperties: true
+      properties:
+        fieldname:
+          type: string
+          example: field_1
+        label:
+          type: string
+          example: <linked_doctype>
+        fieldtype:
+          type: string
+          example: Link
+          description: Frappe field type such as Data, Link, Select, Check, Date, Table, Attach, Currency, Int, Float, Text, or Code.
+        options:
+          type: string
+          example: <linked_doctype>
+          description: For Link fields, target DocType. For Table fields, child DocType. For Select fields, option lines.
+        reqd:
+          type: integer
+          enum:
+            - 0
+            - 1
+        read_only:
+          type: integer
+          enum:
+            - 0
+            - 1
+        hidden:
+          type: integer
+          enum:
+            - 0
+            - 1
+        default:
+          nullable: true
+        permlevel:
+          type: integer
+          default: 0
+    DocPerm:
+      type: object
+      additionalProperties: true
+      properties:
+        role:
+          type: string
+          example: <role>
+        read:
+          type: integer
+        write:
+          type: integer
+        create:
+          type: integer
+        submit:
+          type: integer
+        cancel:
+          type: integer
+    WorkflowListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkflowSummary"
+    WorkflowSummary:
+      type: object
+      additionalProperties: true
+      properties:
+        name:
+          type: string
+          example: <workflow_name>
+        workflow_name:
+          type: string
+          example: <workflow_name>
+        document_type:
+          type: string
+          example: <doctype>
+        is_active:
+          type: integer
+          enum:
+            - 0
+            - 1
+        workflow_state_field:
+          type: string
+          example: workflow_state
+    WorkflowResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/WorkflowDocument"
+    WorkflowDocument:
+      type: object
+      additionalProperties: true
+      properties:
+        doctype:
+          type: string
+          example: Workflow
+        name:
+          type: string
+          example: <workflow_name>
+        workflow_name:
+          type: string
+          example: <workflow_name>
+        document_type:
+          type: string
+          example: <doctype>
+        is_active:
+          type: integer
+          enum:
+            - 0
+            - 1
+        workflow_state_field:
+          type: string
+          example: workflow_state
+        send_email_alert:
+          type: integer
+          enum:
+            - 0
+            - 1
+        states:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkflowStateRow"
+        transitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkflowTransitionRow"
+    WorkflowStateRow:
+      type: object
+      additionalProperties: true
+      properties:
+        state:
+          type: string
+          example: <current_state>
+          description: Workflow State name.
+        doc_status:
+          type: string
+          enum:
+            - "0"
+            - "1"
+            - "2"
+          description: 0 Draft, 1 Submitted, 2 Cancelled.
+        update_field:
+          type: string
+          nullable: true
+          description: Optional document field to update when entering this state.
+        update_value:
+          type: string
+          nullable: true
+          description: Optional value to set on `update_field` when entering this state.
+        allow_edit:
+          type: string
+          description: Role allowed to edit documents in this state.
+        message:
+          type: string
+          nullable: true
+    WorkflowTransitionRow:
+      type: object
+      additionalProperties: true
+      properties:
+        name:
+          type: string
+          example: <transition_row_name>
+        owner:
+          type: string
+          example: <user>
+        creation:
+          type: string
+          example: "2026-06-29 12:00:00.000000"
+        modified:
+          type: string
+          example: "2026-06-29 12:00:00.000000"
+        modified_by:
+          type: string
+          example: <user>
+        docstatus:
+          type: integer
+          example: 0
+        idx:
+          type: integer
+          example: 1
+        state:
+          type: string
+          example: <current_state>
+          description: Source workflow state.
+        action:
+          type: string
+          example: <action>
+          description: Action label passed to `apply_workflow`.
+        next_state:
+          type: string
+          example: <next_state>
+          description: Target workflow state.
+        allowed:
+          type: string
+          example: <approver_role>
+          description: Role allowed to execute this transition.
+        allow_self_approval:
+          type: integer
+          enum:
+            - 0
+            - 1
+          description: Whether the document owner may approve their own document for this transition.
+        send_email_to_creator:
+          type: integer
+          enum:
+            - 0
+            - 1
+        condition:
+          type: string
+          nullable: true
+          description: Optional Python condition evaluated by Frappe with safe globals and `doc` as the current document dict.
+        workflow_builder_id:
+          type: string
+          nullable: true
+        parent:
+          type: string
+          example: <workflow_name>
+        parentfield:
+          type: string
+          example: transitions
+        parenttype:
+          type: string
+          example: Workflow
+        doctype:
+          type: string
+          example: Workflow Transition
+    GetTransitionsRequest:
+      type: object
+      required:
+        - doc
+      properties:
+        doc:
+          $ref: "#/components/schemas/DocumentReference"
+    ApplyWorkflowRequest:
+      type: object
+      required:
+        - doc
+        - action
+      properties:
+        doc:
+          $ref: "#/components/schemas/DocumentReference"
+        action:
+          type: string
+          example: <action>
+          description: Must match an `action` returned by `get_transitions`.
+    WorkflowTransitionsMethodResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkflowTransitionRow"
+    PermissionMethodResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            has_permission:
+              type: boolean
+    DocPermissionsMethodResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            permissions:
+              type: object
+              additionalProperties:
+                oneOf:
+                  - type: integer
+                  - type: boolean
+              example:
+                read: 1
+                write: 1
+                submit: 0
+                cancel: 0
+    FrappeErrorResponse:
+      type: object
+      additionalProperties: true
+      description: |
+        Frappe error bodies are different for REST v2 routes and `/api/method` RPC routes.
+
+        REST v2 routes such as `/api/v2/document/...` usually return:
+        - `message`: human-readable message.
+        - `errors`: array of error objects with `type`, `message`, and sometimes `title` / `indicator`.
+
+        RPC routes such as `/api/method/...` usually return:
+        - `message`: human-readable message.
+        - `exc_type`: exception class name.
+        - `_server_messages`: JSON-encoded string containing Frappe message objects.
+        - `exception` and `exc` may appear when traceback output is enabled.
+      properties:
+        message:
+          type: string
+          example: Not permitted
+        errors:
+          type: array
+          description: REST v2 error list.
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              type:
+                type: string
+                example: ValidationError
+              message:
+                type: string
+                example: Not permitted
+              exception:
+                type: string
+                description: Traceback text when traceback output is enabled.
+        messages:
+          type: array
+          description: Optional REST v2 message log entries.
+          items:
+            type: object
+            additionalProperties: true
+        exc_type:
+          type: string
+          description: Exception type returned by `/api/method` RPC endpoints.
+          example: DoesNotExistError
+        exception:
+          type: string
+          description: Exception summary when traceback output is enabled.
+          example: "frappe.DoesNotExistError: <doctype> <name> not found"
+        exc:
+          type: string
+          description: JSON-encoded traceback list when traceback output is enabled.
+        _server_messages:
+          type: string
+          description: JSON-encoded list of Frappe server message objects, commonly returned by `/api/method` errors.
+          example: "[\"{\\\"message\\\": \\\"<doctype> <name> not found\\\", \\\"title\\\": \\\"Message\\\", \\\"indicator\\\": \\\"red\\\", \\\"raise_exception\\\": 1}\"]"
