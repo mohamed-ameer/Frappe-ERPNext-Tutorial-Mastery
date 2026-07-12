@@ -15,6 +15,8 @@ We may also convert this guide into a free book or video course in the future â€
 
 [Frappe Gems](https://frappegems.com/gems/)
 
+[Grep App (Code Search Engine)](https://grep.app/)
+
 ---
 
 ## ðŸ“š Table of Contents
