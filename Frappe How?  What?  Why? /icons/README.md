@@ -18,6 +18,11 @@ This directory contains pre-packaged SVG icon sprites built for Frappe apps. It 
 | **Phosphor Icons** | `icon-ph-[name]` | ~9,000+ | `@phosphor-icons/core` |
 | **GitHub Octicons** | `icon-octicon-[name]` | ~600+ | `@primer/octicons` |
 | **Simple Icons (Brands)** | `icon-si-[name]` | ~3,000+ | `simple-icons` |
+| **Country Flags** | `icon-flag-[country-code]` | ~250+ | `flag-icons` |
+| **Payment Logos** | `icon-pay-[provider]` | ~100+ | `payment-icons` |
+| **Boxicons** | `icon-bx-[type]-[name]` | ~1,600+ | `boxicons` |
+| **Iconoir** | `icon-noir-[name]` | ~1,500+ | `iconoir` |
+| **Microsoft Fluent** | `icon-fluent-[name]` | ~4,000+ | `@fluentui/svg-icons` |
 
 ---
 
