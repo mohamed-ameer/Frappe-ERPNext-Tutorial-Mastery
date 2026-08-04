@@ -101,3 +101,5 @@ https://tabler.io/icons
 https://feathericons.com/
 
 https://heroicons.com/
+
+[All Fontawesome Icons in one SVG sprite file](./31-fa-icons.svg)
