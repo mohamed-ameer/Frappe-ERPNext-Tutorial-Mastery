@@ -33,6 +33,27 @@ This directory contains pre-packaged SVG icon sprites built for Frappe apps. It 
 
 ---
 
+## Build Script (`build-sprites.js`)
+
+This project includes an automated Node.js build script (`build-sprites.js`) located in the root directory. It automatically scans all installed icon packages in `node_modules`, extracts their raw SVG content, formats each symbol with an `icon-` ID prefix, and generates Frappe-compatible SVG sprites inside `your_app/public/icons/`.
+
+Install all required icon dependencies via npm:
+
+```bash
+mkdir all_icons
+cd all_icons
+```
+
+```bash
+npm install @fortawesome/fontawesome-free lucide-static heroicons bootstrap-icons remixicon @tabler/icons @material-design-icons/svg @phosphor-icons/core @primer/octicons lineicons feather-icons ionicons weather-icons simple-icons flag-icons payment-icons boxicons @carbon/icons iconoir @iconscout/unicons @fluentui/svg-icons cryptocurrency-icons healthicons grommet-icons eva-icons line-awesome @iconify/json academicons devicon maki undraw-svg css.gg pixelarticons @vscode/codicons
+```
+
+```bash
+node build-sprites.js
+```
+
+---
+
 ## Explaination & How to Use in Frappe
 
 Custom icons are added via an SVG sprite file and registered in your app using hooks.
