@@ -14,6 +14,10 @@ This directory contains pre-packaged SVG icon sprites built for Frappe apps. It 
 | **Bootstrap Icons** | `icon-bs-[name]` | ~2,000+ | `bootstrap-icons` |
 | **Remix Icons** | `icon-ri-[name]` | ~3,200+ | `remixicon` |
 | **Tabler Icons** | `icon-tabler-[name]` | ~5,000+ | `@tabler/icons` |
+| **Material Symbols** | `icon-ms-[style]-[name]` | ~3,000+ | `@material-design-icons/svg` |
+| **Phosphor Icons** | `icon-ph-[name]` | ~9,000+ | `@phosphor-icons/core` |
+| **GitHub Octicons** | `icon-octicon-[name]` | ~600+ | `@primer/octicons` |
+| **Simple Icons (Brands)** | `icon-si-[name]` | ~3,000+ | `simple-icons` |
 
 ---
 
