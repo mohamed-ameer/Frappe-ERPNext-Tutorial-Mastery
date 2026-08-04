@@ -23,6 +23,10 @@ This directory contains pre-packaged SVG icon sprites built for Frappe apps. It 
 | **Boxicons** | `icon-bx-[type]-[name]` | ~1,600+ | `boxicons` |
 | **Iconoir** | `icon-noir-[name]` | ~1,500+ | `iconoir` |
 | **Microsoft Fluent** | `icon-fluent-[name]` | ~4,000+ | `@fluentui/svg-icons` |
+| **Crypto Currency** | `icon-crypto-[code]` | ~500+ | `cryptocurrency-icons` |
+| **Health Icons** | `icon-health-[name]` | ~1,000+ | `healthicons` |
+| **Eva Icons** | `icon-eva-[name]` | ~480+ | `eva-icons` |
+| **Iconify Sets** | `icon-[set]-[name]` | ~200,000+ | `@iconify/json` |
 
 ---
 
