@@ -27,6 +27,9 @@ This directory contains pre-packaged SVG icon sprites built for Frappe apps. It 
 | **Health Icons** | `icon-health-[name]` | ~1,000+ | `healthicons` |
 | **Eva Icons** | `icon-eva-[name]` | ~480+ | `eva-icons` |
 | **Iconify Sets** | `icon-[set]-[name]` | ~200,000+ | `@iconify/json` |
+| **Academicons** | `icon-ai-[name]` | ~150+ | `academicons` |
+| **Devicon (Tech Stack)** | `icon-dev-[name]` | ~800+ | `devicon` |
+| **Maki (Map/GIS Marks)** | `icon-maki-[name]` | ~200+ | `maki` |
 
 ---
 
