@@ -1,10 +1,7 @@
 // NPM INSTALL: you must install the following icon packages in your app directory to generate the sprite files. You can add more icon packages to the list below if you want to include them in your app. After installing, run this script to generate one sprite per package in your app's public/icons directory.
 // npm install @fortawesome/fontawesome-free lucide-static heroicons bootstrap-icons remixicon @tabler/icons @material-design-icons/svg @phosphor-icons/core @primer/octicons lineicons feather-icons ionicons weather-icons simple-icons flag-icons payment-icons boxicons @carbon/icons iconoir @iconscout/unicons @fluentui/svg-icons cryptocurrency-icons healthicons grommet-icons eva-icons line-awesome @iconify/json academicons devicon maki undraw-svg css.gg pixelarticons @vscode/codicons
 // npm install svgo --save-dev  (needed to keep sprites small; a global install won't be picked up by `require`)
-//
-// Each package gets its own sprite file (e.g. lucide-icons.svg, tabler-icons.svg) rather than
-// one merged bundle — with 70k+ icons across every package combined, a single icons.svg would
-// run ~47MB even minified. Load only the sprite(s) a given page actually needs.
+
 const fs = require('fs');
 const path = require('path');
 const { optimize } = require('svgo');
