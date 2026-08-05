@@ -139,7 +139,7 @@ function buildIconifySprite(setName) {
 // -------------------------------------------------------------
 const sources = [
   { dir: 'lucide-static/icons', prefix: 'lucide', output: 'lucide-icons.svg' },
-  { dir: '@fortawesome/fontawesome-free', prefix: 'fa', output: 'fontawsome.svg' },
+  { dir: '@fortawesome/fontawesome-free/svgs', prefix: 'fa', output: 'fontawsome-icons.svg', recursive: true, idFrom: 'path' },
   { dir: 'heroicons', prefix: 'hero', output: 'heroicons.svg', recursive: true, idFrom: 'path' },
   { dir: 'bootstrap-icons/icons', prefix: 'bs', output: 'bootstrap-icons.svg' },
   { dir: 'remixicon/icons', prefix: 'ri', output: 'remixicons.svg', recursive: true },
