@@ -90,6 +90,7 @@ the following resources are in arabic for implementation and not development
     - [ERPNext Implementation By Systems House](https://www.youtube.com/@systemhc/playlists)
     - [ERPNext By Kawader Tech](https://www.youtube.com/@kawadertech5630/videos)
     - [ERPNext With Yasser](https://www.youtube.com/@erpnextwithyasser)
+    - [CRE8TIV MAXX](https://www.youtube.com/@CRE8TIVMAXX/videos)
 
 ---
 
