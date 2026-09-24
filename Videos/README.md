@@ -91,6 +91,7 @@ the following resources are in arabic for implementation and not development
     - [ERPNext By Kawader Tech](https://www.youtube.com/@kawadertech5630/videos)
     - [ERPNext With Yasser](https://www.youtube.com/@erpnextwithyasser)
     - [CRE8TIV MAXX](https://www.youtube.com/@CRE8TIVMAXX/videos)
+    - [الدورة الشاملة لتعلّم ERPNext من الصفر للاحتراف | بالعربي](https://www.youtube.com/playlist?list=PLoC_bqbxBsFSHGY3cVHLaGX10uB3iEf4y)
 
 ---
 
