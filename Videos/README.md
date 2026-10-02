@@ -78,6 +78,7 @@ the following resources are in arabic for implementation and not development
     - [ERPNext With Manaa](https://www.youtube.com/@ERPWithManaa/playlists)
     - [ERPNext بالعربي](https://www.youtube.com/@erpnextAR/playlists)
     - [ERPCloud.Systems](https://www.youtube.com/@ERPCloudSystems/playlists)
+    - [TAILORS ERP بالعربي](https://www.youtube.com/@ERP-AR/playlists)
     - [Trinity Drones](https://www.youtube.com/@trinitydrones9030/videos)
     - [Free ERPNext Implementation Training](https://www.youtube.com/playlist?list=PLfUnnoSTbf6594jaxbYdM3AWH-D2UnB6w)
     - [التعليم سهل](https://www.youtube.com/@TalimSahl/playlists)
