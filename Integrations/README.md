@@ -44,3 +44,11 @@
 - [Building a Paystack Payment Integration for Frappeverse Africa 2025!](https://www.youtube.com/watch?v=MgMB7Rd-dCc)
 #### Useful Sites
 - [Webhook.site](https://docs.webhook.site/)
+
+---
+
+## 4. ERPNext Bio-Metric Attendance 
+- https://github.com/frappe/biometric-attendance-sync-tool
+- https://www.youtube.com/watch?v=KaMYfNCXShc
+- https://www.youtube.com/watch?v=4RZCt8ekIwU
+- https://docs.frappe.io/erpnext/integrating-erpnext-with-biometric-attendance-devices
