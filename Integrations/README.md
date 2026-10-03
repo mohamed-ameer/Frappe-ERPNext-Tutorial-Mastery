@@ -50,5 +50,6 @@
 ## 4. ERPNext Bio-Metric Attendance 
 - https://github.com/frappe/biometric-attendance-sync-tool
 - https://www.youtube.com/watch?v=KaMYfNCXShc
+- https://github.com/ERPNEXT-PAKISTAN/Machine-Integration/blob/main/ZKT%20Bio-Metric%20Device%20Installation.md
 - https://www.youtube.com/watch?v=4RZCt8ekIwU
 - https://docs.frappe.io/erpnext/integrating-erpnext-with-biometric-attendance-devices
