@@ -12,6 +12,7 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - [ERPNext Training](https://school.frappe.io/lms/courses/erpnext-training)
 - [Hussain's Manual, Diff Recordings in many sessions](https://manual.buildwithhussain.com/handouts/recordings/)  
 - [#BuildWithHussain site](https://buildwithhussain.com/)
+- [Agentic AI Development with Frappe Framework](https://www.youtube.com/playlist?list=PLI1bSTEnI2mI)
 
 **2. Eby Mathew**  
 - [Frappe / ERPNext Tutorials](https://www.youtube.com/playlist?list=PL81DRyBlXws-b7CdzGHOgoyc8vUvLXv6i)
