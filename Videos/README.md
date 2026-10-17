@@ -91,6 +91,7 @@ the following resources are in arabic for implementation and not development
     - [ERPNext Implementation By Systems House](https://www.youtube.com/@systemhc/playlists)
     - [ERPNext By Kawader Tech](https://www.youtube.com/@kawadertech5630/videos)
     - [ERPNext With Yasser](https://www.youtube.com/@erpnextwithyasser)
+    - [HRMS by BWH](https://www.youtube.com/playlist?list=PLQGFK8RiEPSLNgjFU11IbC12huIlrsP0Q)
     - [CRE8TIV MAXX](https://www.youtube.com/@CRE8TIVMAXX/videos)
     - [شرح تجهيز وتنصيب النظام المحاسبي ERPNext](https://www.youtube.com/playlist?list=PLGTyZSdHfiGmlsw_AiIfVxIQou8QD_ZWi)
     - [الدورة الشاملة لتعلّم ERPNext من الصفر للاحتراف | بالعربي](https://www.youtube.com/playlist?list=PLoC_bqbxBsFSHGY3cVHLaGX10uB3iEf4y)
