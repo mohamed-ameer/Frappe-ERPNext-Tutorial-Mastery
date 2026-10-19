@@ -63,6 +63,8 @@ During my journey to becoming a Frappe Developer, I explored a wide range of hel
 - **12. ERPNext Tips** [ERPNext By TechDevOps](https://www.youtube.com/playlist?list=PLiwst-u9kIxlQvLzCPEBHk2ALeYBP1UYT)
 - **13. ERPNext Implementation**  
 the following resources are in arabic for implementation and not development
+    - [Frappe Framework for Non-Developers: Day 1 | Hussain Nagaria](https://www.youtube.com/watch?v=G84Pk2E8a74)
+    - [Frappe Framework for Non-Developers: Day 2 | Hussain Nagaria](https://www.youtube.com/watch?v=zwbvjwo0YVE)
     - [Software for Accountancy](https://www.youtube.com/playlist?list=PLNGLpHQhvGruDfUp71n3_R6LGR47IzZN8)
     - [Mostafa samir](https://www.youtube.com/playlist?list=PLARujjXunDLH8Y3KjqyEnXsZAsOIyiROk)
     - [Financial Accounting as a Theory with Mr. Mostafa samir](https://www.youtube.com/@Ruqqi.consulting/playlists)
@@ -94,6 +96,8 @@ the following resources are in arabic for implementation and not development
     - [ERPNext With Yasser](https://www.youtube.com/@erpnextwithyasser)
     - [HRMS by BWH](https://www.youtube.com/playlist?list=PLQGFK8RiEPSLNgjFU11IbC12huIlrsP0Q)
     - [CRE8TIV MAXX](https://www.youtube.com/@CRE8TIVMAXX/videos)
+    - [ERPNext Implementation Best Practices - Full Course by Umair Sayed](https://www.youtube.com/playlist?list=PLB1QYwOyvNG0)
+    - [Complete ERPNext Course | Shot on v16 | Study Material for ERPNext Certification | Free, No Prior Experience Needed](https://www.youtube.com/playlist?list=PLP-kqCuYNXZY)
     - [شرح تجهيز وتنصيب النظام المحاسبي ERPNext](https://www.youtube.com/playlist?list=PLGTyZSdHfiGmlsw_AiIfVxIQou8QD_ZWi)
     - [الدورة الشاملة لتعلّم ERPNext من الصفر للاحتراف | بالعربي](https://www.youtube.com/playlist?list=PLoC_bqbxBsFSHGY3cVHLaGX10uB3iEf4y)
 
