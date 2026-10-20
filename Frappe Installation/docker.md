@@ -316,6 +316,41 @@ def create_job_id(job_id: str | None = None) -> str:
 
 </details>
 
+<details>
+  <summary><h4>❌ Fix VS Code Git Changes Not Showing in Frappe Docker</summary>
+
+**Problem**
+Git status works correctly in the container terminal, but the **VS Code Source Control panel is empty** and fails to show modified files.
+
+**Root Cause**
+Frappe apps are located deep inside the workspace path (`frappe-bench/apps/<app_name>`), making them **nested Git repositories**. VS Code's default repository scan depth is not deep enough to automatically discover them.
+
+**Solution**
+Open or create the settings file at:
+`development/vscode-example/settings.json`
+
+Add the following configuration to increase the scan depth:
+
+```json
+{
+  "git.enabled": true,
+  "git.autoRepositoryDetection": true,
+  "git.repositoryScanMaxDepth": 4
+}
+```
+
+**Apply Changes**
+
+After saving the file, apply the new settings in VS Code:
+
+Press Ctrl + Shift + P (or Cmd + Shift + P on macOS) and run Developer: Reload Window.
+
+Alternatively, run Dev Containers: Reopen Folder Locally and then Reopen in Container.
+
+Once reloaded, VS Code Source Control will successfully detect your app's Git repository.
+
+</details>
+
 ---
 
 #### For More Details => [Read the Official Documentaion](https://github.com/frappe/frappe_docker/blob/main/docs/development.md#bootstrap-containers-for-development)
