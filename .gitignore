@@ -1,0 +1,18 @@
+# Ignore documentation directories anywhere in the repository
+docs/
+
+# Ignore Python bytecode and cache folders everywhere
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore OS-generated files everywhere
+.DS_Store
+Thumbs.db
+
+# Optional: Environment and virtualenv files
+.env
+venv/
+.venv/
+env/
