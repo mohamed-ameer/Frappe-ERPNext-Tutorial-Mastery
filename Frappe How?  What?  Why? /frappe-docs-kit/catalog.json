@@ -1,0 +1,2398 @@
+{
+  "source": "https://docs.frappe.io/framework",
+  "llms": "https://docs.frappe.io/framework/llms.txt",
+  "page_count": 265,
+  "pages": [
+    {
+      "title": "Introduction",
+      "url": "https://docs.frappe.io/framework/user/en/introduction",
+      "md_url": "https://docs.frappe.io/framework/user/en/introduction.md",
+      "group": [
+        "Getting Started"
+      ],
+      "file": "Getting Started/Introduction.md"
+    },
+    {
+      "title": "Prerequisites",
+      "url": "https://docs.frappe.io/framework/user/en/prerequisites",
+      "md_url": "https://docs.frappe.io/framework/user/en/prerequisites.md",
+      "group": [
+        "Getting Started"
+      ],
+      "file": "Getting Started/Prerequisites.md"
+    },
+    {
+      "title": "Installation",
+      "url": "https://docs.frappe.io/framework/user/en/installation",
+      "md_url": "https://docs.frappe.io/framework/user/en/installation.md",
+      "group": [
+        "Getting Started"
+      ],
+      "file": "Getting Started/Installation.md"
+    },
+    {
+      "title": "Install and Setup Bench",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/install-and-setup-bench",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/install-and-setup-bench.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Install and Setup Bench.md"
+    },
+    {
+      "title": "Create an App",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/create-an-app",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/create-an-app.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Create an App.md"
+    },
+    {
+      "title": "Create a Site",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/create-a-site",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/create-a-site.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Create a Site.md"
+    },
+    {
+      "title": "Create a DocType",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/create-a-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/create-a-doctype.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Create a DocType.md"
+    },
+    {
+      "title": "DocType Features",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/doctype-features",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/doctype-features.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/DocType Features.md"
+    },
+    {
+      "title": "Controller Methods",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/controller-methods",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/controller-methods.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Controller Methods.md"
+    },
+    {
+      "title": "Types of DocType",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/types-of-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/types-of-doctype.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Types of DocType.md"
+    },
+    {
+      "title": "Form Scripts",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/form-scripts",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/form-scripts.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/Form Scripts.md"
+    },
+    {
+      "title": "What's Next?",
+      "url": "https://docs.frappe.io/framework/user/en/tutorial/whats-next",
+      "md_url": "https://docs.frappe.io/framework/user/en/tutorial/whats-next.md",
+      "group": [
+        "Tutorial"
+      ],
+      "file": "Tutorial/What's Next.md"
+    },
+    {
+      "title": "What is Frappe Framework?",
+      "url": "https://docs.frappe.io/framework/user/en/basics",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/What is Frappe Framework.md"
+    },
+    {
+      "title": "Why Frappe Framework?",
+      "url": "https://docs.frappe.io/framework/user/en/basics/why",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/why.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Why Frappe Framework.md"
+    },
+    {
+      "title": "Architecture",
+      "url": "https://docs.frappe.io/framework/user/en/basics/architecture",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/architecture.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Architecture.md"
+    },
+    {
+      "title": "Directory structure",
+      "url": "https://docs.frappe.io/framework/user/en/basics/directory-structure",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/directory-structure.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Directory structure.md"
+    },
+    {
+      "title": "Apps",
+      "url": "https://docs.frappe.io/framework/user/en/basics/apps",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/apps.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Apps.md"
+    },
+    {
+      "title": "Sites",
+      "url": "https://docs.frappe.io/framework/user/en/basics/sites",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/sites.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Sites.md"
+    },
+    {
+      "title": "Understanding DocTypes",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Understanding DocTypes.md"
+    },
+    {
+      "title": "Users and Permissions",
+      "url": "https://docs.frappe.io/framework/user/en/basics/users-and-permissions",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/users-and-permissions.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Users and Permissions.md"
+    },
+    {
+      "title": "Asset Bundling",
+      "url": "https://docs.frappe.io/framework/user/en/basics/asset-bundling",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/asset-bundling.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Asset Bundling.md"
+    },
+    {
+      "title": "Static Assets",
+      "url": "https://docs.frappe.io/framework/user/en/basics/static-assets",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/static-assets.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Static Assets.md"
+    },
+    {
+      "title": "Configuration",
+      "url": "https://docs.frappe.io/framework/user/en/basics/site_config",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/site_config.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Configuration.md"
+    },
+    {
+      "title": "Audit Trail",
+      "url": "https://docs.frappe.io/framework/user/en/audit-trail",
+      "md_url": "https://docs.frappe.io/framework/user/en/audit-trail.md",
+      "group": [
+        "Basics"
+      ],
+      "file": "Basics/Audit Trail.md"
+    },
+    {
+      "title": "Docstatus or Document Status",
+      "url": "https://docs.frappe.io/framework/doctypes/docstatus",
+      "md_url": "https://docs.frappe.io/framework/doctypes/docstatus.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Docstatus or Document Status.md"
+    },
+    {
+      "title": "Module",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/modules",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/modules.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Module.md"
+    },
+    {
+      "title": "Virtual DocField",
+      "url": "https://docs.frappe.io/framework/user/en/basics/virtual_docfield",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/virtual_docfield.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Virtual DocField.md"
+    },
+    {
+      "title": "Field Types",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/fieldtypes",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/fieldtypes.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Field Types.md"
+    },
+    {
+      "title": "Naming",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/naming",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/naming.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Naming.md"
+    },
+    {
+      "title": "DocField",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/docfield",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/docfield.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/DocField.md"
+    },
+    {
+      "title": "Controllers",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/controllers",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/controllers.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Controllers.md"
+    },
+    {
+      "title": "Form & View Settings",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/form_&_view_settings",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/form_&_view_settings.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Form & View Settings.md"
+    },
+    {
+      "title": "Child / Table DocType",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/child-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/child-doctype.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Child - Table DocType.md"
+    },
+    {
+      "title": "Single DocType",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/single-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/single-doctype.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Single DocType.md"
+    },
+    {
+      "title": "Virtual DocTypes",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/virtual-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/virtual-doctype.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Virtual DocTypes.md"
+    },
+    {
+      "title": "Actions and Links",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/actions-and-links",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/actions-and-links.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Actions and Links.md"
+    },
+    {
+      "title": "Customizing DocTypes",
+      "url": "https://docs.frappe.io/framework/user/en/basics/doctypes/customize",
+      "md_url": "https://docs.frappe.io/framework/user/en/basics/doctypes/customize.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Customizing DocTypes.md"
+    },
+    {
+      "title": "Data Masking",
+      "url": "https://docs.frappe.io/framework/data-masking",
+      "md_url": "https://docs.frappe.io/framework/data-masking.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Data Masking.md"
+    },
+    {
+      "title": "Permission Types",
+      "url": "https://docs.frappe.io/framework/permission-types",
+      "md_url": "https://docs.frappe.io/framework/permission-types.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Permission Types.md"
+    },
+    {
+      "title": "DocType Layout",
+      "url": "https://docs.frappe.io/framework/doctypes/doctype-layout",
+      "md_url": "https://docs.frappe.io/framework/doctypes/doctype-layout.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/DocType Layout.md"
+    },
+    {
+      "title": "Allow on Submit",
+      "url": "https://docs.frappe.io/framework/doctypes/allow-on-submit",
+      "md_url": "https://docs.frappe.io/framework/doctypes/allow-on-submit.md",
+      "group": [
+        "Doctypes"
+      ],
+      "file": "Doctypes/Allow on Submit.md"
+    },
+    {
+      "title": "Realtime (socket.io)",
+      "url": "https://docs.frappe.io/framework/user/en/api/realtime",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/realtime.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Realtime (socket.io).md"
+    },
+    {
+      "title": "Background Jobs",
+      "url": "https://docs.frappe.io/framework/user/en/api/background_jobs",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/background_jobs.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Background Jobs.md"
+    },
+    {
+      "title": "Document API",
+      "url": "https://docs.frappe.io/framework/user/en/api/document",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/document.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Document API.md"
+    },
+    {
+      "title": "Database API",
+      "url": "https://docs.frappe.io/framework/user/en/api/database",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/database.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Database API.md"
+    },
+    {
+      "title": "Jinja API",
+      "url": "https://docs.frappe.io/framework/user/en/api/jinja",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/jinja.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Jinja API.md"
+    },
+    {
+      "title": "Request Lifecycle",
+      "url": "https://docs.frappe.io/framework/user/en/python-api/routing-and-rendering",
+      "md_url": "https://docs.frappe.io/framework/user/en/python-api/routing-and-rendering.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Request Lifecycle.md"
+    },
+    {
+      "title": "Language Resolution",
+      "url": "https://docs.frappe.io/framework/user/en/python-api/language",
+      "md_url": "https://docs.frappe.io/framework/user/en/python-api/language.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Language Resolution.md"
+    },
+    {
+      "title": "Utility Functions",
+      "url": "https://docs.frappe.io/framework/user/en/api/utils",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/utils.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Utility Functions.md"
+    },
+    {
+      "title": "Responses",
+      "url": "https://docs.frappe.io/framework/user/en/python-api/response",
+      "md_url": "https://docs.frappe.io/framework/user/en/python-api/response.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Responses.md"
+    },
+    {
+      "title": "Search",
+      "url": "https://docs.frappe.io/framework/user/en/python-api/search",
+      "md_url": "https://docs.frappe.io/framework/user/en/python-api/search.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Search.md"
+    },
+    {
+      "title": "Hooks",
+      "url": "https://docs.frappe.io/framework/user/en/python-api/hooks",
+      "md_url": "https://docs.frappe.io/framework/user/en/python-api/hooks.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Hooks.md"
+    },
+    {
+      "title": "REST API",
+      "url": "https://docs.frappe.io/framework/user/en/api/rest",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/rest.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/REST API.md"
+    },
+    {
+      "title": "FullTextSearch API",
+      "url": "https://docs.frappe.io/framework/user/en/api/full-text-search",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/full-text-search.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/FullTextSearch API.md"
+    },
+    {
+      "title": "Dialog API",
+      "url": "https://docs.frappe.io/framework/user/en/api/py-dialog",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/py-dialog.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Dialog API.md"
+    },
+    {
+      "title": "Query Builder",
+      "url": "https://docs.frappe.io/framework/user/en/api/query-builder",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/query-builder.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/Query Builder.md"
+    },
+    {
+      "title": "frappe.qb.get_query",
+      "url": "https://docs.frappe.io/framework/get_query",
+      "md_url": "https://docs.frappe.io/framework/get_query.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/frappe.qb.get_query.md"
+    },
+    {
+      "title": "SQLite Search",
+      "url": "https://docs.frappe.io/framework/sqlite-search",
+      "md_url": "https://docs.frappe.io/framework/sqlite-search.md",
+      "group": [
+        "Python API"
+      ],
+      "file": "Python API/SQLite Search.md"
+    },
+    {
+      "title": "Remove a link you do not use from a workspace or the sidebar",
+      "url": "https://docs.frappe.io/framework/desk-workspace/remove-a-link-you-do-not-use-from-a-workspace-or-the-sidebar",
+      "md_url": "https://docs.frappe.io/framework/desk-workspace/remove-a-link-you-do-not-use-from-a-workspace-or-the-sidebar.md",
+      "group": [],
+      "file": "Remove a link you do not use from a workspace or the sidebar.md"
+    },
+    {
+      "title": "Developer API",
+      "url": "https://docs.frappe.io/framework/user/en/api",
+      "md_url": "https://docs.frappe.io/framework/user/en/api.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Developer API.md"
+    },
+    {
+      "title": "Form Scripts",
+      "url": "https://docs.frappe.io/framework/user/en/api/form",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/form.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Form Scripts.md"
+    },
+    {
+      "title": "Controls",
+      "url": "https://docs.frappe.io/framework/user/en/api/controls",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/controls.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Controls.md"
+    },
+    {
+      "title": "List",
+      "url": "https://docs.frappe.io/framework/user/en/api/list",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/list.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/List.md"
+    },
+    {
+      "title": "Page API",
+      "url": "https://docs.frappe.io/framework/user/en/api/page",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/page.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Page API.md"
+    },
+    {
+      "title": "Tree",
+      "url": "https://docs.frappe.io/framework/user/en/api/tree",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/tree.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Tree.md"
+    },
+    {
+      "title": "Common Utilities API",
+      "url": "https://docs.frappe.io/framework/user/en/api/js-utils",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/js-utils.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Common Utilities API.md"
+    },
+    {
+      "title": "Dialog API",
+      "url": "https://docs.frappe.io/framework/user/en/api/dialog",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/dialog.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Dialog API.md"
+    },
+    {
+      "title": "Chart API",
+      "url": "https://docs.frappe.io/framework/user/en/api/chart",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/chart.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Chart API.md"
+    },
+    {
+      "title": "Scanner API",
+      "url": "https://docs.frappe.io/framework/user/en/api/scanner",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/scanner.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Scanner API.md"
+    },
+    {
+      "title": "Server Calls (AJAX)",
+      "url": "https://docs.frappe.io/framework/user/en/api/server-calls",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/server-calls.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Server Calls (AJAX).md"
+    },
+    {
+      "title": "Logging",
+      "url": "https://docs.frappe.io/framework/user/en/api/logging",
+      "md_url": "https://docs.frappe.io/framework/user/en/api/logging.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Logging.md"
+    },
+    {
+      "title": "Form Tours",
+      "url": "https://docs.frappe.io/framework/user/en/form-tours",
+      "md_url": "https://docs.frappe.io/framework/user/en/form-tours.md",
+      "group": [
+        "JS API"
+      ],
+      "file": "JS API/Form Tours.md"
+    },
+    {
+      "title": "Desk",
+      "url": "https://docs.frappe.io/framework/user/en/desk",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk.md",
+      "group": [
+        "Desk"
+      ],
+      "file": "Desk/Desk.md"
+    },
+    {
+      "title": "Introduction",
+      "url": "https://docs.frappe.io/framework/user/en/desk/reports",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/reports.md",
+      "group": [
+        "Desk"
+      ],
+      "file": "Desk/Introduction.md"
+    },
+    {
+      "title": "Printing",
+      "url": "https://docs.frappe.io/framework/user/en/desk/printing",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/printing.md",
+      "group": [
+        "Desk"
+      ],
+      "file": "Desk/Printing.md"
+    },
+    {
+      "title": "Attachments",
+      "url": "https://docs.frappe.io/framework/user/en/desk/attachments",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/attachments.md",
+      "group": [
+        "Desk"
+      ],
+      "file": "Desk/Attachments.md"
+    },
+    {
+      "title": "Scripting",
+      "url": "https://docs.frappe.io/framework/user/en/desk/scripting",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/scripting.md",
+      "group": [
+        "Desk"
+      ],
+      "file": "Desk/Scripting.md"
+    },
+    {
+      "title": "Guides",
+      "url": "https://docs.frappe.io/framework/user/en/guides",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides.md",
+      "group": [
+        "Guides"
+      ],
+      "file": "Guides/Guides.md"
+    },
+    {
+      "title": "Printing",
+      "url": "https://docs.frappe.io/framework/user/en/printing",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Printing.md"
+    },
+    {
+      "title": "Printing a document",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-page",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-page.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Printing a document.md"
+    },
+    {
+      "title": "Print Format Editor",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Print Format Editor.md"
+    },
+    {
+      "title": "Sections, columns and the page",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/layout",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/layout.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Sections, columns and the page.md"
+    },
+    {
+      "title": "Fields",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/fields",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/fields.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Fields.md"
+    },
+    {
+      "title": "Tables",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/tables",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/tables.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Tables.md"
+    },
+    {
+      "title": "Blocks",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/blocks",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/blocks.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Blocks.md"
+    },
+    {
+      "title": "Show or hide content",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/conditions",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/conditions.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Show or hide content.md"
+    },
+    {
+      "title": "Page settings and PDF renderer",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/page-settings",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/page-settings.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Page settings and PDF renderer.md"
+    },
+    {
+      "title": "Versions, snippets and shortcuts",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/versions-snippets-shortcuts",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-format-editor/versions-snippets-shortcuts.md",
+      "group": [
+        "Printing",
+        "Print Format Editor"
+      ],
+      "file": "Printing/Print Format Editor/Versions, snippets and shortcuts.md"
+    },
+    {
+      "title": "Print Styles",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-styles",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-styles.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Print Styles.md"
+    },
+    {
+      "title": "Print Settings",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-settings",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-settings.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Print Settings.md"
+    },
+    {
+      "title": "Letter Head",
+      "url": "https://docs.frappe.io/framework/user/en/printing/letter-head",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/letter-head.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Letter Head.md"
+    },
+    {
+      "title": "Print Heading",
+      "url": "https://docs.frappe.io/framework/user/en/printing/print-heading",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/print-heading.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Print Heading.md"
+    },
+    {
+      "title": "HTML print formats",
+      "url": "https://docs.frappe.io/framework/user/en/printing/html-print-formats",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/html-print-formats.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/HTML print formats.md"
+    },
+    {
+      "title": "PDF generation",
+      "url": "https://docs.frappe.io/framework/user/en/printing/pdf-generation",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/pdf-generation.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/PDF generation.md"
+    },
+    {
+      "title": "Raw and network printing",
+      "url": "https://docs.frappe.io/framework/user/en/printing/raw-and-network-printing",
+      "md_url": "https://docs.frappe.io/framework/user/en/printing/raw-and-network-printing.md",
+      "group": [
+        "Printing"
+      ],
+      "file": "Printing/Raw and network printing.md"
+    },
+    {
+      "title": "Frappe Apps",
+      "url": "https://docs.frappe.io/framework/user/en/guides/basics/apps",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/basics/apps.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Frappe Apps.md"
+    },
+    {
+      "title": "Frappe Ajax Call",
+      "url": "https://docs.frappe.io/framework/user/en/guides/basics/frappe_ajax_call",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/basics/frappe_ajax_call.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Frappe Ajax Call.md"
+    },
+    {
+      "title": "How to Enable Backup Encryption",
+      "url": "https://docs.frappe.io/framework/user/en/guides/basics/how-to-enable-backup-encryption",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/basics/how-to-enable-backup-encryption.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/How to Enable Backup Encryption.md"
+    },
+    {
+      "title": "Sites",
+      "url": "https://docs.frappe.io/framework/user/en/guides/basics/sites",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/basics/sites.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Sites.md"
+    },
+    {
+      "title": "Translations in Your Custom Frappe App",
+      "url": "https://docs.frappe.io/framework/user/en/guides/basics/translations",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/basics/translations.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Translations in Your Custom Frappe App.md"
+    },
+    {
+      "title": "Email Groups",
+      "url": "https://docs.frappe.io/framework/user/en/email-groups",
+      "md_url": "https://docs.frappe.io/framework/user/en/email-groups.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Email Groups.md"
+    },
+    {
+      "title": "Security FAQs",
+      "url": "https://docs.frappe.io/framework/user/en/security-faqs",
+      "md_url": "https://docs.frappe.io/framework/user/en/security-faqs.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Security FAQs.md"
+    },
+    {
+      "title": "Assignments and Todos",
+      "url": "https://docs.frappe.io/framework/assignments-and-todos",
+      "md_url": "https://docs.frappe.io/framework/assignments-and-todos.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Assignments and Todos.md"
+    },
+    {
+      "title": "Notifications",
+      "url": "https://docs.frappe.io/framework/notifications",
+      "md_url": "https://docs.frappe.io/framework/notifications.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Notifications.md"
+    },
+    {
+      "title": "Keyboard Shortcuts",
+      "url": "https://docs.frappe.io/framework/keyboard-shortcuts",
+      "md_url": "https://docs.frappe.io/framework/keyboard-shortcuts.md",
+      "group": [
+        "Guides - Basics"
+      ],
+      "file": "Guides - Basics/Keyboard Shortcuts.md"
+    },
+    {
+      "title": "Custom Action in Link Field",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/custom_action_link_field",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/custom_action_link_field.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Custom Action in Link Field.md"
+    },
+    {
+      "title": "Executing Code On Doctype Events",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/executing-code-on-doctype-events",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/executing-code-on-doctype-events.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Executing Code On Doctype Events.md"
+    },
+    {
+      "title": "How To Improve A Standard Control",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-to-improve-a-standard-control",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-to-improve-a-standard-control.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/How To Improve A Standard Control.md"
+    },
+    {
+      "title": "Running Background Jobs",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/running-background-jobs",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/running-background-jobs.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Running Background Jobs.md"
+    },
+    {
+      "title": "Adding Custom Button To Form",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-custom-button-to-form",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-custom-button-to-form.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Adding Custom Button To Form.md"
+    },
+    {
+      "title": "Trigger Event On Deletion Of Grid Row",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/trigger-event-on-deletion-of-grid-row",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/trigger-event-on-deletion-of-grid-row.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Trigger Event On Deletion Of Grid Row.md"
+    },
+    {
+      "title": "Dialogs Types",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/dialogs-types",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/dialogs-types.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Dialogs Types.md"
+    },
+    {
+      "title": "Overriding Link Query By Custom Script",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/overriding-link-query-by-custom-script",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/overriding-link-query-by-custom-script.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Overriding Link Query By Custom Script.md"
+    },
+    {
+      "title": "Set up a new Connected App",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/connected-app",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/connected-app.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Set up a new Connected App.md"
+    },
+    {
+      "title": "Custom Module Icon",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/custom-module-icon",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/custom-module-icon.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Custom Module Icon.md"
+    },
+    {
+      "title": "Insert A Document Via Api",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/insert-a-document-via-api",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/insert-a-document-via-api.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Insert A Document Via Api.md"
+    },
+    {
+      "title": "How To Create Custom Fields During App Installation",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-to-create-custom-fields-during-app-installation",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-to-create-custom-fields-during-app-installation.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/How To Create Custom Fields During App Installation.md"
+    },
+    {
+      "title": "Using Html Templates In Javascript",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/using-html-templates-in-javascript",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/using-html-templates-in-javascript.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Using Html Templates In Javascript.md"
+    },
+    {
+      "title": "How to Enable Developer Mode in Frappe",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-enable-developer-mode-in-frappe",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/how-enable-developer-mode-in-frappe.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/How to Enable Developer Mode in Frappe.md"
+    },
+    {
+      "title": "Fetch a Field Value from a Document into a Transaction",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/fetch-custom-field-value-from-master-to-all-related-transactions",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/fetch-custom-field-value-from-master-to-all-related-transactions.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Fetch a Field Value from a Document into a Transaction.md"
+    },
+    {
+      "title": "Adding Module Icons On Desktop",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-module-icons-on-desktop",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-module-icons-on-desktop.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Adding Module Icons On Desktop.md"
+    },
+    {
+      "title": "Single Type Doctype",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/single-type-doctype",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/single-type-doctype.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Single Type Doctype.md"
+    },
+    {
+      "title": "Prerequisites",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/generic-oauth-client",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/generic-oauth-client.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Prerequisites.md"
+    },
+    {
+      "title": "Adding Social Login Provider",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-social-login-provider",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/adding-social-login-provider.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Adding Social Login Provider.md"
+    },
+    {
+      "title": "Exporting Customizations to your App",
+      "url": "https://docs.frappe.io/framework/user/en/guides/app-development/exporting-customizations",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/app-development/exporting-customizations.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Exporting Customizations to your App.md"
+    },
+    {
+      "title": "Caching",
+      "url": "https://docs.frappe.io/framework/user/en/guides/caching",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/caching.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Caching.md"
+    },
+    {
+      "title": "Customize the Geolocation / Map field",
+      "url": "https://docs.frappe.io/framework/user/en/customize-geolocation-map",
+      "md_url": "https://docs.frappe.io/framework/user/en/customize-geolocation-map.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Customize the Geolocation - Map field.md"
+    },
+    {
+      "title": "Updating a Field from a Linked Doctype",
+      "url": "https://docs.frappe.io/framework/guides-app-development/updating-a-field-from-a-linked-doctype",
+      "md_url": "https://docs.frappe.io/framework/guides-app-development/updating-a-field-from-a-linked-doctype.md",
+      "group": [
+        "Guides - App Development"
+      ],
+      "file": "Guides - App Development/Updating a Field from a Linked Doctype.md"
+    },
+    {
+      "title": "Packages",
+      "url": "https://docs.frappe.io/framework/user/en/guides/deployment/packages",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/deployment/packages.md",
+      "group": [
+        "Guides - Deployment"
+      ],
+      "file": "Guides - Deployment/Packages.md"
+    },
+    {
+      "title": "Email Notifications For Failed Background Jobs",
+      "url": "https://docs.frappe.io/framework/user/en/guides/deployment/email-notifications-for-failed-background-jobs",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/deployment/email-notifications-for-failed-background-jobs.md",
+      "group": [
+        "Guides - Deployment"
+      ],
+      "file": "Guides - Deployment/Email Notifications For Failed Background Jobs.md"
+    },
+    {
+      "title": "How To Migrate Doctype Changes To Production",
+      "url": "https://docs.frappe.io/framework/user/en/guides/deployment/how-to-migrate-doctype-changes-to-production",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/deployment/how-to-migrate-doctype-changes-to-production.md",
+      "group": [
+        "Guides - Deployment"
+      ],
+      "file": "Guides - Deployment/How To Migrate Doctype Changes To Production.md"
+    },
+    {
+      "title": "Migrations",
+      "url": "https://docs.frappe.io/framework/user/en/guides/deployment/migrations",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/deployment/migrations.md",
+      "group": [
+        "Guides - Deployment"
+      ],
+      "file": "Guides - Deployment/Migrations.md"
+    },
+    {
+      "title": "How To Enable Social Logins",
+      "url": "https://docs.frappe.io/framework/user/en/guides/deployment/how-to-enable-social-logins",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/deployment/how-to-enable-social-logins.md",
+      "group": [
+        "Guides - Deployment"
+      ],
+      "file": "Guides - Deployment/How To Enable Social Logins.md"
+    },
+    {
+      "title": "Getting Information From Another Document In Print Format",
+      "url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/getting-information-from-another-document-in-print-format",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/getting-information-from-another-document-in-print-format.md",
+      "group": [
+        "Guides- Reports and Printing"
+      ],
+      "file": "Guides- Reports and Printing/Getting Information From Another Document In Print Format.md"
+    },
+    {
+      "title": "Where Do I Find Standard Print Formats",
+      "url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/where-do-i-find-standard-print-formats",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/where-do-i-find-standard-print-formats.md",
+      "group": [
+        "Guides- Reports and Printing"
+      ],
+      "file": "Guides- Reports and Printing/Where Do I Find Standard Print Formats.md"
+    },
+    {
+      "title": "How To Make Query Report",
+      "url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/how-to-make-query-report",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/how-to-make-query-report.md",
+      "group": [
+        "Guides- Reports and Printing"
+      ],
+      "file": "Guides- Reports and Printing/How To Make Query Report.md"
+    },
+    {
+      "title": "Report Print Formats",
+      "url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/print-format-for-reports",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/print-format-for-reports.md",
+      "group": [
+        "Guides- Reports and Printing"
+      ],
+      "file": "Guides- Reports and Printing/Report Print Formats.md"
+    },
+    {
+      "title": "Script Report",
+      "url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/how-to-make-script-reports",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/reports-and-printing/how-to-make-script-reports.md",
+      "group": [
+        "Guides- Reports and Printing"
+      ],
+      "file": "Guides- Reports and Printing/Script Report.md"
+    },
+    {
+      "title": "Pages",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Pages.md"
+    },
+    {
+      "title": "Ordering",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/ordering",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/ordering.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Ordering.md"
+    },
+    {
+      "title": "Adding Pages",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/adding-pages",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/adding-pages.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Adding Pages.md"
+    },
+    {
+      "title": "Table of Contents",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/table-of-contents",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/table-of-contents.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Table of Contents.md"
+    },
+    {
+      "title": "Dynamic Pages",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/context",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/context.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Dynamic Pages.md"
+    },
+    {
+      "title": "Portal Roles",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/portal-roles",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/portal-roles.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Portal Roles.md"
+    },
+    {
+      "title": "Customizing Web Forms",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/web-forms",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/web-forms.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Customizing Web Forms.md"
+    },
+    {
+      "title": "Generators",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/generators",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/generators.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Generators.md"
+    },
+    {
+      "title": "Redirects",
+      "url": "https://docs.frappe.io/framework/user/en/guides/portal-development/redirects",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/portal-development/redirects.md",
+      "group": [
+        "Guides - Portal Development"
+      ],
+      "file": "Guides - Portal Development/Redirects.md"
+    },
+    {
+      "title": "Bulk Data Import Guide",
+      "url": "https://docs.frappe.io/framework/user/en/guides/data/import-large-csv-file",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/data/import-large-csv-file.md",
+      "group": [
+        "Guides - Data"
+      ],
+      "file": "Guides - Data/Bulk Data Import Guide.md"
+    },
+    {
+      "title": "Google GSuite",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/google_gsuite",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/google_gsuite.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Google GSuite.md"
+    },
+    {
+      "title": "Token based authentication",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_setup_token_based_auth",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_setup_token_based_auth.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Token based authentication.md"
+    },
+    {
+      "title": "OpenID Connect and Frappe social login",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/OpenID Connect and Frappe social login.md"
+    },
+    {
+      "title": "Webhooks",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/webhooks",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/webhooks.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Webhooks.md"
+    },
+    {
+      "title": "Social Login Key",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/social_login_key",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/social_login_key.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Social Login Key.md"
+    },
+    {
+      "title": "Google Calendar Integration",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/google_calendar",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/google_calendar.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Google Calendar Integration.md"
+    },
+    {
+      "title": "How to setup OAuth 2?",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_set_up_oauth",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_set_up_oauth.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/How to setup OAuth 2.md"
+    },
+    {
+      "title": "Token based authentication",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_set_up_token_based_auth",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/how_to_set_up_token_based_auth.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Token based authentication (how_to_set_up_token_based_auth).md"
+    },
+    {
+      "title": "Using Frappe as OAuth Service",
+      "url": "https://docs.frappe.io/framework/user/en/using_frappe_as_oauth_service",
+      "md_url": "https://docs.frappe.io/framework/user/en/using_frappe_as_oauth_service.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Using Frappe as OAuth Service.md"
+    },
+    {
+      "title": "Sentry Integration",
+      "url": "https://docs.frappe.io/framework/guides-integration/sentry-integration",
+      "md_url": "https://docs.frappe.io/framework/guides-integration/sentry-integration.md",
+      "group": [
+        "Guides- Integration"
+      ],
+      "file": "Guides- Integration/Sentry Integration.md"
+    },
+    {
+      "title": "Introduction",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/Introduction.md"
+    },
+    {
+      "title": "Simple Authentication",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/simple_authentication",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/simple_authentication.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/Simple Authentication.md"
+    },
+    {
+      "title": "Token Based Authentication",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/token_based_authentication",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/token_based_authentication.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/Token Based Authentication.md"
+    },
+    {
+      "title": "OAuth 2",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/oauth-2",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/oauth-2.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/OAuth 2.md"
+    },
+    {
+      "title": "Listing documents",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/listing_documents",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/listing_documents.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/Listing documents.md"
+    },
+    {
+      "title": "Manipulating DocTypes",
+      "url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/manipulating_documents",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/integration/rest_api/manipulating_documents.md",
+      "group": [
+        "Integration - REST API"
+      ],
+      "file": "Integration - REST API/Manipulating DocTypes.md"
+    },
+    {
+      "title": "Setup read operations from slave/secondary mysql system",
+      "url": "https://docs.frappe.io/framework/user/en/guides/database-settings/setup-read-from-secondary-db",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/database-settings/setup-read-from-secondary-db.md",
+      "group": [
+        "Guides - Database Settings"
+      ],
+      "file": "Guides - Database Settings/Setup read operations from slave-secondary mysql system.md"
+    },
+    {
+      "title": "Postgres Database Setup",
+      "url": "https://docs.frappe.io/framework/user/en/guides/database-settings/postgres-database-setup",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/database-settings/postgres-database-setup.md",
+      "group": [
+        "Guides - Database Settings"
+      ],
+      "file": "Guides - Database Settings/Postgres Database Setup.md"
+    },
+    {
+      "title": "Automated Testing",
+      "url": "https://docs.frappe.io/framework/user/en/guides/automated-testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/automated-testing.md",
+      "group": [
+        "Guides - Automated Testing"
+      ],
+      "file": "Guides - Automated Testing/Automated Testing.md"
+    },
+    {
+      "title": "Unit Testing",
+      "url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/unit-testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/unit-testing.md",
+      "group": [
+        "Guides - Automated Testing"
+      ],
+      "file": "Guides - Automated Testing/Unit Testing.md"
+    },
+    {
+      "title": "UI Integration Testing",
+      "url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/integration-testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/integration-testing.md",
+      "group": [
+        "Guides - Automated Testing"
+      ],
+      "file": "Guides - Automated Testing/UI Integration Testing.md"
+    },
+    {
+      "title": "UI Testing with Frappe API",
+      "url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/qunit-testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/automated-testing/qunit-testing.md",
+      "group": [
+        "Guides - Automated Testing"
+      ],
+      "file": "Guides - Automated Testing/UI Testing with Frappe API.md"
+    },
+    {
+      "title": "Client Script",
+      "url": "https://docs.frappe.io/framework/user/en/desk/scripting/client-script",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/scripting/client-script.md",
+      "group": [
+        "Desk - Scripting"
+      ],
+      "file": "Desk - Scripting/Client Script.md"
+    },
+    {
+      "title": "System Console",
+      "url": "https://docs.frappe.io/framework/user/en/desk/scripting/system-console",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/scripting/system-console.md",
+      "group": [
+        "Desk - Scripting"
+      ],
+      "file": "Desk - Scripting/System Console.md"
+    },
+    {
+      "title": "Server Script",
+      "url": "https://docs.frappe.io/framework/user/en/desk/scripting/server-script",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/scripting/server-script.md",
+      "group": [
+        "Desk - Scripting"
+      ],
+      "file": "Desk - Scripting/Server Script.md"
+    },
+    {
+      "title": "Script API",
+      "url": "https://docs.frappe.io/framework/user/en/desk/scripting/script-api",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/scripting/script-api.md",
+      "group": [
+        "Desk - Scripting"
+      ],
+      "file": "Desk - Scripting/Script API.md"
+    },
+    {
+      "title": "Automations",
+      "url": "https://docs.frappe.io/framework/automations",
+      "md_url": "https://docs.frappe.io/framework/automations.md",
+      "group": [
+        "Desk - Automations"
+      ],
+      "file": "Desk - Automations/Automations.md"
+    },
+    {
+      "title": "Triggers and Conditions",
+      "url": "https://docs.frappe.io/framework/automations/triggers-and-conditions",
+      "md_url": "https://docs.frappe.io/framework/automations/triggers-and-conditions.md",
+      "group": [
+        "Desk - Automations"
+      ],
+      "file": "Desk - Automations/Triggers and Conditions.md"
+    },
+    {
+      "title": "Steps and Actions",
+      "url": "https://docs.frappe.io/framework/automations/steps-and-actions",
+      "md_url": "https://docs.frappe.io/framework/automations/steps-and-actions.md",
+      "group": [
+        "Desk - Automations"
+      ],
+      "file": "Desk - Automations/Steps and Actions.md"
+    },
+    {
+      "title": "Extending Automations",
+      "url": "https://docs.frappe.io/framework/automations/extending-automations",
+      "md_url": "https://docs.frappe.io/framework/automations/extending-automations.md",
+      "group": [
+        "Desk - Automations"
+      ],
+      "file": "Desk - Automations/Extending Automations.md"
+    },
+    {
+      "title": "Desk Customization",
+      "url": "https://docs.frappe.io/framework/user/en/guides/desk",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/desk.md",
+      "group": [
+        "Guides - Desk"
+      ],
+      "file": "Guides - Desk/Desk Customization.md"
+    },
+    {
+      "title": "Formatter For Link Fields",
+      "url": "https://docs.frappe.io/framework/user/en/guides/desk/formatter_for_link_fields",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/desk/formatter_for_link_fields.md",
+      "group": [
+        "Guides - Desk"
+      ],
+      "file": "Guides - Desk/Formatter For Link Fields.md"
+    },
+    {
+      "title": "Making Charts",
+      "url": "https://docs.frappe.io/framework/user/en/guides/desk/making_charts",
+      "md_url": "https://docs.frappe.io/framework/user/en/guides/desk/making_charts.md",
+      "group": [
+        "Guides - Desk"
+      ],
+      "file": "Guides - Desk/Making Charts.md"
+    },
+    {
+      "title": "Using Vue in a Desk Page",
+      "url": "https://docs.frappe.io/framework/using-vue-inside-a-desk-page",
+      "md_url": "https://docs.frappe.io/framework/using-vue-inside-a-desk-page.md",
+      "group": [
+        "Guides - Desk"
+      ],
+      "file": "Guides - Desk/Using Vue in a Desk Page.md"
+    },
+    {
+      "title": "Introduction",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Introduction.md"
+    },
+    {
+      "title": "Desktop",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation/desktop",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation/desktop.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Desktop.md"
+    },
+    {
+      "title": "Sidebar",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation/sidebar",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation/sidebar.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Sidebar.md"
+    },
+    {
+      "title": "Dock",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation/dock",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation/dock.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Dock.md"
+    },
+    {
+      "title": "Workspace",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation/workspace",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation/workspace.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Workspace.md"
+    },
+    {
+      "title": "Migrating to the new navigation",
+      "url": "https://docs.frappe.io/framework/user/en/desk/navigation/migrating-to-the-new-navigation",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/navigation/migrating-to-the-new-navigation.md",
+      "group": [
+        "Desk - Navigation"
+      ],
+      "file": "Desk - Navigation/Migrating to the new navigation.md"
+    },
+    {
+      "title": "Script Report",
+      "url": "https://docs.frappe.io/framework/user/en/desk/reports/script-report",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/reports/script-report.md",
+      "group": [
+        "Desk - Reports"
+      ],
+      "file": "Desk - Reports/Script Report.md"
+    },
+    {
+      "title": "Query Report",
+      "url": "https://docs.frappe.io/framework/user/en/desk/reports/query-report",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/reports/query-report.md",
+      "group": [
+        "Desk - Reports"
+      ],
+      "file": "Desk - Reports/Query Report.md"
+    },
+    {
+      "title": "Report Builder",
+      "url": "https://docs.frappe.io/framework/user/en/desk/reports/report-builder",
+      "md_url": "https://docs.frappe.io/framework/user/en/desk/reports/report-builder.md",
+      "group": [
+        "Desk - Reports"
+      ],
+      "file": "Desk - Reports/Report Builder.md"
+    },
+    {
+      "title": "Excel (XLSX) Export Styling",
+      "url": "https://docs.frappe.io/framework/desk-reports/excel-xlsx-export-styling",
+      "md_url": "https://docs.frappe.io/framework/desk-reports/excel-xlsx-export-styling.md",
+      "group": [
+        "Desk - Reports"
+      ],
+      "file": "Desk - Reports/Excel (XLSX) Export Styling.md"
+    },
+    {
+      "title": "Discussions",
+      "url": "https://docs.frappe.io/framework/user/en/discussions",
+      "md_url": "https://docs.frappe.io/framework/user/en/discussions.md",
+      "group": [
+        "Portal"
+      ],
+      "file": "Portal/Discussions.md"
+    },
+    {
+      "title": "Portal Pages",
+      "url": "https://docs.frappe.io/framework/user/en/portal-pages",
+      "md_url": "https://docs.frappe.io/framework/user/en/portal-pages.md",
+      "group": [
+        "Portal"
+      ],
+      "file": "Portal/Portal Pages.md"
+    },
+    {
+      "title": "Blog Post",
+      "url": "https://docs.frappe.io/framework/user/en/blog-post",
+      "md_url": "https://docs.frappe.io/framework/user/en/blog-post.md",
+      "group": [
+        "Portal"
+      ],
+      "file": "Portal/Blog Post.md"
+    },
+    {
+      "title": "Apps Page",
+      "url": "https://docs.frappe.io/framework/user/en/apps-page",
+      "md_url": "https://docs.frappe.io/framework/user/en/apps-page.md",
+      "group": [
+        "Portal"
+      ],
+      "file": "Portal/Apps Page.md"
+    },
+    {
+      "title": "Web Form",
+      "url": "https://docs.frappe.io/framework/user/en/web-form",
+      "md_url": "https://docs.frappe.io/framework/user/en/web-form.md",
+      "group": [
+        "Portal - Web Form"
+      ],
+      "file": "Portal - Web Form/Web Form.md"
+    },
+    {
+      "title": "Settings",
+      "url": "https://docs.frappe.io/framework/user/en/web-form/settings",
+      "md_url": "https://docs.frappe.io/framework/user/en/web-form/settings.md",
+      "group": [
+        "Portal - Web Form"
+      ],
+      "file": "Portal - Web Form/Settings.md"
+    },
+    {
+      "title": "Customization",
+      "url": "https://docs.frappe.io/framework/user/en/web-form/customization",
+      "md_url": "https://docs.frappe.io/framework/user/en/web-form/customization.md",
+      "group": [
+        "Portal - Web Form"
+      ],
+      "file": "Portal - Web Form/Customization.md"
+    },
+    {
+      "title": "Web Form Request",
+      "url": "https://docs.frappe.io/framework/portal-web-form/web-form-request",
+      "md_url": "https://docs.frappe.io/framework/portal-web-form/web-form-request.md",
+      "group": [
+        "Portal - Web Form"
+      ],
+      "file": "Portal - Web Form/Web Form Request.md"
+    },
+    {
+      "title": "RazorPay",
+      "url": "https://docs.frappe.io/framework/user/en/integration/razorpay",
+      "md_url": "https://docs.frappe.io/framework/user/en/integration/razorpay.md",
+      "group": [
+        "Integration"
+      ],
+      "file": "Integration/RazorPay.md"
+    },
+    {
+      "title": "Google Drive",
+      "url": "https://docs.frappe.io/framework/user/en/integration/google_drive",
+      "md_url": "https://docs.frappe.io/framework/user/en/integration/google_drive.md",
+      "group": [
+        "Integration"
+      ],
+      "file": "Integration/Google Drive.md"
+    },
+    {
+      "title": "Setting up LDAP",
+      "url": "https://docs.frappe.io/framework/user/en/integration/ldap-integration",
+      "md_url": "https://docs.frappe.io/framework/user/en/integration/ldap-integration.md",
+      "group": [
+        "Integration"
+      ],
+      "file": "Integration/Setting up LDAP.md"
+    },
+    {
+      "title": "Microsoft Office365 Email OAuth",
+      "url": "https://docs.frappe.io/framework/user/en/microsoft-email-oauth",
+      "md_url": "https://docs.frappe.io/framework/user/en/microsoft-email-oauth.md",
+      "group": [
+        "Integration"
+      ],
+      "file": "Integration/Microsoft Office365 Email OAuth.md"
+    },
+    {
+      "title": "OAuth2",
+      "url": "https://docs.frappe.io/framework/oauth2",
+      "md_url": "https://docs.frappe.io/framework/oauth2.md",
+      "group": [
+        "Integration"
+      ],
+      "file": "Integration/OAuth2.md"
+    },
+    {
+      "title": "Bench",
+      "url": "https://docs.frappe.io/framework/user/en/bench",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench.md",
+      "group": [
+        "Bench"
+      ],
+      "file": "Bench/Bench.md"
+    },
+    {
+      "title": "Bench Commands",
+      "url": "https://docs.frappe.io/framework/user/en/bench/bench-commands",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/bench-commands.md",
+      "group": [
+        "Bench"
+      ],
+      "file": "Bench/Bench Commands.md"
+    },
+    {
+      "title": "Frappe Commands",
+      "url": "https://docs.frappe.io/framework/user/en/bench/frappe-commands",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/frappe-commands.md",
+      "group": [
+        "Bench"
+      ],
+      "file": "Bench/Frappe Commands.md"
+    },
+    {
+      "title": "Bench - Extending the CLI",
+      "url": "https://docs.frappe.io/framework/user/en/bench/extending-the-cli",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/extending-the-cli.md",
+      "group": [
+        "Bench"
+      ],
+      "file": "Bench/Bench - Extending the CLI.md"
+    },
+    {
+      "title": "Commands Reference",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/Commands Reference.md"
+    },
+    {
+      "title": "bench new-site",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/new-site",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/new-site.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench new-site.md"
+    },
+    {
+      "title": "bench drop-site",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/drop-site",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/drop-site.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench drop-site.md"
+    },
+    {
+      "title": "bench migrate",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/migrate",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/migrate.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench migrate.md"
+    },
+    {
+      "title": "bench backup",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/backup",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/backup.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench backup.md"
+    },
+    {
+      "title": "bench reinstall",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/reinstall",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/reinstall.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench reinstall.md"
+    },
+    {
+      "title": "bench list-apps",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/list-apps",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/list-apps.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench list-apps.md"
+    },
+    {
+      "title": "bench uninstall-app",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/uninstall-app",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/uninstall-app.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench uninstall-app.md"
+    },
+    {
+      "title": "bench show-config",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/show-config",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/show-config.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench show-config.md"
+    },
+    {
+      "title": "bench set-config",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/set-config",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/set-config.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench set-config.md"
+    },
+    {
+      "title": "bench execute",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/execute",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/execute.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench execute.md"
+    },
+    {
+      "title": "bench restore",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/restore",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/restore.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench restore.md"
+    },
+    {
+      "title": "bench partial-restore",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/partial-restore",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/partial-restore.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench partial-restore.md"
+    },
+    {
+      "title": "bench version",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/bench-version",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/bench-version.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench version.md"
+    },
+    {
+      "title": "bench transform-database",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/transform-database",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/transform-database.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench transform-database.md"
+    },
+    {
+      "title": "bench trim-database",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/trim-database",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/trim-database.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench trim-database.md"
+    },
+    {
+      "title": "bench trim-tables",
+      "url": "https://docs.frappe.io/framework/user/en/bench/reference/trim-tables",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/reference/trim-tables.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench trim-tables.md"
+    },
+    {
+      "title": "bench generate-pot-file",
+      "url": "https://docs.frappe.io/framework/user/en/bench-generate-pot-file",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench-generate-pot-file.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench generate-pot-file.md"
+    },
+    {
+      "title": "bench migrate-csv-to-po",
+      "url": "https://docs.frappe.io/framework/user/en/bench-migrate-csv-to-po",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench-migrate-csv-to-po.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench migrate-csv-to-po.md"
+    },
+    {
+      "title": "bench update-po-files",
+      "url": "https://docs.frappe.io/framework/user/en/bench-update-po-files",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench-update-po-files.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench update-po-files.md"
+    },
+    {
+      "title": "bench compile-po-to-mo",
+      "url": "https://docs.frappe.io/framework/user/en/bench-compile-po-to-mo",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench-compile-po-to-mo.md",
+      "group": [
+        "Bench - Reference"
+      ],
+      "file": "Bench - Reference/bench compile-po-to-mo.md"
+    },
+    {
+      "title": "Adding Custom Domains to your Site",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/adding-custom-domains",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/adding-custom-domains.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Adding Custom Domains to your Site.md"
+    },
+    {
+      "title": "Configuring HTTPS",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/configuring-https",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/configuring-https.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Configuring HTTPS.md"
+    },
+    {
+      "title": "Diagnosing The Scheduler",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/diagnosing-the-scheduler",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/diagnosing-the-scheduler.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Diagnosing The Scheduler.md"
+    },
+    {
+      "title": "Using Let's Encrypt to setup HTTPS",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/lets-encrypt-ssl-setup",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/lets-encrypt-ssl-setup.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Using Let's Encrypt to setup HTTPS.md"
+    },
+    {
+      "title": "Setting Limits for your Site",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/settings-limits",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/settings-limits.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Setting Limits for your Site.md"
+    },
+    {
+      "title": "Setup Multitenancy",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/setup-multitenancy",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/setup-multitenancy.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Setup Multitenancy.md"
+    },
+    {
+      "title": "Setup Production",
+      "url": "https://docs.frappe.io/framework/user/en/bench/guides/setup-production",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/guides/setup-production.md",
+      "group": [
+        "Bench - Guides"
+      ],
+      "file": "Bench - Guides/Setup Production.md"
+    },
+    {
+      "title": "Background Services",
+      "url": "https://docs.frappe.io/framework/user/en/bench/resources/background-services",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/resources/background-services.md",
+      "group": [
+        "Bench - Resources"
+      ],
+      "file": "Bench - Resources/Background Services.md"
+    },
+    {
+      "title": "Bench Commands Cheatsheet",
+      "url": "https://docs.frappe.io/framework/user/en/bench/resources/bench-commands-cheatsheet",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/resources/bench-commands-cheatsheet.md",
+      "group": [
+        "Bench - Resources"
+      ],
+      "file": "Bench - Resources/Bench Commands Cheatsheet.md"
+    },
+    {
+      "title": "Bench Procfile",
+      "url": "https://docs.frappe.io/framework/user/en/bench/resources/bench-procfile",
+      "md_url": "https://docs.frappe.io/framework/user/en/bench/resources/bench-procfile.md",
+      "group": [
+        "Bench - Resources"
+      ],
+      "file": "Bench - Resources/Bench Procfile.md"
+    },
+    {
+      "title": "Database Migrations",
+      "url": "https://docs.frappe.io/framework/user/en/database-migrations",
+      "md_url": "https://docs.frappe.io/framework/user/en/database-migrations.md",
+      "group": [
+        "Deployment"
+      ],
+      "file": "Deployment/Database Migrations.md"
+    },
+    {
+      "title": "Production Setup",
+      "url": "https://docs.frappe.io/framework/user/en/production-setup",
+      "md_url": "https://docs.frappe.io/framework/user/en/production-setup.md",
+      "group": [
+        "Deployment"
+      ],
+      "file": "Deployment/Production Setup.md"
+    },
+    {
+      "title": "Zero* downtime migrations",
+      "url": "https://docs.frappe.io/framework/user/en/zero*_downtime_migrations",
+      "md_url": "https://docs.frappe.io/framework/user/en/zero*_downtime_migrations.md",
+      "group": [
+        "Deployment"
+      ],
+      "file": "Deployment/Zero downtime migrations.md"
+    },
+    {
+      "title": "Rate Limiting",
+      "url": "https://docs.frappe.io/framework/deployment/rate-limiting",
+      "md_url": "https://docs.frappe.io/framework/deployment/rate-limiting.md",
+      "group": [
+        "Deployment"
+      ],
+      "file": "Deployment/Rate Limiting.md"
+    },
+    {
+      "title": "Video Tutorials for Frappe Framework",
+      "url": "https://docs.frappe.io/framework/user/en/videos",
+      "md_url": "https://docs.frappe.io/framework/user/en/videos.md",
+      "group": [
+        "Videos"
+      ],
+      "file": "Videos/Video Tutorials for Frappe Framework.md"
+    },
+    {
+      "title": "Testing",
+      "url": "https://docs.frappe.io/framework/user/en/testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/testing.md",
+      "group": [
+        "Writing Tests"
+      ],
+      "file": "Writing Tests/Testing.md"
+    },
+    {
+      "title": "UI Testing",
+      "url": "https://docs.frappe.io/framework/user/en/ui-testing",
+      "md_url": "https://docs.frappe.io/framework/user/en/ui-testing.md",
+      "group": [
+        "Writing Tests"
+      ],
+      "file": "Writing Tests/UI Testing.md"
+    },
+    {
+      "title": "Desk",
+      "url": "https://docs.frappe.io/framework/user/en/hidden-features/desk",
+      "md_url": "https://docs.frappe.io/framework/user/en/hidden-features/desk.md",
+      "group": [
+        "Hidden Features"
+      ],
+      "file": "Hidden Features/Desk.md"
+    },
+    {
+      "title": "Debugging",
+      "url": "https://docs.frappe.io/framework/user/en/debugging",
+      "md_url": "https://docs.frappe.io/framework/user/en/debugging.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Debugging.md"
+    },
+    {
+      "title": "Contribute to Documentation for Frappe Apps",
+      "url": "https://docs.frappe.io/framework/user/en/how_to_contribute",
+      "md_url": "https://docs.frappe.io/framework/user/en/how_to_contribute.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Contribute to Documentation for Frappe Apps.md"
+    },
+    {
+      "title": "Profiling and Monitoring",
+      "url": "https://docs.frappe.io/framework/user/en/profiling",
+      "md_url": "https://docs.frappe.io/framework/user/en/profiling.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Profiling and Monitoring.md"
+    },
+    {
+      "title": "Translations",
+      "url": "https://docs.frappe.io/framework/user/en/translations",
+      "md_url": "https://docs.frappe.io/framework/user/en/translations.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Translations.md"
+    },
+    {
+      "title": "Logging",
+      "url": "https://docs.frappe.io/framework/user/en/logging",
+      "md_url": "https://docs.frappe.io/framework/user/en/logging.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Logging.md"
+    },
+    {
+      "title": "Event Streaming",
+      "url": "https://docs.frappe.io/framework/help/event-streaming",
+      "md_url": "https://docs.frappe.io/framework/help/event-streaming.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Event Streaming.md"
+    },
+    {
+      "title": "S3 file storage",
+      "url": "https://docs.frappe.io/framework/help/can-i-store-my-files-on-s3-gcs-or-google-drive-instead-of-the-server",
+      "md_url": "https://docs.frappe.io/framework/help/can-i-store-my-files-on-s3-gcs-or-google-drive-instead-of-the-server.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/S3 file storage.md"
+    },
+    {
+      "title": "Restoring System Manager Role",
+      "url": "https://docs.frappe.io/framework/help/restore-access-after-removing-your-own-system-manager-role",
+      "md_url": "https://docs.frappe.io/framework/help/restore-access-after-removing-your-own-system-manager-role.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Restoring System Manager Role.md"
+    },
+    {
+      "title": "Export Permission",
+      "url": "https://docs.frappe.io/framework/help/why-cant-i-export-data-or-see-the-excel-option",
+      "md_url": "https://docs.frappe.io/framework/help/why-cant-i-export-data-or-see-the-excel-option.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Export Permission.md"
+    },
+    {
+      "title": "Printing fails with",
+      "url": "https://docs.frappe.io/framework/help/printing-fails-with-nonetype-object-is-not-callable-or-a-jinja-error-after-update",
+      "md_url": "https://docs.frappe.io/framework/help/printing-fails-with-nonetype-object-is-not-callable-or-a-jinja-error-after-update.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Printing fails with NoneType object is not callable or a Jinja error after an update.md"
+    },
+    {
+      "title": "Email Account shows \u201cInvalid credentials\u201d or an SMTP/IMAP authentication error",
+      "url": "https://docs.frappe.io/framework/help/email-account-shows-invalid-credentials-or-an-smtpimap-authentication-error",
+      "md_url": "https://docs.frappe.io/framework/help/email-account-shows-invalid-credentials-or-an-smtpimap-authentication-error.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Email Account shows \u201cInvalid credentials\u201d or an SMTP-IMAP authentication error.md"
+    },
+    {
+      "title": "My workspaces or desktop icons disappeared after updating to v16",
+      "url": "https://docs.frappe.io/framework/help/my-workspaces-or-desktop-icons-disappeared-after-updating-to-v16",
+      "md_url": "https://docs.frappe.io/framework/help/my-workspaces-or-desktop-icons-disappeared-after-updating-to-v16.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/My workspaces or desktop icons disappeared after updating to v16.md"
+    },
+    {
+      "title": "I'm not receiving a password reset, login link, or two-factor authentication email",
+      "url": "https://docs.frappe.io/framework/help/im-not-receiving-a-password-reset-login-link-or-two-factor-authentication-email",
+      "md_url": "https://docs.frappe.io/framework/help/im-not-receiving-a-password-reset-login-link-or-two-factor-authentication-email.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/I'm not receiving a password reset, login link, or two-factor authentication email.md"
+    },
+    {
+      "title": "SMTP timeout or connection error when saving an Email Domain or Email Account",
+      "url": "https://docs.frappe.io/framework/help/smtp-timeout-or-connection-error-when-saving-an-email-domain-or-email-account",
+      "md_url": "https://docs.frappe.io/framework/help/smtp-timeout-or-connection-error-when-saving-an-email-domain-or-email-account.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/SMTP timeout or connection error when saving an Email Domain or Email Account.md"
+    },
+    {
+      "title": "Why do I get a lock wait timeout or deadlock when saving, submitting or renaming?",
+      "url": "https://docs.frappe.io/framework/help/why-do-i-get-a-lock-wait-timeout-or-deadlock-when-saving-submitting-or-renaming",
+      "md_url": "https://docs.frappe.io/framework/help/why-do-i-get-a-lock-wait-timeout-or-deadlock-when-saving-submitting-or-renaming.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Why do I get a lock wait timeout or deadlock when saving, submitting or renaming.md"
+    },
+    {
+      "title": "Change or reuse a User's email address",
+      "url": "https://docs.frappe.io/framework/help/change-or-reuse-a-users-email-address",
+      "md_url": "https://docs.frappe.io/framework/help/change-or-reuse-a-users-email-address.md",
+      "group": [
+        "Help"
+      ],
+      "file": "Help/Change or reuse a User's email address.md"
+    },
+    {
+      "title": "Database Optimization - Hardware and Configuration",
+      "url": "https://docs.frappe.io/framework/user/en/database-optimization-hardware-and-configuration",
+      "md_url": "https://docs.frappe.io/framework/user/en/database-optimization-hardware-and-configuration.md",
+      "group": [
+        "Guide - Performance Optimization"
+      ],
+      "file": "Guide - Performance Optimization/Database Optimization - Hardware and Configuration.md"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "base": "https://docs.frappe.io",
+  "space": "framework",
+  "out": "docs",
+  "workers": 8,
+  "skill_target": "both",
+  "skill_layout": "one",
+  "skill_out": "frappe-framework-docs-skill.md"
+}
