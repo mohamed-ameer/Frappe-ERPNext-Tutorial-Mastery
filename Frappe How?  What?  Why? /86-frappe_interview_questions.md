@@ -22,7 +22,7 @@
 13. [What do you know about Fixtures?](#13-what-do-you-know-about-fixtures)
 14. [What do you know about Property Setter?](#14-what-do-you-know-about-property-setter)
 
-### Senior Developer Questions (15-26)
+### Senior Developer Questions (15-40)
 15. [What is the difference between Redis cache and local cache in Frappe?](#15-what-is-the-difference-between-redis-cache-and-local-cache-in-frappe)
 16. [What is the difference between Frappe and ERPNext?](#16-what-is-the-difference-between-frappe-and-erpnext)
 17. [What do you know about bench commands? What commands do you know about?](#17-what-do-you-know-about-bench-commands-what-commands-do-you-know-about)
@@ -49,6 +49,26 @@
 38. [What is anti pattern? How can we prevent anti pattern in Frappe?](#38-what-is-anti-pattern-how-can-we-prevent-anti-pattern-in-frappe)
 39. [If the company changes the domain name and all employee emails, how to change all emails in the app DB safely?](#39-if-the-company-changes-the-domain-name-and-all-employee-emails-how-to-change-all-emails-in-the-app-db-safely)
 40. [What are limitations of Frappe?](#40-what-are-limitations-of-frappe)
+
+### Additional Questions
+1. How do Background Jobs work in Frappe?
+2. How do you perform testing?
+3. What is the difference between using a Query Builder and writing raw SQL?
+4. How does frappe.db.commit work, and should it always be used?
+5. How do you optimize a database query?
+6. If a system is slow or a query is taking too long, how do you trace the problem?
+7. How do you debug a slow query, identify the bottleneck, and fix it?
+8. How bench migrate work?
+9. What was the most difficult problem or project you faced while working with?
+10. What are the different types of permissions in the system?
+11. What is the difference between User-Level Permissions and Field-Level Permissions?
+12. How do permissions work in Frappe, and how do you manage them?
+13. How do you move data and configurations from a development environment to production?
+14. What are Fixtures in Frappe, and how do they work?
+15. How can you ensure that records and permissions are exported and remain available after deploying your application to another environment?
+16. How do you customize standard Frappe code without modifying the framework's core code?
+17. How do you use Events to customize the behavior of an existing DocType?
+18. What is the difference between customizing standard functionality and overriding existing behavior?
 
 ---
 
