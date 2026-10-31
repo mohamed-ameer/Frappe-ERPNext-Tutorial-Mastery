@@ -31,6 +31,13 @@ Personal list of courses, playlists, and channels used while learning Frappe and
 
 - [Frappe / ERPNext Tutorials](https://www.youtube.com/playlist?list=PL81DRyBlXws-b7CdzGHOgoyc8vUvLXv6i)
 
+### Mansiqo Academy
+
+- [Mansiqo Academy](https://www.youtube.com/@mansiqoacademy/playlists)
+- [ERPNext Technical Side + Implementation Side — From Initial Setup to Go-Live | Mansiqo Academy](https://www.youtube.com/playlist?list=PLHwr0FydJaxE)
+- [Implementation Side: ERPNext Implementation — Accounting, Company Setup, and Go-Live | Mansiqo Academy](https://www.youtube.com/playlist?list=PLcIfTfpeQufc)
+- [ERPNext Development Side — From a Local Install to Your Own App | Mansiqo Academy](https://www.youtube.com/playlist?list=PLILYCV2i8Dzk)
+
 ### Karani
 
 Main playlist: [Karani series](https://www.youtube.com/playlist?list=PLLbgRul3LE3NW6T9yQROiIihYpWm5RyHw)
